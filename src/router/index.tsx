@@ -1,0 +1,24 @@
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import MainLayout from '@/components/layout/MainLayout'
+import Home from '@/pages/Home'
+import Login from '@/pages/Login'
+import NotFound from '@/pages/NotFound'
+import ProtectedRoute from './ProtectedRoute'
+import AdminRoute from './AdminRoute'
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'login', element: <Login /> },
+      // Thêm các route khác ở đây
+    ],
+  },
+  { path: '*', element: <NotFound /> },
+])
+
+export default function Router() {
+  return <RouterProvider router={router} />
+}
