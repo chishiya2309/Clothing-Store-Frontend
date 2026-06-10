@@ -1,2 +1,15 @@
-﻿import { Outlet } from 'react-router-dom'
-export default function MainLayout() { return <div><Outlet /></div> }
+import { Outlet } from 'react-router-dom'
+import Header from './Header'
+import Footer from './Footer'
+
+export default function MainLayout() { 
+  return (
+    <>
+      <Header />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  ) 
+}
