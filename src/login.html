@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Đăng nhập - CLOTHY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Outfit:wght@600;700&amp;family=Space+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#ffdad7",
+                      "surface": "#f9f9f7",
+                      "surface-container": "#eeeeec",
+                      "rating-gold": "#F5A623",
+                      "on-surface": "#1a1c1b",
+                      "on-tertiary-fixed-variant": "#930015",
+                      "text-primary": "#2D2D2D",
+                      "surface-alt": "#F0EDE8",
+                      "on-secondary-container": "#6f6149",
+                      "on-secondary-fixed-variant": "#51452f",
+                      "primary-fixed-dim": "#c6c4df",
+                      "success": "#2D8F4E",
+                      "primary": "#00000b",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#c8c5cd",
+                      "tertiary-container": "#420004",
+                      "secondary-fixed": "#f3e0c2",
+                      "on-tertiary-container": "#ed4848",
+                      "surface-container-low": "#f4f4f2",
+                      "on-background": "#1a1c1b",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#e8e8e6",
+                      "on-error-container": "#93000a",
+                      "primary-container": "#1a1a2e",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed-dim": "#d6c4a7",
+                      "surface-container-highest": "#e2e3e1",
+                      "inverse-surface": "#2f3130",
+                      "tertiary-fixed-dim": "#ffb3ae",
+                      "surface-tint": "#5d5c74",
+                      "border-subtle": "#E5E5E0",
+                      "on-primary-fixed": "#1a1a2e",
+                      "on-surface-variant": "#47464c",
+                      "surface-bright": "#f9f9f7",
+                      "surface-variant": "#e2e3e1",
+                      "warning": "#E8A317",
+                      "on-tertiary-fixed": "#410004",
+                      "background": "#f9f9f7",
+                      "surface-dim": "#dadad8",
+                      "inverse-primary": "#c6c4df",
+                      "error": "#ba1a1a",
+                      "outline": "#78767d",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed": "#241a07",
+                      "on-primary-container": "#83829b",
+                      "secondary": "#6a5d45",
+                      "tertiary": "#050000",
+                      "secondary-container": "#f0ddbf",
+                      "text-muted": "#8C8C8C",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed-variant": "#45455b",
+                      "inverse-on-surface": "#f1f1ef",
+                      "primary-fixed": "#e2e0fc"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "md": "24px",
+                      "margin-mobile": "24px",
+                      "lg": "48px",
+                      "base": "8px",
+                      "xl": "80px",
+                      "gutter": "24px",
+                      "xs": "4px",
+                      "container-max": "1280px",
+                      "margin-desktop": "80px"
+              },
+              "fontFamily": {
+                      "price-display": [
+                              "Space Mono"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Outfit"
+                      ],
+                      "display-hero": [
+                              "Outfit"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Outfit"
+                      ],
+                      "headline-lg-mobile": [
+                              "Outfit"
+                      ],
+                      "label-caps": [
+                              "Outfit"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-xl": [
+                              "Outfit"
+                      ]
+              },
+              "fontSize": {
+                      "price-display": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-hero": [
+                              "56px",
+                              {
+                                      "lineHeight": "60px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl": [
+                              "40px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-surface text-text-primary min-h-screen flex flex-col font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-on-background border-b border-subtle dark:border-outline-variant docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto">
+<!-- Brand -->
+<a class="font-headline-md text-headline-md font-bold tracking-tighter text-primary dark:text-on-primary hover:opacity-80 transition-opacity" href="#">
+                CLOTHY
+            </a>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors py-1" href="#">NAM</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors py-1" href="#">NỮ</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors py-1" href="#">TRẺ EM</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors py-1" href="#">BỘ SƯU TẬP</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors py-1" href="#">SALE</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-4 text-primary dark:text-on-primary">
+<button aria-label="search" class="hover:opacity-80 transition-opacity scale-102 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button aria-label="person" class="hover:opacity-80 transition-opacity scale-102 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+<button aria-label="favorite" class="hover:opacity-80 transition-opacity scale-102 transition-transform duration-200 hidden md:block">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+<button aria-label="shopping_bag" class="hover:opacity-80 transition-opacity scale-102 transition-transform duration-200">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex items-center justify-center px-4 py-16 md:py-24">
+<div class="w-full max-w-[440px] bg-surface-container-lowest p-8 md:p-12 rounded border border-subtle">
+<!-- Header section -->
+<div class="text-center mb-10">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-2">Đăng nhập</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Chào mừng bạn quay lại với CLOTHY</p>
+</div>
+<!-- Login Form -->
+<form action="#" class="space-y-6" method="POST">
+<div class="space-y-2">
+<label class="block font-label-caps text-label-caps text-primary" for="email">Email</label>
+<input class="w-full px-4 py-3 bg-transparent border border-subtle rounded text-text-primary font-body-md placeholder-text-muted focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="email" name="email" placeholder="nhap@email.com" required="" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="block font-label-caps text-label-caps text-primary" for="password">Mật khẩu</label>
+<input class="w-full px-4 py-3 bg-transparent border border-subtle rounded text-text-primary font-body-md placeholder-text-muted focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<div class="flex items-center justify-between pt-2">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 rounded-sm border-subtle text-primary-container focus:ring-primary-container bg-transparent" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant group-hover:text-primary transition-colors">Ghi nhớ đăng nhập</span>
+</label>
+<a class="font-body-sm text-body-sm text-primary underline hover:opacity-80 transition-opacity" href="#">Quên mật khẩu?</a>
+</div>
+<button class="w-full h-12 bg-primary-container text-on-primary font-label-caps text-label-caps rounded hover:scale-[1.02] hover:shadow-md transition-all duration-200 mt-4 flex items-center justify-center" type="submit">
+                    ĐĂNG NHẬP
+                </button>
+</form>
+<!-- Divider -->
+<div class="relative my-8">
+<div class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-subtle"></div>
+</div>
+<div class="relative flex justify-center text-sm">
+<span class="px-4 bg-surface-container-lowest font-body-sm text-body-sm text-text-muted">Hoặc</span>
+</div>
+</div>
+<!-- Social Login -->
+<button class="w-full h-12 bg-transparent border-[1.5px] border-primary-container text-primary-container font-label-caps text-label-caps rounded hover:bg-surface-alt transition-colors duration-200 flex items-center justify-center gap-3" type="button">
+<svg aria-hidden="true" class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                ĐĂNG NHẬP VỚI GOOGLE
+            </button>
+<!-- Footer Link -->
+<p class="mt-8 text-center font-body-sm text-body-sm text-on-surface-variant">
+                Chưa có tài khoản? <a class="text-primary font-bold underline hover:opacity-80 transition-opacity" href="#">Đăng ký ngay</a>
+</p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-alt dark:bg-surface-container-highest full-width bottom-0">
+<div class="flex flex-col md:flex-row justify-between items-center py-xl px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto gap-8 md:gap-0">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-on-primary">
+                CLOTHY
+            </div>
+<nav class="flex flex-wrap justify-center gap-6 md:gap-8">
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary underline transition-all opacity-90 hover:opacity-100" href="#">About Us</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary underline transition-all opacity-90 hover:opacity-100" href="#">Support</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary underline transition-all opacity-90 hover:opacity-100" href="#">Policies</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary underline transition-all opacity-90 hover:opacity-100" href="#">Contact</a>
+</nav>
+<div class="font-body-sm text-body-sm text-on-surface-variant dark:text-surface-variant text-center md:text-right">
+                © 2024 CLOTHY. All rights reserved.
+            </div>
+</div>
+</footer>
+</body></html>
