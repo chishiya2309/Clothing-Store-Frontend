@@ -4,6 +4,7 @@ import AdminLayout from '../components/layout/AdminLayout'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import VerifyEmail from '../pages/VerifyEmail'
 import NotFound from '../pages/NotFound'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
@@ -16,6 +17,7 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
+      { path: 'verify-email', element: <VerifyEmail /> },
       // Thêm các route khác ở đây
     ],
   },

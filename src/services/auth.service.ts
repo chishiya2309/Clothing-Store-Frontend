@@ -10,12 +10,22 @@ export const authService = {
   },
 
   register: async (data: RegisterFormData) => {
-    const response = await axios.post(`${API_URL}/register`, data);
+    const payload = {
+      fullName: data.fullname,
+      email: data.email,
+      password: data.password
+    };
+    const response = await axios.post(`${API_URL}/register`, payload);
     return response.data;
   },
 
   googleLogin: async (credential: string) => {
     const response = await axios.post(`${API_URL}/google`, { idToken: credential });
+    return response.data;
+  },
+
+  verifyEmail: async (token: string) => {
+    const response = await axios.get(`${API_URL}/verify-email?token=${token}`);
     return response.data;
   }
 };
