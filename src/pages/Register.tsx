@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,6 +11,7 @@ import { useAuthStore } from '../store/authStore';
 export default function Register() {
   const navigate = useNavigate();
   const { setAuth } = useAuthStore();
+  const [isSuccess, setIsSuccess] = useState(false);
   const {
     register,
     handleSubmit,
@@ -22,8 +24,7 @@ export default function Register() {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await authService.register(data);
-      // Handle successful registration (e.g., redirect to login with success message)
-      navigate('/login');
+      setIsSuccess(true);
     } catch (error: any) {
       console.error('Registration failed', error);
       const errorMessage = error.response?.data?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.';
@@ -61,6 +62,26 @@ export default function Register() {
       console.error('Google registration error', errorResponse);
     },
   });
+
+  if (isSuccess) {
+    return (
+      <div className="flex-grow flex items-center justify-center p-6 md:p-20 bg-[#FAFAF8] min-h-[calc(100vh-160px)]">
+        <div className="w-full max-w-md bg-surface-container-lowest shadow-sm border border-subtle rounded-lg p-12 text-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-primary opacity-10 rounded-full pointer-events-none"></div>
+          <span className="material-symbols-outlined text-[64px] text-primary mb-6">mark_email_read</span>
+          <h1 className="font-headline-lg text-headline-lg text-primary mb-4">
+            Đăng ký thành công!
+          </h1>
+          <p className="font-body-md text-body-md text-on-surface-variant mb-8 leading-relaxed">
+            Vui lòng kiểm tra email của bạn để kích hoạt tài khoản trước khi có thể đăng nhập.
+          </p>
+          <Link to="/login" className="inline-block w-full bg-primary-container text-on-primary rounded-lg py-3 px-6 font-label-caps text-label-caps tracking-widest hover:bg-primary transition-all duration-200 hover:shadow-sm transform hover:scale-[1.02]">
+            ĐI ĐẾN ĐĂNG NHẬP
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-grow flex items-center justify-center p-6 md:p-20 bg-[#FAFAF8] min-h-[calc(100vh-160px)]">
