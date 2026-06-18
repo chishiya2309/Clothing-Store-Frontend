@@ -5,12 +5,15 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { registerSchema } from '../utils/auth-schemas';
 import type { RegisterFormData } from '../utils/auth-schemas';
 import { authService } from '../services/auth.service';
+import { useAuthStore } from '../store/authStore';
 
 export default function Register() {
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -21,20 +24,37 @@ export default function Register() {
       await authService.register(data);
       // Handle successful registration (e.g., redirect to login with success message)
       navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed', error);
-      // Handle error display
+      const errorMessage = error.response?.data?.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.';
+      setError('root', { type: 'server', message: errorMessage });
     }
   };
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
-        await authService.googleLogin(tokenResponse.access_token);
-        // Handle successful google login
-        navigate('/');
-      } catch (error) {
+        const response = await authService.googleLogin(tokenResponse.access_token);
+        if (response && response.data && response.data.accessToken) {
+          setAuth(response.data.accessToken, {
+            id: response.data.id,
+            name: response.data.name,
+            role: response.data.role
+          });
+
+          const role = response.data.role?.toLowerCase();
+          if (role === 'admin' || role === 'staff') {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
+        } else {
+          navigate('/');
+        }
+      } catch (error: any) {
         console.error('Google registration failed', error);
+        const errorMessage = error.response?.data?.message || 'Đăng ký bằng Google thất bại.';
+        setError('root', { type: 'server', message: errorMessage });
       }
     },
     onError: (errorResponse) => {
@@ -56,6 +76,12 @@ export default function Register() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+          {errors.root && (
+            <div className="p-3 bg-error-container text-on-error-container text-sm font-body-md rounded border border-error bg-opacity-20">
+              {errors.root.message}
+            </div>
+          )}
+          
           {/* Full Name */}
           <div>
             <label className="sr-only" htmlFor="fullname">Họ và tên</label>

@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuthStore } from '@/store/authStore'
+import { useAuthStore } from '../store/authStore'
 
 export default function AdminRoute() {
   const user = useAuthStore((state) => state.user)
@@ -8,7 +8,8 @@ export default function AdminRoute() {
     return <Navigate to="/login" replace />
   }
 
-  if (user.role !== 'ADMIN') {
+  const role = user.role?.toLowerCase();
+  if (role !== 'admin' && role !== 'staff') {
     return <Navigate to="/" replace />
   }
 
