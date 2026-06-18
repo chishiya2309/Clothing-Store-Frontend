@@ -5,12 +5,15 @@ import { GoogleLogin } from '@react-oauth/google';
 import { loginSchema } from '../utils/auth-schemas';
 import type { LoginFormData } from '../utils/auth-schemas';
 import { authService } from '../services/auth.service';
+import { useAuthStore } from '../store/authStore';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setAuth } = useAuthStore();
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -18,12 +21,27 @@ export default function Login() {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await authService.login(data);
-      // Handle successful login (e.g., save token, update store)
-      navigate('/');
-    } catch (error) {
+      const response = await authService.login(data);
+      if (response && response.data && response.data.accessToken) {
+        setAuth(response.data.accessToken, {
+          id: response.data.id,
+          name: response.data.name,
+          role: response.data.role
+        });
+        
+        const role = response.data.role?.toLowerCase();
+        if (role === 'admin' || role === 'staff') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      } else {
+        navigate('/');
+      }
+    } catch (error: any) {
       console.error('Login failed', error);
-      // Handle error display
+      const errorMessage = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại email và mật khẩu.';
+      setError('root', { type: 'server', message: errorMessage });
     }
   };
 
@@ -38,6 +56,12 @@ export default function Login() {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {errors.root && (
+            <div className="p-3 bg-error-container text-on-error-container text-sm font-body-md rounded border border-error bg-opacity-20">
+              {errors.root.message}
+            </div>
+          )}
+          
           <div className="space-y-2">
             <label className="block font-label-caps text-label-caps text-primary" htmlFor="email">
               Email
@@ -115,10 +139,27 @@ export default function Login() {
             onSuccess={async (credentialResponse) => {
               if (credentialResponse.credential) {
                 try {
-                  await authService.googleLogin(credentialResponse.credential);
-                  navigate('/');
-                } catch (error) {
+                  const response = await authService.googleLogin(credentialResponse.credential);
+                  if (response && response.data && response.data.accessToken) {
+                    setAuth(response.data.accessToken, {
+                      id: response.data.id,
+                      name: response.data.name,
+                      role: response.data.role
+                    });
+
+                    const role = response.data.role?.toLowerCase();
+                    if (role === 'admin' || role === 'staff') {
+                      navigate('/admin');
+                    } else {
+                      navigate('/');
+                    }
+                  } else {
+                    navigate('/');
+                  }
+                } catch (error: any) {
                   console.error('Google login failed', error);
+                  const errorMessage = error.response?.data?.message || 'Đăng nhập Google thất bại.';
+                  setError('root', { type: 'server', message: errorMessage });
                 }
               }
             }}
