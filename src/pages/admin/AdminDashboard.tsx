@@ -67,15 +67,13 @@ export default function AdminDashboard() {
             scales: {
               x: {
                 grid: {
-                  display: false,
-                  drawOnChartArea: false
+                  display: false
                 }
               },
               y: {
                 grid: {
-                  color: '#E5E5E0',
-                  drawOnChartArea: true,
-                  borderDash: [5, 5]
+                  color: '#e2e3e1',
+                  drawOnChartArea: true
                 },
                 ticks: {
                   callback: function(value) {

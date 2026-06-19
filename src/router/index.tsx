@@ -10,6 +10,9 @@ import ResetPassword from '../pages/ResetPassword'
 import NotFound from '../pages/NotFound'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
+import AccountLayout from '../components/layout/AccountLayout'
+import Profile from '../pages/Profile'
+import ProtectedRoute from './ProtectedRoute'
 
 const router = createBrowserRouter([
   {
@@ -22,7 +25,20 @@ const router = createBrowserRouter([
       { path: 'verify-email', element: <VerifyEmail /> },
       { path: 'forgot-password', element: <ForgotPassword /> },
       { path: 'reset-password', element: <ResetPassword /> },
-      // Thêm các route khác ở đây
+      {
+        path: 'account',
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '',
+            element: <AccountLayout />,
+            children: [
+              { path: 'profile', element: <Profile /> },
+              // Thêm các trang quản lý tài khoản khác (orders, addresses, ...) ở đây
+            ]
+          }
+        ]
+      }
     ],
   },
   {
