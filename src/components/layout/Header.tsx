@@ -40,7 +40,7 @@ export default function Header() {
               {/* Dropdown Menu (Hidden by default, shown on hover) */}
               <div className="absolute right-0 top-full pt-2 opacity-0 group-hover/user:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/user:pointer-events-auto z-50">
                 <div className="bg-surface-container-lowest border border-border-subtle shadow-sm py-2 w-56 rounded-sm overflow-hidden">
-                  <Link className="flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors" to="/account">
+                  <Link className="flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors" to="/account/profile">
                     <span className="material-symbols-outlined text-[20px]">account_circle</span>
                     <span>Thông tin tài khoản</span>
                   </Link>
