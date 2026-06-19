@@ -23,7 +23,7 @@ export default function Login() {
     try {
       const response = await authService.login(data);
       if (response && response.data && response.data.accessToken) {
-        setAuth(response.data.accessToken, {
+        setAuth(response.data.accessToken, response.data.refreshToken, {
           id: response.data.id,
           name: response.data.name,
           role: response.data.role
@@ -141,7 +141,7 @@ export default function Login() {
                 try {
                   const response = await authService.googleLogin(credentialResponse.credential);
                   if (response && response.data && response.data.accessToken) {
-                    setAuth(response.data.accessToken, {
+                    setAuth(response.data.accessToken, response.data.refreshToken, {
                       id: response.data.id,
                       name: response.data.name,
                       role: response.data.role

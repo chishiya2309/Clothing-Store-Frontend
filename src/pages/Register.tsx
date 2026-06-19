@@ -37,7 +37,7 @@ export default function Register() {
       try {
         const response = await authService.googleLogin(tokenResponse.access_token);
         if (response && response.data && response.data.accessToken) {
-          setAuth(response.data.accessToken, {
+          setAuth(response.data.accessToken, response.data.refreshToken, {
             id: response.data.id,
             name: response.data.name,
             role: response.data.role
