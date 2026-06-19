@@ -18,6 +18,12 @@ export interface UpdateProfileRequest {
   dateOfBirth?: string
 }
 
+export interface ChangePasswordRequest {
+  oldPassword?: string
+  newPassword?: string
+  confirmNewPassword?: string
+}
+
 export const profileService = {
   getProfile: async (): Promise<UserProfileResponse> => {
     const response = await api.get('/customer/profile')
@@ -27,5 +33,10 @@ export const profileService = {
   updateProfile: async (data: UpdateProfileRequest): Promise<UserProfileResponse> => {
     const response = await api.put('/customer/profile', data)
     return response.data.data
+  },
+
+  changePassword: async (data: ChangePasswordRequest) => {
+    const response = await api.put<{ message: string }>('/customer/profile/password', data)
+    return response.data
   }
 }
