@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sổ địa chỉ - CLOTHY</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@600;700&amp;family=Space+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9f7",
+                        "border-subtle": "#E5E5E0",
+                        "on-primary-container": "#83829b",
+                        "surface-alt": "#F0EDE8",
+                        "outline-variant": "#c8c5cd",
+                        "surface-container-low": "#f4f4f2",
+                        "text-muted": "#8C8C8C",
+                        "secondary-fixed-dim": "#d6c4a7",
+                        "on-error-container": "#93000a",
+                        "outline": "#78767d",
+                        "secondary": "#6a5d45",
+                        "on-secondary-fixed-variant": "#51452f",
+                        "on-primary-fixed": "#1a1a2e",
+                        "on-background": "#1a1c1b",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "surface-tint": "#5d5c74",
+                        "inverse-surface": "#2f3130",
+                        "tertiary-container": "#420004",
+                        "surface-container": "#eeeeec",
+                        "primary": "#00000b",
+                        "success": "#2D8F4E",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#6f6149",
+                        "on-tertiary-container": "#ed4848",
+                        "warning": "#E8A317",
+                        "primary-fixed": "#e2e0fc",
+                        "tertiary": "#050000",
+                        "primary-fixed-dim": "#c6c4df",
+                        "surface-container-high": "#e8e8e6",
+                        "on-secondary-fixed": "#241a07",
+                        "inverse-on-surface": "#f1f1ef",
+                        "tertiary-fixed": "#ffdad7",
+                        "surface-dim": "#dadad8",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#1a1a2e",
+                        "on-tertiary-fixed-variant": "#930015",
+                        "text-primary": "#2D2D2D",
+                        "inverse-primary": "#c6c4df",
+                        "on-primary": "#ffffff",
+                        "background": "#f9f9f7",
+                        "secondary-container": "#f0ddbf",
+                        "on-surface-variant": "#47464c",
+                        "on-surface": "#1a1c1b",
+                        "surface-variant": "#e2e3e1",
+                        "on-error": "#ffffff",
+                        "surface": "#f9f9f7",
+                        "secondary-fixed": "#f3e0c2",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#410004",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#45455b",
+                        "surface-container-highest": "#e2e3e1",
+                        "rating-gold": "#F5A623"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "lg": "48px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "margin-desktop": "80px",
+                        "margin-mobile": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Outfit"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "price-display": ["Space Mono"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Outfit"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Outfit"],
+                        "display-hero": ["Outfit"],
+                        "headline-xl": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "price-display": ["18px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "display-hero": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-xl": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-headline-md, .font-headline-lg, .font-headline-xl, .font-label-caps {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-surface text-primary antialiased flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface dark:bg-primary fixed top-0 w-full z-50 border-b border-border-subtle dark:border-outline-variant">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-20">
+<!-- Brand Logo -->
+<a class="text-headline-md font-headline-md text-primary dark:text-on-primary tracking-tighter" href="#">
+                CLOTHY
+            </a>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary dark:hover:text-on-primary transition-colors duration-200" href="#">NAM</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary dark:hover:text-on-primary transition-colors duration-200" href="#">NỮ</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary dark:hover:text-on-primary transition-colors duration-200" href="#">TRẺ EM</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary dark:hover:text-on-primary transition-colors duration-200" href="#">BỘ SƯU TẬP</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary dark:hover:text-on-primary transition-colors duration-200" href="#">SALE</a>
+</nav>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-sm">
+<button class="text-primary dark:text-on-primary scale-102 transition-transform duration-200 p-2">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-primary dark:text-on-primary scale-102 transition-transform duration-200 p-2 hidden md:block">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="text-primary dark:text-on-primary scale-102 transition-transform duration-200 p-2">
+<span class="material-symbols-outlined">shopping_bag</span>
+</button>
+<button class="text-primary dark:text-on-primary scale-102 transition-transform duration-200 p-2 hidden md:block">
+<span class="material-symbols-outlined">person</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Layout Container -->
+<div class="flex-1 max-w-container-max mx-auto w-full px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row pt-[120px] pb-xl gap-gutter">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col py-lg space-y-md bg-surface-alt dark:bg-surface-container h-full w-80 rounded-lg shrink-0">
+<!-- Header Profile -->
+<div class="px-lg flex flex-col items-center text-center mb-md">
+<div class="w-24 h-24 rounded-full overflow-hidden mb-sm border-2 border-surface">
+<img class="w-full h-full object-cover" data-alt="A clean, professional headshot photograph of a youthful Asian individual, serving as a user profile avatar. The subject has a warm, confident expression, set against a pristine, well-lit white studio background. The lighting is soft and flattering, creating a high-key, modern light-mode aesthetic that aligns with a premium fashion brand's clean UI design. Deep blacks and off-whites dominate the color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKt_k7kQiZ2E4XmUUv6Olo1UPZRgRZvUAEu0UX2fv1_fQjxKGu6N8_n5my0g9WRHWp9pV35C7NsOLE6MR-eyyYhPIqI2eARB98ABwIlY7zv4llDE40fOaYpPstBMxRZqT-99IrjwqpLIhuhiGGX7LeLiXzA9zVzcoc5-xcTYGCDwPCo7Tv51LskNM_UdHgp-UpRKXny1TtnGm2afK_4FvY061cOKcgr2U4jhmZD32KJHhjjo3h_NkMpNU5vvnsL_BtVE6mKznIjw"/>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary">Xin chào, Khách hàng</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Thành viên thân thiết</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col w-full font-body-md text-body-md">
+<a class="text-on-surface-variant pl-4 py-sm flex items-center gap-sm hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">account_circle</span>
+                    Thông tin tài khoản
+                </a>
+<a class="text-on-surface-variant pl-4 py-sm flex items-center gap-sm hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">package_2</span>
+                    Đơn hàng của tôi
+                </a>
+<a class="text-primary font-bold border-l-4 border-primary pl-4 py-sm flex items-center gap-sm hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all bg-surface-container-high/50" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">location_on</span>
+                    Sổ địa chỉ
+                </a>
+<a class="text-on-surface-variant pl-4 py-sm flex items-center gap-sm hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">favorite</span>
+                    Sản phẩm yêu thích
+                </a>
+<a class="text-on-surface-variant pl-4 py-sm flex items-center gap-sm hover:bg-surface-container-high dark:hover:bg-surface-container-highest transition-all group mt-md border-t border-border-subtle pt-md" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">logout</span>
+                    Đăng xuất
+                </a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between border-b border-border-subtle pb-sm mb-lg gap-sm">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-primary-container tracking-tight">Sổ địa chỉ</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Quản lý địa chỉ giao hàng của bạn.</p>
+</div>
+<button class="bg-primary-container text-on-primary font-label-caps text-label-caps px-md py-[10px] rounded flex items-center justify-center gap-xs hover:scale-[1.02] hover:bg-primary transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    Thêm địa chỉ mới
+                </button>
+</div>
+<!-- Address Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-md">
+<!-- Card 1: Default -->
+<div class="bg-surface-alt p-md rounded-lg flex flex-col relative group border border-transparent hover:border-border-subtle transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<h3 class="font-headline-md text-headline-md text-primary-container">Nguyễn Văn A</h3>
+<span class="bg-primary-container text-on-primary font-label-caps text-[10px] uppercase tracking-wider px-2 py-1 rounded-sm leading-none">Mặc định</span>
+</div>
+</div>
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[16px]">call</span>
+                        090 123 4567
+                    </div>
+<div class="flex items-start gap-2 font-body-md text-body-md text-primary-container mb-md leading-relaxed">
+<span class="material-symbols-outlined text-[16px] mt-1 shrink-0 text-on-surface-variant">home_pin</span>
+                        Số 123, Đường ABC, Phường XYZ, Quận 1, TP. Hồ Chí Minh
+                    </div>
+<div class="mt-auto pt-sm border-t border-border-subtle flex gap-md justify-end">
+<button class="font-label-caps text-label-caps text-primary-container hover:text-primary uppercase tracking-widest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+                            Chỉnh sửa
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-alt p-md rounded-lg flex flex-col relative group border border-transparent hover:border-border-subtle transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<h3 class="font-headline-md text-headline-md text-primary-container">Nguyễn Văn B</h3>
+</div>
+</div>
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[16px]">call</span>
+                        098 765 4321
+                    </div>
+<div class="flex items-start gap-2 font-body-md text-body-md text-primary-container mb-md leading-relaxed">
+<span class="material-symbols-outlined text-[16px] mt-1 shrink-0 text-on-surface-variant">home_pin</span>
+                        Tòa nhà Landmark 81, Phường 22, Quận Bình Thạnh, TP. Hồ Chí Minh
+                    </div>
+<div class="mt-auto pt-sm border-t border-border-subtle flex gap-md justify-end">
+<button class="font-label-caps text-label-caps text-primary-container hover:text-primary uppercase tracking-widest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+                            Chỉnh sửa
+                        </button>
+<button class="font-label-caps text-label-caps text-on-tertiary-container hover:text-error uppercase tracking-widest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+                            Xóa
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-alt p-md rounded-lg flex flex-col relative group border border-transparent hover:border-border-subtle transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-sm">
+<h3 class="font-headline-md text-headline-md text-primary-container">Công Ty XYZ</h3>
+</div>
+</div>
+<div class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant mb-xs">
+<span class="material-symbols-outlined text-[16px]">call</span>
+                        028 3812 3456
+                    </div>
+<div class="flex items-start gap-2 font-body-md text-body-md text-primary-container mb-md leading-relaxed">
+<span class="material-symbols-outlined text-[16px] mt-1 shrink-0 text-on-surface-variant">business</span>
+                        Tầng 15, Tòa nhà Văn Phòng 1, Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh
+                    </div>
+<div class="mt-auto pt-sm border-t border-border-subtle flex gap-md justify-end">
+<button class="font-label-caps text-label-caps text-primary-container hover:text-primary uppercase tracking-widest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+                            Chỉnh sửa
+                        </button>
+<button class="font-label-caps text-label-caps text-on-tertiary-container hover:text-error uppercase tracking-widest transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+                            Xóa
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-primary dark:bg-primary-container w-full mt-auto">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-xl max-w-container-max mx-auto text-on-primary dark:text-on-primary-container font-body-sm text-body-sm">
+<!-- Brand -->
+<div class="col-span-1 md:col-span-2">
+<a class="font-headline-lg text-headline-lg text-on-primary tracking-tighter block mb-sm" href="#">
+                    CLOTHY
+                </a>
+<p class="text-on-primary-container opacity-80 max-w-sm">
+                    © 2024 CLOTHY. All rights reserved. Designed for Vietnamese Fashion.
+                </p>
+</div>
+<!-- Links Group 1 -->
+<div class="flex flex-col gap-sm">
+<a class="text-on-primary-container opacity-80 hover:opacity-100 transition-opacity" href="#">Về chúng tôi</a>
+<a class="text-on-primary-container opacity-80 hover:opacity-100 transition-opacity" href="#">Hệ thống cửa hàng</a>
+<a class="text-on-primary-container opacity-80 hover:opacity-100 transition-opacity" href="#">Hỗ trợ khách hàng</a>
+</div>
+<!-- Links Group 2 -->
+<div class="flex flex-col gap-sm">
+<a class="text-on-primary-container opacity-80 hover:opacity-100 transition-opacity" href="#">Chính sách đổi trả</a>
+<a class="text-on-primary-container opacity-80 hover:opacity-100 transition-opacity" href="#">Chính sách bảo mật</a>
+</div>
+</div>
+</footer>
+</body></html>
