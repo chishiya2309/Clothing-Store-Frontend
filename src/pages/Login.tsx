@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { loginSchema } from '../utils/auth-schemas';
 import type { LoginFormData } from '../utils/auth-schemas';
@@ -9,6 +9,8 @@ import { useAuthStore } from '../store/authStore';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sessionExpired = searchParams.get('session') === 'expired';
   const { setAuth } = useAuthStore();
   const {
     register,
@@ -53,6 +55,16 @@ export default function Login() {
           <h1 className="font-headline-xl text-headline-xl text-primary mb-2">Đăng nhập</h1>
           <p className="font-body-md text-body-md text-on-surface-variant">Chào mừng bạn quay lại với CLOTHY</p>
         </div>
+
+        {/* Session expired banner */}
+        {sessionExpired && (
+          <div className="mb-6 p-4 bg-warning/10 border border-warning rounded-lg flex items-center gap-3">
+            <span className="material-symbols-outlined text-warning text-xl">schedule</span>
+            <p className="font-body-md text-body-md text-primary">
+              Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.
+            </p>
+          </div>
+        )}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

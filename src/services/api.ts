@@ -21,6 +21,15 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = []
 }
 
+/**
+ * Xử lý khi phiên hoàn toàn hết hạn (refresh token cũng thất bại).
+ * Logout → redirect đến /login kèm query param để hiển thị thông báo.
+ */
+const handleSessionExpired = () => {
+  useAuthStore.getState().logout()
+  window.location.href = '/login?session=expired'
+}
+
 // Gắn JWT token vào mọi request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
@@ -28,21 +37,20 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Xử lý 401 → refresh token hoặc redirect login
+// Xử lý 401 → refresh token tự động hoặc redirect login
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      // Nếu request đến /auth/refresh hoặc /auth/login đã thất bại → phiên hết hạn hoàn toàn
       if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/login')) {
-        // Đã lỗi ở khâu lấy lại token hoặc login, yêu cầu đăng nhập lại hoàn toàn
-        useAuthStore.getState().logout()
-        alert('Phiên đã hết hạn vui lòng đăng nhập lại')
-        window.location.href = '/login'
+        handleSessionExpired()
         return Promise.reject(error)
       }
 
+      // Nếu đang refresh, xếp hàng chờ
       if (isRefreshing) {
         return new Promise(function (resolve, reject) {
           failedQueue.push({ resolve, reject })
@@ -61,8 +69,7 @@ api.interceptors.response.use(
 
       const refreshToken = localStorage.getItem('refreshToken')
       if (!refreshToken) {
-        useAuthStore.getState().logout()
-        window.location.href = '/login'
+        handleSessionExpired()
         return Promise.reject(error)
       }
 
@@ -81,9 +88,7 @@ api.interceptors.response.use(
         return api(originalRequest)
       } catch (err) {
         processQueue(err, null)
-        useAuthStore.getState().logout()
-        alert('Phiên đã hết hạn vui lòng đăng nhập lại')
-        window.location.href = '/login'
+        handleSessionExpired()
         return Promise.reject(err)
       } finally {
         isRefreshing = false

@@ -12,6 +12,7 @@ import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
+import Addresses from '../pages/Addresses'
 import ProtectedRoute from './ProtectedRoute'
 
 const router = createBrowserRouter([
@@ -34,7 +35,8 @@ const router = createBrowserRouter([
             element: <AccountLayout />,
             children: [
               { path: 'profile', element: <Profile /> },
-              // Thêm các trang quản lý tài khoản khác (orders, addresses, ...) ở đây
+              { path: 'addresses', element: <Addresses /> },
+              // Thêm các trang quản lý tài khoản khác (orders, ...) ở đây
             ]
           }
         ]
