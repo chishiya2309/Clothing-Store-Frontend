@@ -10,6 +10,7 @@ import ResetPassword from '../pages/ResetPassword'
 import NotFound from '../pages/NotFound'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
+import UserManagement from '../pages/admin/UserManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
@@ -51,7 +52,8 @@ const router = createBrowserRouter([
         path: '',
         element: <AdminLayout />,
         children: [
-          { index: true, element: <AdminDashboard /> }
+          { index: true, element: <AdminDashboard /> },
+          { path: 'users', element: <UserManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }
