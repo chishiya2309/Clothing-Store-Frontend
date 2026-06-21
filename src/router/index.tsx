@@ -17,6 +17,7 @@ import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
 import Membership from '../pages/Membership'
 import ProtectedRoute from './ProtectedRoute'
+import CategoryProducts from '../pages/CategoryProducts'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'category/:slug', element: <CategoryProducts /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'verify-email', element: <VerifyEmail /> },
