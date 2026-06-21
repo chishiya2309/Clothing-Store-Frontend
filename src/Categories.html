@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CLOTHY - Tất cả sản phẩm Nam</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#241a07",
+                      "on-primary-fixed-variant": "#45455b",
+                      "on-secondary-container": "#6f6149",
+                      "on-secondary-fixed-variant": "#51452f",
+                      "inverse-primary": "#c6c4df",
+                      "secondary": "#6a5d45",
+                      "primary-fixed": "#e2e0fc",
+                      "on-tertiary": "#ffffff",
+                      "surface-alt": "#F0EDE8",
+                      "primary": "#00000b",
+                      "on-surface-variant": "#47464c",
+                      "on-background": "#1a1c1b",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed-variant": "#930015",
+                      "secondary-fixed-dim": "#d6c4a7",
+                      "tertiary-fixed": "#ffdad7",
+                      "surface-dim": "#dadad8",
+                      "background": "#f9f9f7",
+                      "on-error": "#ffffff",
+                      "outline": "#78767d",
+                      "text-primary": "#2D2D2D",
+                      "on-primary-container": "#83829b",
+                      "primary-fixed-dim": "#c6c4df",
+                      "inverse-surface": "#2f3130",
+                      "surface-container-high": "#e8e8e6",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f1f1ef",
+                      "on-surface": "#1a1c1b",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#e2e3e1",
+                      "secondary-container": "#f0ddbf",
+                      "on-tertiary-container": "#ed4848",
+                      "warning": "#E8A317",
+                      "success": "#2D8F4E",
+                      "outline-variant": "#c8c5cd",
+                      "surface-tint": "#5d5c74",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#1a1a2e",
+                      "border-subtle": "#E5E5E0",
+                      "tertiary": "#050000",
+                      "surface-container-highest": "#e2e3e1",
+                      "on-primary-fixed": "#1a1a2e",
+                      "surface-bright": "#f9f9f7",
+                      "surface": "#f9f9f7",
+                      "surface-container-low": "#f4f4f2",
+                      "tertiary-container": "#420004",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed": "#410004",
+                      "rating-gold": "#F5A623",
+                      "text-muted": "#8C8C8C",
+                      "tertiary-fixed-dim": "#ffb3ae",
+                      "surface-container": "#eeeeec",
+                      "secondary-fixed": "#f3e0c2",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "margin-mobile": "24px",
+                      "container-max": "1280px",
+                      "md": "24px",
+                      "xs": "4px",
+                      "gutter": "24px",
+                      "lg": "48px",
+                      "base": "8px",
+                      "margin-desktop": "80px",
+                      "xl": "80px"
+              },
+              "fontFamily": {
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "price-display": [
+                              "Space Mono"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Outfit"
+                      ],
+                      "display-hero": [
+                              "Outfit"
+                      ],
+                      "headline-xl": [
+                              "Outfit"
+                      ],
+                      "headline-md": [
+                              "Outfit"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Outfit"
+                      ],
+                      "label-caps": [
+                              "Outfit"
+                      ]
+              },
+              "fontSize": {
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "price-display": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "38px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-hero": [
+                              "56px",
+                              {
+                                      "lineHeight": "60px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-xl": [
+                              "40px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #FAFAF8; color: #1A1A2E; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom Checkbox */
+        .custom-checkbox {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 1px solid #78767d;
+            border-radius: 0.125rem;
+            display: grid;
+            place-content: center;
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--form-control-color);
+            background-color: #1a1a2e;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+        .custom-checkbox:checked {
+            border-color: #1a1a2e;
+        }
+
+        /* Custom Color Swatch */
+        .color-swatch {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 1px solid #E5E5E0;
+            position: relative;
+        }
+        .color-swatch.active::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border: 1px solid #1a1a2e;
+            border-radius: 50%;
+        }
+        
+        /* Custom Size Selector */
+        .size-box {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #E5E5E0;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #1a1c1b;
+            transition: all 0.2s ease;
+        }
+        .size-box:hover {
+            border-color: #1a1a2e;
+        }
+        .size-box.active {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            border-color: #1a1a2e;
+        }
+        .size-box.disabled {
+            color: #78767d;
+            background: linear-gradient(to top right, transparent calc(50% - 1px), #c8c5cd calc(50%), transparent calc(50% + 1px));
+            cursor: not-allowed;
+            border-color: #E5E5E0;
+        }
+        .size-box.disabled:hover {
+            border-color: #E5E5E0;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+<!-- TopNavBar -->
+<header class="bg-surface docked full-width top-0 sticky border-b border-border-subtle z-50">
+<div class="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto">
+<div class="flex items-center space-x-lg">
+<a class="font-display-hero text-headline-md tracking-tighter text-primary" href="#">CLOTHY</a>
+<nav class="hidden md:flex space-x-gutter">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-caps text-label-caps opacity-80 scale-95 transition-all" href="#">NAM</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps" href="#">NỮ</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps" href="#">TRẺ EM</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps" href="#">BỘ SƯU TẬP</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 font-label-caps text-label-caps" href="#">SALE</a>
+</nav>
+</div>
+<div class="flex items-center space-x-md text-primary">
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">search</span></button>
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">person</span></button>
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">favorite</span></button>
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined">shopping_cart</span></button>
+</div>
+</div>
+</header>
+<main class="max-w-container-max mx-auto px-margin-desktop py-lg">
+<!-- Breadcrumb -->
+<nav aria-label="Breadcrumb" class="flex text-on-surface-variant mb-gutter font-body-sm text-body-sm">
+<ol class="inline-flex items-center space-x-1 md:space-x-2">
+<li class="inline-flex items-center">
+<a class="inline-flex items-center hover:text-primary transition-colors" href="#">
+                        Trang chủ
+                    </a>
+</li>
+<li>
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<a class="hover:text-primary transition-colors ml-1 md:ml-2" href="#">Nam</a>
+</div>
+</li>
+<li aria-current="page">
+<div class="flex items-center">
+<span class="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+<span class="text-primary font-medium ml-1 md:ml-2">Tất cả sản phẩm</span>
+</div>
+</li>
+</ol>
+</nav>
+<!-- Page Header & Sort -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-lg">
+<h1 class="font-headline-xl text-headline-xl text-primary mb-sm md:mb-0">Tất cả sản phẩm</h1>
+<div class="relative group">
+<button class="flex items-center justify-between w-48 px-sm py-2 border border-border-subtle rounded text-on-surface bg-surface font-body-sm text-body-sm hover:border-primary transition-colors">
+<span>Sắp xếp: Mới nhất</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<!-- Sort Dropdown (hidden by default, shown on hover for simplicity in static HTML) -->
+<div class="absolute right-0 top-full mt-1 w-48 bg-surface border border-border-subtle shadow-sm hidden group-hover:block z-10 rounded">
+<ul class="py-1 font-body-sm text-body-sm text-on-surface">
+<li><a class="block px-sm py-2 hover:bg-surface-alt bg-surface-alt font-medium" href="#">Mới nhất</a></li>
+<li><a class="block px-sm py-2 hover:bg-surface-alt" href="#">Giá tăng dần</a></li>
+<li><a class="block px-sm py-2 hover:bg-surface-alt" href="#">Giá giảm dần</a></li>
+<li><a class="block px-sm py-2 hover:bg-surface-alt" href="#">Bán chạy</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-xl">
+<!-- Sidebar Filter -->
+<aside class="w-full md:w-[250px] shrink-0">
+<!-- Category Filter -->
+<div class="mb-lg border-b border-border-subtle pb-md">
+<h3 class="font-headline-md text-headline-md text-primary mb-md flex justify-between items-center cursor-pointer">
+                        Danh mục
+                        <span class="material-symbols-outlined">expand_less</span>
+</h3>
+<ul class="space-y-sm font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-center">
+<input checked="" class="custom-checkbox mr-sm" id="cat-ao" type="checkbox"/>
+<label class="cursor-pointer text-primary font-medium" for="cat-ao">Áo (142)</label>
+</li>
+<li class="flex items-center">
+<input class="custom-checkbox mr-sm" id="cat-quan" type="checkbox"/>
+<label class="cursor-pointer hover:text-primary transition-colors" for="cat-quan">Quần (85)</label>
+</li>
+<li class="flex items-center">
+<input class="custom-checkbox mr-sm" id="cat-phukien" type="checkbox"/>
+<label class="cursor-pointer hover:text-primary transition-colors" for="cat-phukien">Phụ kiện (34)</label>
+</li>
+</ul>
+</div>
+<!-- Size Filter -->
+<div class="mb-lg border-b border-border-subtle pb-md">
+<h3 class="font-headline-md text-headline-md text-primary mb-md flex justify-between items-center cursor-pointer">
+                        Kích cỡ
+                        <span class="material-symbols-outlined">expand_less</span>
+</h3>
+<div class="flex flex-wrap gap-sm">
+<div class="size-box">S</div>
+<div class="size-box active">M</div>
+<div class="size-box">L</div>
+<div class="size-box">XL</div>
+<div class="size-box disabled">2XL</div>
+</div>
+</div>
+<!-- Color Filter -->
+<div class="mb-lg border-b border-border-subtle pb-md">
+<h3 class="font-headline-md text-headline-md text-primary mb-md flex justify-between items-center cursor-pointer">
+                        Màu sắc
+                        <span class="material-symbols-outlined">expand_less</span>
+</h3>
+<div class="flex flex-wrap gap-sm">
+<div class="color-swatch active bg-[#1A1A2E]" title="Navy"></div>
+<div class="color-swatch bg-[#FFFFFF]" title="White"></div>
+<div class="color-swatch bg-[#2D2D2D]" title="Black"></div>
+<div class="color-swatch bg-[#6A5D45]" title="Olive"></div>
+<div class="color-swatch bg-[#E8A317]" title="Mustard"></div>
+<div class="color-swatch bg-[#BA1A1A]" title="Red"></div>
+</div>
+</div>
+<!-- Price Filter -->
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-primary mb-md flex justify-between items-center cursor-pointer">
+                        Khoảng giá
+                        <span class="material-symbols-outlined">expand_less</span>
+</h3>
+<div class="space-y-sm font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-center">
+<input class="custom-checkbox mr-sm" id="price-1" type="checkbox"/>
+<label class="cursor-pointer hover:text-primary transition-colors" for="price-1">Dưới 500.000đ</label>
+</li>
+<li class="flex items-center">
+<input checked="" class="custom-checkbox mr-sm" id="price-2" type="checkbox"/>
+<label class="cursor-pointer text-primary font-medium" for="price-2">500.000đ - 1.000.000đ</label>
+</li>
+<li class="flex items-center">
+<input class="custom-checkbox mr-sm" id="price-3" type="checkbox"/>
+<label class="cursor-pointer hover:text-primary transition-colors" for="price-3">1.000.000đ - 2.000.000đ</label>
+</li>
+<li class="flex items-center">
+<input class="custom-checkbox mr-sm" id="price-4" type="checkbox"/>
+<label class="cursor-pointer hover:text-primary transition-colors" for="price-4">Trên 2.000.000đ</label>
+</li>
+</div>
+</div>
+</aside>
+<!-- Main Product Grid -->
+<div class="flex-1">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-gutter gap-y-lg">
+<!-- Product Card 1 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's casual shirt" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A sophisticated men's casual button-down shirt displayed in a modern, light-mode minimalist setting. The shirt is a crisp navy blue, contrasting beautifully against a pristine white background. Subtle soft lighting highlights the fabric's texture and cut, embodying a clean, confident, and trustworthy aesthetic. The overall mood is premium and youthful, perfectly suited for an editorial fashion lookbook." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJaEDbtiUK_DBwwQz3GadW2md38Oaddjnlp8k0U6cbkVvXePNxIauDt_zWhUyExeJ_ksUfA1c0QsPZ6ux92CkiSYSg3sjT48llRnNu-xAwheRlEdHQ8hIKoyiyLxz8Bo4RHxVtEW_auHD7P7KEQ5RL3KYow-YrGPjqrzBenvxOsTLXWib_hfO58NIK9em7BGSl3KNsMv0C3lpFSaxkn73BpxtVKeIACeHUi3cFUjANXHP0ui5t6ig3mETLVNKP17rFr7z96if4rQ"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Sơ Mi Oxford Dài Tay</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">850.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#1A1A2E] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#FFFFFF] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#83829b] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 2 (Sale) -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's t-shirt" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A stylish men's crewneck t-shirt presented in a bright, modern lookbook style. The t-shirt is a soft olive green, captured under high-key lighting that emphasizes its premium cotton texture against an off-white background. The composition is clean and structured, adhering to a minimalist aesthetic that conveys trustworthiness and accessible luxury. Subtle shadows create a sense of depth without clutter." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPi8INdA-ZW-SrLuWRVhMfl06K9JI5Bs4LjXkz78dx29UDMdySfccvy7YK3S1clZSAuurdQ5nOnXI0odKoke_yB9vh_z-vwP0fHR29mFOyf6EmtgDl1uPhBp5cYZ_xOIObDNA0LGyHTO4kDvgl0zzZUip_IVdsdUayNSaxls9r2UoPEqFOBUnqCd6tMig3VrdyKuey8tUL3I2IowXOJ0BNOpGsnRML_DT4mpTU3Bqoq7mGd3r1cKjT68g4hNALqH4ruk57_yXrmQ"/>
+<div class="absolute top-sm left-sm bg-[#C1272D] text-white font-label-caps text-[10px] tracking-wider px-2 py-1 rounded-sm z-10">
+                                SALE -20%
+                            </div>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Thun Basic Cổ Tròn</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-[#C1272D]">360.000₫</span>
+<span class="text-text-muted text-[14px] line-through">450.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#6A5D45] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#2D2D2D] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's sweatshirt" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A premium men's sweatshirt showcased in a minimal, airy editorial environment. The garment is a muted beige, elegantly styled against a light background that enhances its soft, comfortable appearance. The lighting is diffused and bright, creating a calm, trustworthy mood consistent with a high-end fashion brand. The overall visual language is clean, relying on generous white space and structured composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByg2tEy4ChWzEEJhAgxK7THwJ7bSdJYFl23QEijbAtKwukjEelnVCbBKk4hYXCYHFkzipzqXXeKmXs961P__NyQzrptJ2NRVobp57owbO-MPJTpLjub3feGnN4uLtxYRUgaXe9tq8p9ozCJx0teof0HmXq1lTVofPjmbJlwz60Fm4GzrJvdqveXPcEgEI_hk6NPyxd7kFgpcebrWnjv5l0AWjJdgABqjGRLZElUG2T2O7Y5BAZNHJZsM615oiuzpRi41FDI63x8g"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Nỉ Sweater Cổ Tròn</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">650.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#e2e3e1] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's hoodie" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A modern men's hoodie displayed with striking simplicity in a bright, light-mode setting. The hoodie is a deep charcoal grey, providing a strong contrast against the pristine white background. High-key lighting emphasizes the garment's quality and contemporary cut, reflecting a confident and youthful aesthetic. The image is framed to act as a silent, elegant canvas typical of high-fashion editorial clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfgjp-Y81qBryzunco5gn46JOLOBSXKlUWqScjZco10OyQNUmOFjZ1AUNPvlbUO_yRw68aaLoS0Sg3gpcKBzn1wCRphQVL49sxFEKggPoKZtBcNn1dQGyE9PoYPycmkJIIQ1J0q6DR2rZGC_5aeJBqy2ex874gjI2h1YNZF-eprvHas-R6glqmOFKJ7IuekjgtJ7DSpWju4Y6uN92xI_8uJOnjPh24Xg7NnQRqzyNlXcoClQaVGb3SiG7ppGWViSPAZZBfBogpWQ"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1; color: #ed4848;">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Hoodie Dáng Rộng</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">790.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#47464c] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#1a1c1b] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 5 (Sale) -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's polo" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A classic men's polo shirt presented in a refined, minimalist light-mode environment. The polo is a rich burgundy color, softly lit to highlight its pique cotton texture against an off-white backdrop. The composition is editorial and clean, conveying a sense of premium accessibility and modern sophistication. The overall aesthetic is confident, relying on subtle tonal layering rather than heavy shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDp_ysc05k7agQHcHnPsOtmpjn9w-hY7oe21OSsFefnPz-uP0_lbrJnBKnQLdtHW_06nAONBeu2gX-dqi1o9kXuvvihs3oiFGKN37OSJ19L5hq24fTAXnSWlvxAAxIQfMo3CUVoViDPlQ0Joj51R1A2z5xp6ega9U6cjw52uBnN3xgiGFueQPiB0ZS8mFr1vZ0c47X--KJKEUiVes-6DkQgL7NV_SZRdRqafDRALNdtjcMcd3yQcQYYcu3IK-B4QI7Efd09OaL-kQ"/>
+<div class="absolute top-sm left-sm bg-[#C1272D] text-white font-label-caps text-[10px] tracking-wider px-2 py-1 rounded-sm z-10">
+                                SALE -15%
+                            </div>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Polo Pique Cotton</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-[#C1272D]">501.500₫</span>
+<span class="text-text-muted text-[14px] line-through">590.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#93000a] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#1A1A2E] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 6 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's shorts" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A pair of stylish men's casual shorts displayed in a crisp, minimalist lookbook setting. The shorts are a light khaki shade, sharply defined against a pristine white background under bright, even lighting. The visual style is youthful and sophisticated, using generous white space to emphasize the garment's quality and cut. The image conveys a trustworthy, modern fashion authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkgrhES8dg5NTgzOuSJMRAO-4rkHUz9VinIRRN1CF-g6LSOKZ_uz9fMWsUYUg4fFzes4bHvB7YLeUmBpGicr09hodUeY4XA-tZK8SEBS2V3hip-906Ez7xz9KEH8_hmGCUNkQmW48b0-zojFfOW1tJrQkLe9RsxcaAogBjli9AXlo5U8hLqYkF6Bei-DC0x9b7P0-S5yAApp0P4uolcn8pbzOs3YnX4HcVdGOE-Yph0vX8hQl-SYkOq9FMz8p9bVEEEriwyyUaLw"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Quần Short Kaki Túi Hộp</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">450.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#d6c4a7] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#6a5d45] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 7 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's jacket" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A contemporary men's lightweight jacket captured in a sleek, modern light-mode setting. The jacket is a deep forest green, providing a bold accent against the off-white editorial background. The lighting is soft yet deliberate, highlighting the sleek lines and utilitarian precision of the garment. The overall mood is clean, confident, and premium, avoiding any cluttered density." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAlUgFlcl19obHV8DihAIgfeaqjj6t8tGOXVaIDEs7okNx3mXz7g60CJ3m9FUXF3C9HynbdYm7PH0Czp3uOzvBrY9nIbExeK3Dn-EOPRw3elZVuHW2zp7Jon7Ri8b_aD6yQoljhwvOFGPaoZmicFZPKxkjF-p1i4JteaP9bOeRAABGpJ1CHn5_OliQ4LW-NQpkF95zrYMwRTwb3D0sEIFVlEeW6nVVWpbilOfxCMmiZJJqqDuqub6884s478Se3bekUDwVPkjSe6A"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Áo Khoác Gió Chống Nước</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">1.250.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#2D8F4E] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#2D2D2D] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+<!-- Product Card 8 -->
+<div class="group relative flex flex-col cursor-pointer">
+<div class="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
+<img alt="Men's jeans" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" data-alt="A premium pair of men's denim jeans displayed against a minimalist, bright light-mode background. The jeans are a classic raw indigo blue, photographed with high-key lighting that emphasizes the quality of the fabric and the clean, structured cut. The visual approach is editorial and sophisticated, ensuring the denim acts as a bold accent within a serene, trustworthy space." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_t5k1bq7hVbXWuvnuK4A59eOSm0HzlLhmEg9NWSpdQiLa3RPYwESCWdYkRSTKiR0goBDlLC32En6iJMvndBcKl2x6ygrU85o0lXXdhmcon5mMeRfd7ZP4FaMdNociSZ2EbaQwBjs-WqRe1OGHmf1Ge1JjtaJ49xZRs4GWVDgHvjAlpl6IkQW8rLCbKMKsp9Z-wr0lp8meTCKm4MEcMWUQ5P6jyE1y90qqbCYiYjmBV9ZI6tDtJtjyZ2adPKCT2fXgWZlHPfpK1w"/>
+<button class="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+<!-- Hover Quick Add overlay -->
+<div class="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
+<button class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">QUICK ADD</button>
+</div>
+</div>
+<div class="flex flex-col space-y-1">
+<h3 class="font-body-md text-body-md text-primary">Quần Jeans Dáng Straight</h3>
+<div class="flex items-center space-x-2 font-price-display text-price-display">
+<span class="text-primary">890.000₫</span>
+</div>
+<div class="flex space-x-1 pt-1">
+<div class="w-3 h-3 rounded-full bg-[#1A1A2E] border border-border-subtle"></div>
+<div class="w-3 h-3 rounded-full bg-[#c6c4df] border border-border-subtle"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center space-x-sm mt-xl pt-lg border-t border-border-subtle">
+<button class="w-10 h-10 flex items-center justify-center rounded border border-border-subtle text-on-surface-variant hover:border-primary hover:text-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<div class="flex space-x-2 font-body-md text-body-md">
+<button class="w-10 h-10 flex items-center justify-center rounded bg-primary text-white font-medium">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-transparent hover:bg-surface-alt transition-colors">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-transparent hover:bg-surface-alt transition-colors">3</button>
+<span class="w-10 h-10 flex items-center justify-center text-on-surface-variant">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-transparent hover:bg-surface-alt transition-colors">10</button>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded border border-border-subtle text-on-surface-variant hover:border-primary hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-primary-container full-width bg-primary-container text-on-primary-container grid grid-cols-4 gap-gutter px-margin-desktop py-xl w-full">
+<div class="col-span-4 md:col-span-1 flex flex-col items-start space-y-md">
+<span class="font-display-hero text-headline-lg text-on-primary">CLOTHY</span>
+<p class="font-body-sm text-body-sm text-on-primary-container">© 2024 CLOTHY. All rights reserved.</p>
+</div>
+<div class="col-span-4 md:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-gutter font-body-sm text-body-sm">
+<div class="flex flex-col space-y-sm">
+<a class="text-on-primary-container hover:text-on-primary transition-colors font-bold text-on-primary" href="#">Về chúng tôi</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Câu chuyện thương hiệu</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Tuyển dụng</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Tin tức</a>
+</div>
+<div class="flex flex-col space-y-sm">
+<a class="text-on-primary-container hover:text-on-primary transition-colors font-bold text-on-primary" href="#">Hỗ trợ</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">FAQ</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Hướng dẫn chọn size</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Kiểm tra đơn hàng</a>
+</div>
+<div class="flex flex-col space-y-sm">
+<a class="text-on-primary-container hover:text-on-primary transition-colors font-bold text-on-primary" href="#">Chính sách</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Chính sách đổi trả</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Bảo mật thông tin</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Điều khoản dịch vụ</a>
+</div>
+<div class="flex flex-col space-y-sm">
+<a class="text-on-primary-container hover:text-on-primary transition-colors font-bold text-on-primary" href="#">Mạng xã hội</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Instagram</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">Facebook</a>
+<a class="text-on-primary-container hover:text-on-primary transition-colors" href="#">TikTok</a>
+</div>
+</div>
+</footer>
+</body></html>
