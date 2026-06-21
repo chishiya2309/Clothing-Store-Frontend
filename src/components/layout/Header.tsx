@@ -1,12 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useCategoryStore } from '../../store/categoryStore';
+import SearchModal from '../SearchModal';
 
 export default function Header() {
   const { token, logout } = useAuthStore();
   const { categories, fetchCategories } = useCategoryStore();
   const navigate = useNavigate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -18,6 +20,7 @@ export default function Header() {
   };
 
   return (
+    <>
     <header className="bg-surface dark:bg-on-background font-label-caps text-label-caps text-primary dark:text-on-primary docked full-width top-0 sticky border-b border-border-subtle dark:border-outline-variant flat no shadows z-50">
       <div className="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto md:flex hidden relative">
         {/* Navigation Links */}
@@ -59,7 +62,10 @@ export default function Header() {
         </Link>
         {/* Trailing Icons */}
         <div className="flex items-center gap-4">
-          <button className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all">
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all"
+          >
             <span className="material-symbols-outlined" data-icon="search">search</span>
           </button>
           
@@ -119,5 +125,9 @@ export default function Header() {
         </button>
       </div>
     </header>
+      
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
 }
