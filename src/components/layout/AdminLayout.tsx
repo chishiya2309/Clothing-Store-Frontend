@@ -44,6 +44,10 @@ export default function AdminLayout() {
             <span className="material-symbols-outlined">local_offer</span>
             <span className="font-label-caps text-label-caps">Mã giảm giá</span>
           </Link>
+          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/banners">
+            <span className="material-symbols-outlined">view_carousel</span>
+            <span className="font-label-caps text-label-caps">Quản lý banner</span>
+          </Link>
           <div className="mt-auto pt-lg">
             <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/settings">
               <span className="material-symbols-outlined">settings</span>

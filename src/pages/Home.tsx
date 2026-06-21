@@ -1,37 +1,113 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { bannerService, type BannerResponse } from '@/services/banner.service';
 
 export default function Home() {
+  const [banners, setBanners] = useState<BannerResponse[]>([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const data = await bannerService.getActiveBanners();
+        setBanners(data);
+      } catch (error) {
+        console.error('Failed to fetch banners', error);
+      }
+    };
+    fetchBanners();
+  }, []);
+
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
+  const handleBannerClick = (url: string | null) => {
+    if (!url) return;
+    if (url.startsWith('http')) {
+      window.open(url, '_blank');
+    } else {
+      navigate(url);
+    }
+  };
+
   return (
     <>
-      {/* Hero Section */}
-      <section className="h-[819px] w-full relative flex items-center justify-center max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg overflow-hidden">
-        <div className="absolute inset-0 z-0 hidden md:block">
-          <img alt="Fashion Lifestyle" className="w-full h-full object-cover object-right opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5eyuvbKPl3iPD6MNXz1bsAk33lSzohI_u8pRgWyGX-U4stWMb9ivgvNwtqVtOw0sbXRR32GnC-B0EaRl0VURxQZxkj-cKGVebDdFLhL4nqI5rcvzjoiiAAFn4RihXxXvFMbs8--jINLzN4IQlDvdbkxIOQcvDG45rvrdgQeAgRJybWnNTUnly2Kmlw0mNDNtdbEy6vzGGPqFlBmBt-jM-5lG8glrYkEzmWKkO0SAy6yGKb00gvI9VF27VNHkGCl-5yo8BXgVtWQ" />
-          {/* Gradient overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
-        </div>
-        {/* Mobile Background (Image on top, text below) */}
-        <div className="absolute inset-0 z-0 block md:hidden">
-          <img alt="Fashion Lifestyle Mobile" className="w-full h-full object-cover object-top opacity-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOFRqN_Gu6-I8O59dvfqdFtRSmWtsMgTonpea5Z2axxT1iHJE-6Cb7J8ynngoDlWSdZq84aMzViMf5YjkZ1ixcRyRguM5H1DZjhrPCyPbi66Rg7Dtuy6X4cfxAVM5uz9hcRa1CZwv8sVfxCzApWKaN3dpwIaFw0mQJtu8ekQ_jUJPn2tH-MM62_OFm-kwcalhuKF4r8-T-U3E_sruJ5Z6zNrn--hZ7ykS10plLmeGS2MVRSQax-w-9z6PNG51DzaJLHtSrEW_N8g" />
-        </div>
-        <div className="relative z-10 w-full flex flex-col md:flex-row items-center h-full">
-          <div className="w-full md:w-1/2 flex flex-col justify-center gap-6 h-full text-center md:text-left pt-20 md:pt-0">
-            <h1 className="font-display-hero text-headline-lg-mobile md:text-display-hero text-primary">
-              Phong cách của bạn,<br /> câu chuyện của bạn
-            </h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto md:mx-0">
-              Khám phá bộ sưu tập mới nhất với thiết kế tối giản, tinh tế, mang đến sự tự tin cho mọi khoảnh khắc.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center md:justify-start">
-              <button className="bg-primary text-on-primary px-8 py-3 rounded hover:scale-[1.02] transition-transform font-label-caps text-label-caps shadow-sm">
-                Khám phá ngay
-              </button>
-              <button className="bg-transparent border-[1.5px] border-primary text-primary px-8 py-3 rounded hover:bg-surface-alt transition-colors font-label-caps text-label-caps">
-                Xem bộ sưu tập
-              </button>
-            </div>
+      {/* Hero Section / Banner Slider */}
+      <section className={`w-full relative flex items-center justify-center max-w-container-max mx-auto overflow-hidden ${banners.length > 0 ? 'aspect-[4/3] md:aspect-[21/9] lg:aspect-[3/1] mt-4 mb-8 px-margin-mobile md:px-margin-desktop' : 'h-[819px] px-margin-mobile md:px-margin-desktop py-lg'}`}>
+        {banners.length > 0 ? (
+          <div className="relative w-full h-full rounded-2xl overflow-hidden">
+            {banners.map((banner, index) => (
+              <div
+                key={banner.id}
+                className={`absolute inset-0 transition-opacity duration-1000 ${
+                  index === currentSlide ? 'opacity-100 pointer-events-auto cursor-pointer' : 'opacity-0 pointer-events-none'
+                }`}
+                onClick={() => handleBannerClick(banner.linkUrl)}
+              >
+                <img
+                  alt={banner.title}
+                  className="w-full h-full object-cover object-center"
+                  src={banner.imageUrl}
+                />
+                <div className="absolute inset-0 bg-black/10"></div>
+              </div>
+            ))}
+            
+            {/* Slider Dots */}
+            {banners.length > 1 && (
+              <div className="absolute bottom-6 left-0 right-0 z-20 flex justify-center gap-2">
+                {banners.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentSlide(index);
+                    }}
+                    className={`w-3 h-3 rounded-full transition-all ${
+                      index === currentSlide ? 'bg-primary scale-125' : 'bg-white/50 hover:bg-white/80'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
+        ) : (
+          // Fallback Default Hero
+          <>
+            <div className="absolute inset-0 z-0 hidden md:block">
+              <img alt="Fashion Lifestyle" className="w-full h-full object-cover object-right opacity-90" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5eyuvbKPl3iPD6MNXz1bsAk33lSzohI_u8pRgWyGX-U4stWMb9ivgvNwtqVtOw0sbXRR32GnC-B0EaRl0VURxQZxkj-cKGVebDdFLhL4nqI5rcvzjoiiAAFn4RihXxXvFMbs8--jINLzN4IQlDvdbkxIOQcvDG45rvrdgQeAgRJybWnNTUnly2Kmlw0mNDNtdbEy6vzGGPqFlBmBt-jM-5lG8glrYkEzmWKkO0SAy6yGKb00gvI9VF27VNHkGCl-5yo8BXgVtWQ" />
+              <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+            </div>
+            <div className="absolute inset-0 z-0 block md:hidden">
+              <img alt="Fashion Lifestyle Mobile" className="w-full h-full object-cover object-top opacity-30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOFRqN_Gu6-I8O59dvfqdFtRSmWtsMgTonpea5Z2axxT1iHJE-6Cb7J8ynngoDlWSdZq84aMzViMf5YjkZ1ixcRyRguM5H1DZjhrPCyPbi66Rg7Dtuy6X4cfxAVM5uz9hcRa1CZwv8sVfxCzApWKaN3dpwIaFw0mQJtu8ekQ_jUJPn2tH-MM62_OFm-kwcalhuKF4r8-T-U3E_sruJ5Z6zNrn--hZ7ykS10plLmeGS2MVRSQax-w-9z6PNG51DzaJLHtSrEW_N8g" />
+            </div>
+            <div className="relative z-10 w-full flex flex-col md:flex-row items-center h-full pointer-events-none">
+              <div className="w-full md:w-1/2 flex flex-col justify-center gap-6 h-full text-center md:text-left pt-20 md:pt-0 pointer-events-auto">
+                <h1 className="font-display-hero text-headline-lg-mobile md:text-display-hero text-primary">
+                  Phong cách của bạn,<br /> câu chuyện của bạn
+                </h1>
+                <p className="font-body-lg text-body-lg text-on-surface-variant max-w-md mx-auto md:mx-0">
+                  Khám phá bộ sưu tập mới nhất với thiết kế tối giản, tinh tế, mang đến sự tự tin cho mọi khoảnh khắc.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 mt-4 justify-center md:justify-start">
+                  <button className="bg-primary text-on-primary px-8 py-3 rounded hover:scale-[1.02] transition-transform font-label-caps text-label-caps shadow-sm">
+                    Khám phá ngay
+                  </button>
+                  <button className="bg-transparent border-[1.5px] border-primary text-primary px-8 py-3 rounded hover:bg-surface-alt transition-colors font-label-caps text-label-caps">
+                    Xem bộ sưu tập
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </section>
       
       {/* Trust Badges Strip */}

@@ -11,6 +11,7 @@ import NotFound from '../pages/NotFound'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import UserManagement from '../pages/admin/UserManagement'
+import BannerManagement from '../pages/admin/BannerManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
@@ -55,7 +56,8 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboard /> },
-          { path: 'users', element: <UserManagement /> }
+          { path: 'users', element: <UserManagement /> },
+          { path: 'banners', element: <BannerManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }
