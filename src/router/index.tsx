@@ -14,6 +14,7 @@ import UserManagement from '../pages/admin/UserManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
+import Membership from '../pages/Membership'
 import ProtectedRoute from './ProtectedRoute'
 
 const router = createBrowserRouter([
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
             children: [
               { path: 'profile', element: <Profile /> },
               { path: 'addresses', element: <Addresses /> },
+              { path: 'membership', element: <Membership /> },
               // Thêm các trang quản lý tài khoản khác (orders, ...) ở đây
             ]
           }
