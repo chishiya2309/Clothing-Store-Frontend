@@ -8,6 +8,8 @@ import VerifyEmail from '../pages/VerifyEmail'
 import ForgotPassword from '../pages/ForgotPassword'
 import ResetPassword from '../pages/ResetPassword'
 import NotFound from '../pages/NotFound'
+import Cart from '../pages/Cart'
+import ProductDetail from '../pages/ProductDetail'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import UserManagement from '../pages/admin/UserManagement'
@@ -24,6 +26,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
+      { path: 'cart', element: <Cart /> },
+      { path: 'product/:slug', element: <ProductDetail /> },
       { path: 'verify-email', element: <VerifyEmail /> },
       { path: 'forgot-password', element: <ForgotPassword /> },
       { path: 'reset-password', element: <ResetPassword /> },

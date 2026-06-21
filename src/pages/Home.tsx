@@ -66,20 +66,20 @@ export default function Home() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-gutter">
           {/* Product Card 1 */}
-          <div className="group cursor-pointer flex flex-col gap-3 relative">
+          <Link to="/product/ao-khoac-blazer-toi-gian-premium" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <div className="absolute top-2 left-2 z-10 bg-on-tertiary-container text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 MỚI
               </div>
-              <button className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
               </button>
               <img alt="Áo khoác blazer tối giản" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRJlN4FLfPBoTEmZS-iRzQN4VCg-7z0p9TVlTtkw1Ud3LngFPhL5fKocyZDwHstH_LcTKVUGtlVGGQZNjE078tRyK0nXeOko8wsIuQl7MsAJfsloTRLuvdAfKH6w7ADUF3JEz1M4Bqq583eL61CKiENzfBzO_8hHNyixrnSDdnfchs0tWxN6OviOyrljag1BsrJ-tA9cJYf48v3jqdYqB3_WRPOqSgnQ82zOOnKcSE4Khp7ZY6zYX-j5kP75UDFRLuQWAh3AmRYw" />
               {/* Quick Add Overlay on Hover */}
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
-                <button className="w-full bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
-                  THÊM NHANH
-                </button>
+                <span className="w-full text-center bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
+                  MUA NGAY
+                </span>
               </div>
             </div>
             <div>
@@ -88,71 +88,71 @@ export default function Home() {
                 <span className="font-price-display text-price-display text-primary">890.000₫</span>
               </div>
             </div>
-          </div>
+          </Link>
           {/* Product Card 2 */}
-          <div className="group cursor-pointer flex flex-col gap-3 relative">
+          <Link to="/product/ao-thun-nam-basic-co-tron" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -30%
               </div>
-              <button className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
               </button>
               <img alt="Áo thun cotton cơ bản" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDU1YD_jRWzG-eeFPY-iOWSeTYHRNZD7VTwB47HyCcL9Xu2J8xHzxGpI85YCKN3zv9go0cxe1pWNT28Ry7hkVKdtKhpr-b3Tkpb1iH5CkNYIdFJGjs_rHjKJ7yvd_Xaq8758Gg_v8P7DwgdUw7Kn2K7snZ8uoR-xrlMaJpsJ4KwbRHYCMtJld0FzY2LI_Dk2iRSbgBQBXgnS9JrbRPCVlFy8PPOWtN_opuVUK5NQlcpkihGgucW5DkfZYzWiLa0PuDKm4d1NtQZkw" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
-                <button className="w-full bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
-                  THÊM NHANH
-                </button>
+                <span className="w-full text-center bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
+                  MUA NGAY
+                </span>
               </div>
             </div>
             <div>
               <h3 className="font-body-md text-body-md text-primary truncate">Áo Thun Cotton Cổ Tròn</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-on-tertiary-container">245.000₫</span>
-                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">350.000₫</span>
+                <span className="font-price-display text-price-display text-on-tertiary-container">169.000₫</span>
+                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">199.000₫</span>
               </div>
             </div>
-          </div>
+          </Link>
           {/* Product Card 3 */}
-          <div className="group cursor-pointer flex flex-col gap-3 relative">
+          <Link to="/product/quan-jeans-nam-slim-fit" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
-              <button className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
               </button>
               <img alt="Quần jeans ống rộng" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC32V5AB3ro0thQgmNd4uaRL1kpC9n7-CgUqntAHAiR-Aub87r11XWasIH8yr_ncvTWMnaMsaN3cs-xujW0tSlEgJKrOlqrIsGOXKCH638_QaQH2bl-4UjNK86s7IflXpbOk_fAkbLleIit0Po7L0COdVnvOCFnfkB1j2Y3HlD9uqUqyWaot0y_-w1EEu52haCbM4tC77X0cL4slFo23pWI2RtHFHdoBmL_QjV5s-iSREqUezcX0yKC7iTTGLF7ApzGCLxWYreR2Q" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
-                <button className="w-full bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
-                  THÊM NHANH
-                </button>
+                <span className="w-full text-center bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
+                  MUA NGAY
+                </span>
               </div>
             </div>
             <div className="">
-              <h3 className="font-body-md text-body-md text-primary truncate">Quần Jeans Ống Rộng</h3>
+              <h3 className="font-body-md text-body-md text-primary truncate">Quần Jeans Slim Fit</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-primary">550.000₫</span>
+                <span className="font-price-display text-price-display text-primary">480.000₫</span>
               </div>
             </div>
-          </div>
+          </Link>
           {/* Product Card 4 */}
-          <div className="group cursor-pointer flex flex-col gap-3 relative">
+          <Link to="/product/ao-so-mi-nam-linen-casual" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
-              <button className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
+              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
                 <span className="material-symbols-outlined text-[18px]">favorite</span>
               </button>
               <img alt="Áo sơ mi linen" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVbihwf9jARwC5ifZdwqzqAtNhntu3jQa5KHCTqW7pIWHf-pKW59h1mqr4YPXOm4G6KcStX0cpWjRGQ3oH_BRFdlj4BhjfLjL9HT6Psf2usVtCChhV735M-hOAIFIW0t7NmXP1vmiLrLHjFkfdc31pLP45_-OLOmY5j-6fCeAToi0HXjRo2XTZke_Dtz-Optmhrrfy8L0QzLfdjtnNnx5MupHRqWLcxaYYUlWbxFE-zfqKCD2wY9BNBEjk_75M5emIk_mQUwrihQ" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
-                <button className="w-full bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
-                  THÊM NHANH
-                </button>
+                <span className="w-full text-center bg-surface/90 backdrop-blur-md text-primary font-label-caps text-label-caps py-2 rounded hover:bg-primary hover:text-on-primary transition-colors shadow-sm">
+                  MUA NGAY
+                </span>
               </div>
             </div>
             <div>
               <h3 className="font-body-md text-body-md text-primary truncate">Áo Sơ Mi Linen Nam</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-primary">420.000₫</span>
+                <span className="font-price-display text-price-display text-primary">520.000₫</span>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
         <div className="mt-8 flex justify-center sm:hidden">
           <button className="bg-transparent border-[1.5px] border-primary text-primary px-6 py-2 rounded font-label-caps text-label-caps w-full">
@@ -182,7 +182,7 @@ export default function Home() {
             </div>
           </div>
           {/* Standard Product Cards (Fill remaining grid) */}
-          <div className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
+          <Link to="/product/ao-thun-nam-basic-co-tron" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -15%
@@ -192,34 +192,34 @@ export default function Home() {
             <div className="mt-auto pt-2">
               <h3 className="font-body-md text-body-md text-primary truncate">Áo Thun Đen Basic</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-on-tertiary-container">210.000₫</span>
-                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">250.000₫</span>
+                <span className="font-price-display text-price-display text-on-tertiary-container">169.000₫</span>
+                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">199.000₫</span>
               </div>
             </div>
-          </div>
-          <div className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
+          </Link>
+          <Link to="/product/dam-lien-hoa-nhi-vintage" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <img alt="Áo khoác da nữ" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlKXVmOIon8rzTKdal-jG7UxJBzgPqEoDEaTP2ws3lGHP2doG3QgDEO3A9fK6Qjox6xEZJHvwIuQ9LhBnLoXtIhFs1L1m-mAO3mLs2ablPiT26ByY6BV27vrOc5tKJcfuhlBBQTFLpDwh8fWslDToFWMGQMBK0BdAOgqXeB-eD03VHJ06rFOkoZn9Yu4M_kakL-0xAXWsF85d2n2HKx_jpnWmMIv7igZ7BZXjZH0bu4Y764eM0NxBa74Vh6gJvdHs_HPr9mJ6rzw" />
             </div>
             <div className="mt-auto pt-2">
-              <h3 className="font-body-md text-body-md text-primary truncate">Áo Khoác Da Biker</h3>
+              <h3 className="font-body-md text-body-md text-primary truncate">Đầm Liền Hoa Nhí</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-primary">1.250.000₫</span>
+                <span className="font-price-display text-price-display text-primary">499.000₫</span>
               </div>
             </div>
-          </div>
-          <div className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
+          </Link>
+          <Link to="/product/ao-so-mi-nu-lua-co-v" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <img alt="Váy lụa midi" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVoG9XPJ0DN-eZyAGepAPaRykwpOxDIiPtKPc7CcDlcRWfvKFRYcBA7-EkrWMA0-CaXO_JPpwC3wLO32lGyqPmVf3PHg3C-nts5rm4DZ7LX1O1-2IALBlFDLngecgnWu3bQQpHUvCWkeQUHYbg1KalOI5U3y8k4wEfL6XSFTYdvIajtvx7l7dnHeTwr8SRkwpCmJplvlNoFYaGjKAU9NFaXujJi1midqzsJ5JAydPFLBe0FPxcSvK7vqgoiwFtFqnAxzOU7QOa7A" />
             </div>
             <div className="mt-auto pt-2">
-              <h3 className="font-body-md text-body-md text-primary truncate">Chân Váy Lụa Midi</h3>
+              <h3 className="font-body-md text-body-md text-primary truncate">Áo Sơ Mi Nữ Lụa Cổ V</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-primary">680.000₫</span>
+                <span className="font-price-display text-price-display text-primary">550.000₫</span>
               </div>
             </div>
-          </div>
-          <div className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
+          </Link>
+          <Link to="/product/ao-thun-nu-baby-tee" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -50%
@@ -227,13 +227,13 @@ export default function Home() {
               <img alt="Phụ kiện túi xách" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClLtTuEKQvU9nHsESLZBty1dXE86Ss-enUG6TsBa5R7MF2E2bOU1ez73xzNSO1Rt_T-_G5qLvsVH7RlDMugH1b1ZeWJcmWLnfUJL_0R7QJQvgxbQymwLM57iLl0jeeWADEn5HyDF3_BWQ1AQ9c5dsJ0-U-ouXhXdE55ktDmaBMXXgkRaXk0FBjiHtQvXiipygkMkOLN70qLNZRwBBFwCmkHQPuts69wcqTjFpbV0oqJBux1hbXw7HjrnevqCNsG0qUcbz1AVOgkQ" />
             </div>
             <div className="mt-auto pt-2">
-              <h3 className="font-body-md text-body-md text-primary truncate">Túi Xách Tote Minimal</h3>
+              <h3 className="font-body-md text-body-md text-primary truncate">Áo Thun Nữ Baby Tee</h3>
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-price-display text-price-display text-on-tertiary-container">450.000₫</span>
-                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">900.000₫</span>
+                <span className="font-price-display text-price-display text-on-tertiary-container">149.000₫</span>
+                <span className="font-price-display text-price-display text-on-surface-variant line-through text-[14px]">180.000₫</span>
               </div>
             </div>
-          </div>
+          </Link>
         </div>
         <div className="mt-8 flex justify-center sm:hidden">
           <button className="bg-transparent border-[1.5px] border-primary text-primary px-6 py-2 rounded font-label-caps text-label-caps w-full">

@@ -1,14 +1,23 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import { useCartStore } from '../../store/cartStore';
+import { useEffect } from 'react';
 
 export default function Header() {
   const { token, logout } = useAuthStore();
+  const { items, fetchCart } = useCartStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
+
+  const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <header className="bg-surface dark:bg-on-background font-label-caps text-label-caps text-primary dark:text-on-primary docked full-width top-0 sticky border-b border-border-subtle dark:border-outline-variant flat no shadows z-50">
@@ -69,9 +78,14 @@ export default function Header() {
           <button className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all">
             <span className="material-symbols-outlined" data-icon="favorite">favorite</span>
           </button>
-          <button className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all">
+          <Link to="/cart" className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all relative">
             <span className="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
-          </button>
+            {cartItemsCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-[#C1272D] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                {cartItemsCount}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
       {/* Mobile Header */}
@@ -82,9 +96,14 @@ export default function Header() {
         <Link className="font-display-hero text-headline-md tracking-tighter text-primary" to="/">
           CLOTHY
         </Link>
-        <button className="text-on-surface-variant hover:text-primary transition-colors">
+        <Link to="/cart" className="text-on-surface-variant hover:text-primary transition-colors relative">
           <span className="material-symbols-outlined">shopping_cart</span>
-        </button>
+          {cartItemsCount > 0 && (
+            <span className="absolute -top-1 -right-2 bg-[#C1272D] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+              {cartItemsCount}
+            </span>
+          )}
+        </Link>
       </div>
     </header>
   );
