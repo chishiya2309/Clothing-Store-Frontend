@@ -70,6 +70,19 @@ export default function AccountLayout() {
               Sổ địa chỉ
             </NavLink>
             <NavLink
+              to="/account/membership"
+              className={({ isActive }) =>
+                `flex items-center gap-3 py-3 pl-4 rounded-r-lg transition-all ${
+                  isActive
+                    ? 'text-primary font-bold border-l-4 border-primary bg-surface-container-high'
+                    : 'text-on-surface-variant hover:bg-surface-container-high'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined">workspace_premium</span>
+              Hạng thành viên
+            </NavLink>
+            <NavLink
               to="/account/favorites"
               className={({ isActive }) =>
                 `flex items-center gap-3 py-3 pl-4 rounded-r-lg transition-all ${
