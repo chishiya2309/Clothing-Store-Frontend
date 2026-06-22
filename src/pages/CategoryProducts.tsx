@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { productService, type ProductGridResponse, type PageResponse } from '@/services/product.service';
 import { useCategoryStore } from '@/store/categoryStore';
+import { useWishlistStore } from '@/store/wishlistStore';
+import { useAuthStore } from '@/store/authStore';
 import ProductFilterSidebar, { type FilterState } from '@/components/ProductFilterSidebar';
 
 const colorMap: Record<string, string> = {
@@ -40,6 +42,8 @@ export default function CategoryProducts() {
   const [isLoading, setIsLoading] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const { categories } = useCategoryStore();
+  const { wishlistProductIds, toggleWishlist } = useWishlistStore();
+  const { token } = useAuthStore();
 
   // Determine if this is a search page
   const isSearchPage = !slug;
@@ -180,6 +184,15 @@ export default function CategoryProducts() {
     });
   }
 
+  const handleWishlistClick = async (e: React.MouseEvent, productId: number) => {
+    e.preventDefault();
+    if (!token) {
+      alert('Vui lòng đăng nhập để lưu sản phẩm yêu thích.');
+      return;
+    }
+    await toggleWishlist(productId);
+  };
+
   const currentSortLabel = sortOptions.find((o) => o.value === currentSort)?.label || 'Mới nhất';
 
   return (
@@ -303,8 +316,16 @@ export default function CategoryProducts() {
                           SALE
                         </div>
                       )}
-                      <button onClick={(e) => e.preventDefault()} className="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
-                        <span className="material-symbols-outlined text-[20px]">favorite</span>
+                      <button 
+                        onClick={(e) => handleWishlistClick(e, product.id)} 
+                        className={`absolute top-sm right-sm transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm ${wishlistProductIds.includes(product.id) ? 'text-error' : 'text-surface hover:text-error'}`}
+                      >
+                        <span 
+                          className="material-symbols-outlined text-[20px]" 
+                          data-weight={wishlistProductIds.includes(product.id) ? 'fill' : undefined}
+                        >
+                          favorite
+                        </span>
                       </button>
 
                       {/* Hover Quick Add overlay */}

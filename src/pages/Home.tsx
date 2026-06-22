@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { bannerService, type BannerResponse } from '@/services/banner.service';
+import { useWishlistStore } from '@/store/wishlistStore';
+import { useAuthStore } from '@/store/authStore';
 
 export default function Home() {
   const [banners, setBanners] = useState<BannerResponse[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const { wishlistProductIds, toggleWishlist } = useWishlistStore();
+  const { token } = useAuthStore();
+
+  const handleWishlistClick = async (e: React.MouseEvent, productId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!token) {
+      alert('Vui lòng đăng nhập để lưu sản phẩm yêu thích.');
+      return;
+    }
+    await toggleWishlist(productId);
+  };
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -147,8 +161,8 @@ export default function Home() {
               <div className="absolute top-2 left-2 z-10 bg-on-tertiary-container text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 MỚI
               </div>
-              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
-                <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <button onClick={(e) => handleWishlistClick(e, 1)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(1) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(1) ? 'fill' : undefined}>favorite</span>
               </button>
               <img alt="Áo khoác blazer tối giản" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRJlN4FLfPBoTEmZS-iRzQN4VCg-7z0p9TVlTtkw1Ud3LngFPhL5fKocyZDwHstH_LcTKVUGtlVGGQZNjE078tRyK0nXeOko8wsIuQl7MsAJfsloTRLuvdAfKH6w7ADUF3JEz1M4Bqq583eL61CKiENzfBzO_8hHNyixrnSDdnfchs0tWxN6OviOyrljag1BsrJ-tA9cJYf48v3jqdYqB3_WRPOqSgnQ82zOOnKcSE4Khp7ZY6zYX-j5kP75UDFRLuQWAh3AmRYw" />
               {/* Quick Add Overlay on Hover */}
@@ -171,8 +185,8 @@ export default function Home() {
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -30%
               </div>
-              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
-                <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <button onClick={(e) => handleWishlistClick(e, 4)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(4) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(4) ? 'fill' : undefined}>favorite</span>
               </button>
               <img alt="Áo thun cotton cơ bản" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDU1YD_jRWzG-eeFPY-iOWSeTYHRNZD7VTwB47HyCcL9Xu2J8xHzxGpI85YCKN3zv9go0cxe1pWNT28Ry7hkVKdtKhpr-b3Tkpb1iH5CkNYIdFJGjs_rHjKJ7yvd_Xaq8758Gg_v8P7DwgdUw7Kn2K7snZ8uoR-xrlMaJpsJ4KwbRHYCMtJld0FzY2LI_Dk2iRSbgBQBXgnS9JrbRPCVlFy8PPOWtN_opuVUK5NQlcpkihGgucW5DkfZYzWiLa0PuDKm4d1NtQZkw" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
@@ -192,8 +206,8 @@ export default function Home() {
           {/* Product Card 3 */}
           <Link to="/product/quan-jeans-nam-slim-fit" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
-              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
-                <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <button onClick={(e) => handleWishlistClick(e, 9)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(9) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(9) ? 'fill' : undefined}>favorite</span>
               </button>
               <img alt="Quần jeans ống rộng" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC32V5AB3ro0thQgmNd4uaRL1kpC9n7-CgUqntAHAiR-Aub87r11XWasIH8yr_ncvTWMnaMsaN3cs-xujW0tSlEgJKrOlqrIsGOXKCH638_QaQH2bl-4UjNK86s7IflXpbOk_fAkbLleIit0Po7L0COdVnvOCFnfkB1j2Y3HlD9uqUqyWaot0y_-w1EEu52haCbM4tC77X0cL4slFo23pWI2RtHFHdoBmL_QjV5s-iSREqUezcX0yKC7iTTGLF7ApzGCLxWYreR2Q" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
@@ -212,8 +226,8 @@ export default function Home() {
           {/* Product Card 4 */}
           <Link to="/product/ao-so-mi-nam-linen-casual" className="group cursor-pointer flex flex-col gap-3 relative">
             <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
-              <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} className="absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full text-on-surface-variant hover:text-on-tertiary-container transition-colors">
-                <span className="material-symbols-outlined text-[18px]">favorite</span>
+              <button onClick={(e) => handleWishlistClick(e, 8)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(8) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(8) ? 'fill' : undefined}>favorite</span>
               </button>
               <img alt="Áo sơ mi linen" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVbihwf9jARwC5ifZdwqzqAtNhntu3jQa5KHCTqW7pIWHf-pKW59h1mqr4YPXOm4G6KcStX0cpWjRGQ3oH_BRFdlj4BhjfLjL9HT6Psf2usVtCChhV735M-hOAIFIW0t7NmXP1vmiLrLHjFkfdc31pLP45_-OLOmY5j-6fCeAToi0HXjRo2XTZke_Dtz-Optmhrrfy8L0QzLfdjtnNnx5MupHRqWLcxaYYUlWbxFE-zfqKCD2wY9BNBEjk_75M5emIk_mQUwrihQ" />
               <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/50 to-transparent flex justify-center items-end hidden lg:flex">
@@ -263,6 +277,9 @@ export default function Home() {
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -15%
               </div>
+              <button onClick={(e) => handleWishlistClick(e, 4)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(4) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(4) ? 'fill' : undefined}>favorite</span>
+              </button>
               <img alt="Áo thun đen basic" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9tVftXa80eWkvcEkP9dX5UkHeKkh5TbV-HiYmOid4VWzIm2MUgLvygFFnIoNdJyuqrBUUC33pCNfr5wO59aDRC8KvrLVGoIKa5irrRE87EybRMcC7m6SV_frBP_P-k6yaZEmE36389hZ3MCQ_zQr0QXCqD5_RoDBaPp_BClCPO-UDXEyg8b-5JUDyXfMbrlp12aq6kbENNfQ2e1pk-vv3hV4y9S5qzF0BKbr2BjeA__AjvrSImLRqJ1QyPR4IQ2KDvzHm8RsDuA" />
             </div>
             <div className="mt-auto pt-2">
@@ -275,6 +292,9 @@ export default function Home() {
           </Link>
           <Link to="/product/dam-lien-hoa-nhi-vintage" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
+              <button onClick={(e) => handleWishlistClick(e, 19)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(19) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(19) ? 'fill' : undefined}>favorite</span>
+              </button>
               <img alt="Áo khoác da nữ" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlKXVmOIon8rzTKdal-jG7UxJBzgPqEoDEaTP2ws3lGHP2doG3QgDEO3A9fK6Qjox6xEZJHvwIuQ9LhBnLoXtIhFs1L1m-mAO3mLs2ablPiT26ByY6BV27vrOc5tKJcfuhlBBQTFLpDwh8fWslDToFWMGQMBK0BdAOgqXeB-eD03VHJ06rFOkoZn9Yu4M_kakL-0xAXWsF85d2n2HKx_jpnWmMIv7igZ7BZXjZH0bu4Y764eM0NxBa74Vh6gJvdHs_HPr9mJ6rzw" />
             </div>
             <div className="mt-auto pt-2">
@@ -286,6 +306,9 @@ export default function Home() {
           </Link>
           <Link to="/product/ao-so-mi-nu-lua-co-v" className="col-span-1 row-span-1 group cursor-pointer flex flex-col gap-3 relative h-full">
             <div className="relative flex-grow overflow-hidden bg-surface-container-low rounded-DEFAULT">
+              <button onClick={(e) => handleWishlistClick(e, 17)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(17) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(17) ? 'fill' : undefined}>favorite</span>
+              </button>
               <img alt="Váy lụa midi" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVoG9XPJ0DN-eZyAGepAPaRykwpOxDIiPtKPc7CcDlcRWfvKFRYcBA7-EkrWMA0-CaXO_JPpwC3wLO32lGyqPmVf3PHg3C-nts5rm4DZ7LX1O1-2IALBlFDLngecgnWu3bQQpHUvCWkeQUHYbg1KalOI5U3y8k4wEfL6XSFTYdvIajtvx7l7dnHeTwr8SRkwpCmJplvlNoFYaGjKAU9NFaXujJi1midqzsJ5JAydPFLBe0FPxcSvK7vqgoiwFtFqnAxzOU7QOa7A" />
             </div>
             <div className="mt-auto pt-2">
@@ -300,6 +323,9 @@ export default function Home() {
               <div className="absolute top-2 left-2 z-10 bg-error text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">
                 -50%
               </div>
+              <button onClick={(e) => handleWishlistClick(e, 14)} className={`absolute top-2 right-2 z-10 p-1.5 bg-white/80 backdrop-blur-sm rounded-full transition-colors ${wishlistProductIds.includes(14) ? 'text-error' : 'text-on-surface-variant hover:text-error'}`}>
+                <span className="material-symbols-outlined text-[18px]" data-weight={wishlistProductIds.includes(14) ? 'fill' : undefined}>favorite</span>
+              </button>
               <img alt="Phụ kiện túi xách" className="w-full h-full object-cover absolute inset-0 transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClLtTuEKQvU9nHsESLZBty1dXE86Ss-enUG6TsBa5R7MF2E2bOU1ez73xzNSO1Rt_T-_G5qLvsVH7RlDMugH1b1ZeWJcmWLnfUJL_0R7QJQvgxbQymwLM57iLl0jeeWADEn5HyDF3_BWQ1AQ9c5dsJ0-U-ouXhXdE55ktDmaBMXXgkRaXk0FBjiHtQvXiipygkMkOLN70qLNZRwBBFwCmkHQPuts69wcqTjFpbV0oqJBux1hbXw7HjrnevqCNsG0qUcbz1AVOgkQ" />
             </div>
             <div className="mt-auto pt-2">

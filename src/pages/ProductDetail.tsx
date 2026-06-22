@@ -3,6 +3,8 @@ import { useCartStore } from '../store/cartStore'
 import { useState, useEffect } from 'react'
 import { productService } from '../services/product.service'
 import type { ProductDetailResponse } from '../services/product.service'
+import { useWishlistStore } from '../store/wishlistStore'
+import { useAuthStore } from '../store/authStore'
 
 interface ColorOption {
   name: string
@@ -183,8 +185,11 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [quantity, setQuantity] = useState<number>(1)
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0)
-  const [isWishlisted, setIsWishlisted] = useState<boolean>(false)
   const [addingToCartLocal, setAddingToCartLocal] = useState<boolean>(false)
+
+  const { wishlistProductIds, toggleWishlist } = useWishlistStore()
+  const { token } = useAuthStore()
+  const isWishlisted = product ? wishlistProductIds.includes(product.id) : false
 
   const COLOR_HEX_MAP: Record<string, string> = {
     'trắng': '#FFFFFF',
@@ -292,12 +297,22 @@ export default function ProductDetail() {
     setAddingToCartLocal(true)
     try {
       await addItem(product.id, selectedSize, selectedColor.name, quantity)
-      alert(`Đã thêm ${quantity} x ${product.name} (Màu: ${selectedColor.name}, Cỡ: ${selectedSize}) vào giỏ hàng thành công!`)
+      alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`)
     } catch (err) {
       console.error(err)
+      alert('Có lỗi xảy ra khi thêm vào giỏ hàng.')
     } finally {
       setAddingToCartLocal(false)
     }
+  }
+
+  const handleWishlistToggle = async () => {
+    if (!product) return
+    if (!token) {
+      alert('Vui lòng đăng nhập để lưu sản phẩm yêu thích.')
+      return
+    }
+    await toggleWishlist(product.id)
   }
 
   if (loading) {
@@ -542,10 +557,13 @@ export default function ProductDetail() {
               {isOutOfStock ? 'HẾT HÀNG' : (addingToCartLocal || cartLoading ? 'ĐANG THÊM...' : 'THÊM VÀO GIỎ HÀNG')}
             </button>
             <button
-              onClick={() => setIsWishlisted(!isWishlisted)}
-              className="w-12 h-12 border border-primary text-primary rounded flex items-center justify-center hover:bg-surface-alt transition-colors"
+              onClick={handleWishlistToggle}
+              className={`w-12 h-12 border rounded flex items-center justify-center transition-colors ${isWishlisted ? 'border-error text-error bg-error/5 hover:bg-error/10' : 'border-primary text-primary hover:bg-surface-alt'}`}
             >
-              <span className={`material-symbols-outlined ${isWishlisted ? 'fill-1 text-on-error-container' : ''}`}>
+              <span 
+                className="material-symbols-outlined" 
+                data-weight={isWishlisted ? 'fill' : undefined}
+              >
                 {isWishlisted ? 'favorite' : 'favorite_border'}
               </span>
             </button>

@@ -4,12 +4,14 @@ import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
 import SearchModal from '../SearchModal';
 import { useCategoryStore } from '../../store/categoryStore';
+import { useWishlistStore } from '../../store/wishlistStore';
 
 
 export default function Header() {
   const { token, logout } = useAuthStore();
   const { items, fetchCart } = useCartStore();
   const { categories, fetchCategories } = useCategoryStore();
+  const { wishlistProductIds } = useWishlistStore();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -95,10 +97,6 @@ export default function Header() {
                     <span className="material-symbols-outlined text-[20px]">package</span>
                     <span>Đơn hàng của tôi</span>
                   </Link>
-                  <Link className="flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors" to="/wishlist">
-                    <span className="material-symbols-outlined text-[20px]">favorite</span>
-                    <span>Sản phẩm yêu thích</span>
-                  </Link>
                   <div className="border-t border-border-subtle my-1"></div>
                   <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-on-tertiary-container hover:bg-surface-alt transition-colors">
                     <span className="material-symbols-outlined text-[20px]">logout</span>
@@ -113,9 +111,14 @@ export default function Header() {
             </Link>
           )}
 
-          <button className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all">
+          <Link to="/account/favorites" className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all relative">
             <span className="material-symbols-outlined" data-icon="favorite">favorite</span>
-          </button>
+            {wishlistProductIds.length > 0 && (
+              <span className="absolute -top-1 -right-2 bg-error text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                {wishlistProductIds.length}
+              </span>
+            )}
+          </Link>
           <Link to="/cart" className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all relative">
             <span className="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
             {cartItemsCount > 0 && (
