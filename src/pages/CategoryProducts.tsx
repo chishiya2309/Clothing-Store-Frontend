@@ -291,7 +291,7 @@ export default function CategoryProducts() {
             <>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-x-gutter gap-y-lg">
                 {pageData.content.map((product) => (
-                  <div key={product.id} className="group relative flex flex-col cursor-pointer">
+                  <Link key={product.id} to={`/product/${product.slug}`} className="group relative flex flex-col cursor-pointer">
                     <div className="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
                       <img
                         alt={product.name}
@@ -303,13 +303,13 @@ export default function CategoryProducts() {
                           SALE
                         </div>
                       )}
-                      <button className="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
+                      <button onClick={(e) => e.preventDefault()} className="absolute top-sm right-sm text-surface bg-transparent hover:text-primary transition-colors z-10 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm">
                         <span className="material-symbols-outlined text-[20px]">favorite</span>
                       </button>
 
                       {/* Hover Quick Add overlay */}
                       <div className="absolute bottom-0 left-0 right-0 p-sm translate-y-full group-hover:translate-y-0 transition-transform duration-300 opacity-0 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent">
-                        <button className="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">
+                        <button onClick={(e) => e.preventDefault()} className="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded">
                           QUICK ADD
                         </button>
                       </div>
@@ -353,7 +353,7 @@ export default function CategoryProducts() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
