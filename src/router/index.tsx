@@ -18,6 +18,7 @@ import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
 import Membership from '../pages/Membership'
+import Wishlist from '../pages/Wishlist'
 import ProtectedRoute from './ProtectedRoute'
 import CategoryProducts from '../pages/CategoryProducts'
 
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
               { path: 'profile', element: <Profile /> },
               { path: 'addresses', element: <Addresses /> },
               { path: 'membership', element: <Membership /> },
+              { path: 'favorites', element: <Wishlist /> },
               // Thêm các trang quản lý tài khoản khác (orders, ...) ở đây
             ]
           }
