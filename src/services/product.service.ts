@@ -105,5 +105,12 @@ export const productService = {
     getProductBySlug: async (slug: string): Promise<ProductDetailResponse> => {
         const response = await axios.get(`${API_URL}/products/${slug}`)
         return response.data.data
+    },
+
+    getRecommendedProducts: async (productId: number, limit: number = 4): Promise<ProductGridResponse[]> => {
+        const response = await axios.get(`${API_URL}/guest/recommendations/product/${productId}`, {
+            params: { limit }
+        });
+        return response.data.data;
     }
 };

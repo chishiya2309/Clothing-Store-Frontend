@@ -5,6 +5,7 @@ import { productService } from '../services/product.service'
 import type { ProductDetailResponse } from '../services/product.service'
 import { useWishlistStore } from '../store/wishlistStore'
 import { useAuthStore } from '../store/authStore'
+import type { ProductGridResponse } from '../services/product.service'
 
 interface ColorOption {
   name: string
@@ -25,151 +26,6 @@ interface ProductData {
   outOfStockSizes?: string[]
 }
 
-const PRODUCTS_REGISTRY: Record<string, ProductData> = {
-  'ao-khoac-blazer-toi-gian-premium': {
-    id: 1,
-    name: 'Áo Khoác Blazer Tối Giản Premium',
-    price: 890000,
-    originalPrice: 1250000,
-    description: 'Áo khoác blazer được thiết kế với phom dáng suông hiện đại, mang đậm tinh thần tối giản. Chất liệu vải premium giữ form tốt, ít nhăn và thoáng mát, phù hợp cho cả môi trường công sở và những buổi dạo phố.',
-    material: '65% Polyester, 35% Viscose',
-    care: 'Giặt khô hoặc giặt tay với nước lạnh. Tránh phơi trực tiếp dưới ánh nắng gắt.',
-    colors: [
-      { name: 'Xanh Navy', hex: '#1A1A2E' },
-      { name: 'Đen', hex: '#222222' },
-      { name: 'Trắng', hex: '#FFFFFF' }
-    ],
-    sizes: ['S', 'M', 'L', 'XL'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBmfikCFCLeceG3Fu8Qt8Xw8R9lYE30urCn1IRKSpGEMpVen9kfWvBeUOg-bRB7ZnraX73VVGehQ9xVlVat7Uk-9rlgEOzVuvKJaJ-JkeACls_cJhqfkYWcxsFjGg0sMtrkKyMOeBK94OfzyZz4YI_AR4k6B12tqtuwHHUgXL2HAFO46eVdGdEWSJKkJd9o1hWO5nY6U_j9OEZ3gyCLLL1ya_FRz4gLo-jPkwDadaaAIsYO0fpbPM3KWpnj1h4MjfS1w-jX8CivDQ',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBPWbN5eGLemyV8CqJavIBh5SSm2zJZoGkB5mZ3dqybb90pOxFAJW5zh_pkmPSvm4KFxE5T42cx0CqBDTalk6hGXR0ySHE3Ofb0qWOpMwP1R9z7v9ehGpUMcWywWFf26JdyeJrXcXzwaH254jGSKT-ciSqONX8Pin5M1cLbMT_sGqhTy2_yOR0BIcPppIR5im2MXswbauVjRjfh2Mbag_A0LH_aHIzTIiWvY-tj9lGbtpRRVqZliZKvMbgv01Zsh5sKxzkcY2n1YQ',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuByMVAwr1uxAV92R2e-yjvlO-1IUFbZtsr0BuMJrygykkd3GH5GlXXo7GiR8Gg1x9ECHsue0Najn7h8QF13NvZwgF-rk7RrNEXS0M3h-aMaTSzEHzW1QaA2FrLs0hVvS5EP4ySO8j8Vch1BzuTnQxooW4lS8CmEJWGpX-owCdRSHRo-lGanz9q2qC3tWxh00QkDTlyMIOKPeBVSW1Qwi2FIKSD8wcGMPyEgdQXZ7yZ1z2i51kjbVN6moSy5B9vbgCHVgzi7qDhn-A',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCsnVyae3UYjPqIaZvGia10b4xuHnndl3KC9HdK1-AQrMfr5gQHXU9OQnQYwmnR135zgU37CcUnhvERBigXIR7Q5nrN46-mMJj4gDpztunRmeBt5tmrQM-lx-kvA8fRlMvsAXAj32r9yhi1LLD38n8uKjlbU3aHVjVcTMeFAMfRaVaXjGRaGTDzVGAQE3OFXr2EpR-_HUwlZpHmnUGUHW22x61Eu8GBVuoG8LeCDJlF0XNFPBg1UtIfOPpRvtZ3So7O60PzXPW_GQ'
-    ]
-  },
-  'ao-thun-nam-basic-co-tron': {
-    id: 4,
-    name: 'Áo Thun Nam Basic Cổ Tròn',
-    price: 169000,
-    originalPrice: 199000,
-    description: 'Áo thun nam basic cotton tự nhiên, form slim fit trẻ trung. Dễ phối đồ, phù hợp mọi dịp.',
-    material: 'Cotton Compact 95%, Spandex 5%',
-    care: 'Giặt máy ở 30°C, phơi trong bóng râm',
-    colors: [
-      { name: 'Trắng', hex: '#FFFFFF' },
-      { name: 'Đen', hex: '#222222' },
-      { name: 'Xám', hex: '#808080' }
-    ],
-    sizes: ['S', 'M', 'L'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDU1YD_jRWzG-eeFPY-iOWSeTYHRNZD7VTwB47HyCcL9Xu2J8xHzxGpI85YCKN3zv9go0cxe1pWNT28Ry7hkVKdtKhpr-b3Tkpb1iH5CkNYIdFJGjs_rHjKJ7yvd_Xaq8758Gg_v8P7DwgdUw7Kn2K7snZ8uoR-xrlMaJpsJ4KwbRHYCMtJld0FzY2LI_Dk2iRSbgBQBXgnS9JrbRPCVlFy8PPOWtN_opuVUK5NQlcpkihGgucW5DkfZYzWiLa0PuDKm4d1NtQZkw',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC4KayvDwNltCsEVtPK59-IOE348CPDXq7YAZsR44t9COGL34ZVEcL-_LDk1yZVqM9mMA67XTxY-AWet5mFXMfPFvtqPLqR4S0dI9Ju4cQ69Ky42XbwdfJhbHTMqdwRKI4HtNEtRbGbe_GyXvtKZP0AuDszvTPwHHxsOBV20Dtkr7B83jZANlb7UGv6ZVD1rvxFRcSnzeBSK9u4RYC2fXcwAK_x5SBHu2hfES_YfX8MKRcbYz4WvRR13l0oBzfPYhHy_O8ntB__Dw'
-    ]
-  },
-  'quan-jeans-nam-slim-fit': {
-    id: 9,
-    name: 'Quần Jeans Nam Slim Fit',
-    price: 480000,
-    originalPrice: 550000,
-    description: 'Quần jeans nam slim fit co giãn nhẹ, wash medium blue. Phom dáng chuẩn Hàn Quốc.',
-    material: 'Cotton 98%, Elastane 2%',
-    care: 'Giặt máy lộn trái, không tẩy, phơi trong bóng râm',
-    colors: [
-      { name: 'Xanh Medium', hex: '#4B6B94' }
-    ],
-    sizes: ['29', '30', '31', '32', '33'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC32V5AB3ro0thQgmNd4uaRL1kpC9n7-CgUqntAHAiR-Aub87r11XWasIH8yr_ncvTWMnaMsaN3cs-xujW0tSlEgJKrOlqrIsGOXKCH638_QaQH2bl-4UjNK86s7IflXpbOk_fAkbLleIit0Po7L0COdVnvOCFnfkB1j2Y3HlD9uqUqyWaot0y_-w1EEu52haCbM4tC77X0cL4slFo23pWI2RtHFHdoBmL_QjV5s-iSREqUezcX0yKC7iTTGLF7ApzGCLxWYreR2Q',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDn9JQl7cGWLkKkSKd966AF-Z7qN32dzbm1E__P2DPI7kO8rAI5_aE-kpwad3Q8WKzPTLZRecAQbTfqUBoS5jKlkroJ7ALFiTCP7NPFLPPtXKQfswQb4R6vACwstdIC9NbaX4TI-MNi1vHSsbuYJH0IHQocV9ucSIN7uXNJotpPOcuy0GtIvMbz9DYVXY2MRuArlxVWUDcYkUx1bDUTG77h9K01AlYkybYKHAdaPybBP1cPk6IS-t7Omb3bfngBK93pekILmcwAtA'
-    ]
-  },
-  'ao-so-mi-nam-linen-casual': {
-    id: 8,
-    name: 'Áo Sơ Mi Nam Linen Casual',
-    price: 520000,
-    description: 'Áo sơ mi nam chất linen tự nhiên, thoáng mát cho mùa hè. Kiểu dáng regular fit thoải mái.',
-    material: 'Linen 70%, Cotton 30%',
-    care: 'Giặt tay nhẹ nhàng, phơi ngang',
-    colors: [
-      { name: 'Xanh Nhạt', hex: '#ADD8E6' },
-      { name: 'Trắng', hex: '#FFFFFF' }
-    ],
-    sizes: ['M', 'L', 'XL'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBVbihwf9jARwC5ifZdwqzqAtNhntu3jQa5KHCTqW7pIWHf-pKW59h1mqr4YPXOm4G6KcStX0cpWjRGQ3oH_BRFdlj4BhjfLjL9HT6Psf2usVtCChhV735M-hOAIFIW0t7NmXP1vmiLrLHjFkfdc31pLP45_-OLOmY5j-6fCeAToi0HXjRo2XTZke_Dtz-Optmhrrfy8L0QzLfdjtnNnx5MupHRqWLcxaYYUlWbxFE-zfqKCD2wY9BNBEjk_75M5emIk_mQUwrihQ',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDytaKxiTWBlDvt6D-by9KItpeM5yii2ibEuUGNaUSBh4YsSasgb-l6UALUcbUysI6YP5KB9Z53ln6-FFGurBY6i9aG-9Huz-jJuH5n_0ANS6SRD75HniTRSJsPiNSxzEsjS7WtrNhshP3Oxe2vX75vxDK9wpx6YfF04tHsf0-Y0MVpNTDxaxwWhmjGGn0m_wcHbhJyrDHatMPPiOVDIjuiYasezqX1xwqW_NlAy3GT3i0uUd-2HCT899yUOIYlMVQRlm6oXhpYeQ'
-    ]
-  },
-  'ao-thun-nu-baby-tee': {
-    id: 14,
-    name: 'Áo Thun Nữ Baby Tee',
-    price: 149000,
-    originalPrice: 180000,
-    description: 'Áo thun nữ baby tee ôm form, chất cotton mềm mại. Hot trend 2026.',
-    material: 'Cotton Combed 100%',
-    care: 'Giặt máy ở 30°C, phơi trong bóng râm',
-    colors: [
-      { name: 'Hồng', hex: '#FFC0CB' },
-      { name: 'Trắng', hex: '#FFFFFF' },
-      { name: 'Đen', hex: '#222222' }
-    ],
-    sizes: ['S', 'M'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuClLtTuEKQvU9nHsESLZBty1dXE86Ss-enUG6TsBa5R7MF2E2bOU1ez73xzNSO1Rt_T-_G5qLvsVH7RlDMugH1b1ZeWJcmWLnfUJL_0R7QJQvgxbQymwLM57iLl0jeeWADEn5HyDF3_BWQ1AQ9c5dsJ0-U-ouXhXdE55ktDmaBMXXgkRaXk0FBjiHtQvXiipygkMkOLN70qLNZRwBBFwCmkHQPuts69wcqTjFpbV0oqJBux1hbXw7HjrnevqCNsG0qUcbz1AVOgkQ'
-    ]
-  },
-  'ao-khoac-nu-denim': {
-    id: 16,
-    name: 'Áo Khoác Nữ Denim',
-    price: 599000,
-    originalPrice: 680000,
-    description: 'Áo khoác jeans nữ classic, wash medium vintage. Oversize nhẹ thời trang.',
-    material: 'Denim Cotton 100%',
-    care: 'Giặt máy lộn trái, phơi trong bóng râm',
-    colors: [
-      { name: 'Xanh Medium', hex: '#4B6B94' }
-    ],
-    sizes: ['S', 'M', 'L'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDVOc7QIDQNuVr-3XppLOR1PT80ch_UCzXEbgbfcFq2y4ukWdhtk-B68oLTcaUd_cuMsMZdht8uv9o1YmJTkA5Ef9uaNyNwm9RI2tCV-Lrr8CY5IwiraFIa346yFEvLQLq3MeBgCRq3lBTKHPi_klf0se2aBviL18NIGczjsYh2VwKbMr-Fh7E67WDsOQIKgP3KS7eUeS_6JN7jAqr0l2x7sYFFYi5ul5oaw7EwixxoHOmHwUS0AM_xCeeQ8YsQ4nwUvqaS8W_hRg'
-    ]
-  },
-  'ao-so-mi-nu-lua-co-v': {
-    id: 17,
-    name: 'Áo Sơ Mi Nữ Lụa Cổ V',
-    price: 550000,
-    originalPrice: 650000,
-    description: 'Áo sơ mi nữ chất lụa cao cấp, cổ V thanh lịch. Phù hợp công sở và dạo phố.',
-    material: 'Lụa tơ tằm pha 70%, Polyester 30%',
-    care: 'Giặt tay nhẹ, ủi ở nhiệt độ thấp',
-    colors: [
-      { name: 'Kem', hex: '#FFFDD0' },
-      { name: 'Đen', hex: '#222222' }
-    ],
-    sizes: ['S', 'M'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCVoG9XPJ0DN-eZyAGepAPaRykwpOxDIiPtKPc7CcDlcRWfvKFRYcBA7-EkrWMA0-CaXO_JPpwC3wLO32lGyqPmVf3PHg3C-nts5rm4DZ7LX1O1-2IALBlFDLngecgnWu3bQQpHUvCWkeQUHYbg1KalOI5U3y8k4wEfL6XSFTYdvIajtvx7l7dnHeTwr8SRkwpCmJplvlNoFYaGjKAU9NFaXujJi1midqzsJ5JAydPFLBe0FPxcSvK7vqgoiwFtFqnAxzOU7QOa7A'
-    ]
-  },
-  'dam-lien-hoa-nhi-vintage': {
-    id: 19,
-    name: 'Đầm Liền Hoa Nhí Vintage',
-    price: 499000,
-    originalPrice: 580000,
-    description: 'Đầm liền hoa nhí phong cách vintage, chất voan nhẹ nhàng nữ tính. Dáng xòe ngang gối.',
-    material: 'Voan Chiffon 100%',
-    care: 'Giặt tay, phơi trong bóng râm',
-    colors: [
-      { name: 'Hoa Nhí Xanh', hex: '#4682B4' },
-      { name: 'Hoa Nhí Đỏ', hex: '#CD5C5C' }
-    ],
-    sizes: ['S', 'M', 'L'],
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBlKXVmOIon8rzTKdal-jG7UxJBzgPqEoDEaTP2ws3lGHP2doG3QgDEO3A9fK6Qjox6xEZJHvwIuQ9LhBnLoXtIhFs1L1m-mAO3mLs2ablPiT26ByY6BV27vrOc5tKJcfuhlBBQTFLpDwh8fWslDToFWMGQMBK0BdAOgqXeB-eD03VHJ06rFOkoZn9Yu4M_kakL-0xAXWsF85d2n2HKx_jpnWmMIv7igZ7BZXjZH0bu4Y764eM0NxBa74Vh6gJvdHs_HPr9mJ6rzw'
-    ]
-  }
-}
-
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>()
   const addItem = useCartStore((state) => state.addItem)
@@ -179,6 +35,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<ProductDetailResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [recommendedProducts, setRecommendedProducts] = useState<ProductGridResponse[]>([])
 
   // UI state
   const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null)
@@ -253,6 +110,13 @@ export default function ProductDetail() {
 
         setQuantity(1)
         setActiveImageIndex(0)
+        // Fetch recommendations
+        productService.getRecommendedProducts(data.id)
+          .then((recs) => {
+            if (isMounted) setRecommendedProducts(recs)
+          })
+          .catch((err) => console.error('Lỗi khi tải sản phẩm gợi ý:', err))
+
         setLoading(false)
       })
       .catch((err) => {
@@ -625,37 +489,42 @@ export default function ProductDetail() {
       </div>
 
       {/* Related Products */}
-      <section className="mt-xl pt-lg border-t border-border-subtle">
-        <h2 className="font-headline-md text-headline-md md:font-headline-lg md:text-headline-lg text-primary mb-lg text-center">
-          SẢN PHẨM GỢI Ý
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
-          {Object.keys(PRODUCTS_REGISTRY)
-            .filter((k) => k !== slug)
-            .slice(0, 4)
-            .map((key) => {
-              const item = PRODUCTS_REGISTRY[key]
-              return (
-                <Link key={key} to={`/product/${key}`} className="group cursor-pointer">
-                  <div className="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
-                    <img
-                      alt={item.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      src={item.images[0]}
-                    />
-                    <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
-                      <button className="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">
-                        MUA NGAY
-                      </button>
-                    </div>
+      {recommendedProducts.length > 0 && (
+        <section className="mt-xl pt-lg border-t border-border-subtle">
+          <h2 className="font-headline-md text-headline-md md:font-headline-lg md:text-headline-lg text-primary mb-lg text-center">
+            SẢN PHẨM GỢI Ý
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+            {recommendedProducts.map((item) => (
+              <Link key={item.id} to={`/product/${item.slug}`} className="group cursor-pointer">
+                <div className="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
+                  <img
+                    alt={item.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    src={item.thumbnailUrl || 'https://placehold.co/400x500?text=No+Image'}
+                  />
+                  <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
+                    <button className="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">
+                      MUA NGAY
+                    </button>
                   </div>
-                  <h3 className="font-body-md text-body-md text-primary mb-1 truncate">{item.name}</h3>
-                  <p className="font-price-display text-price-display text-text-muted">{formatPrice(item.price)}</p>
-                </Link>
-              )
-            })}
-        </div>
-      </section>
+                </div>
+                <h3 className="font-body-md text-body-md text-primary mb-1 truncate">{item.name}</h3>
+                <div className="flex items-baseline gap-2">
+                  <p className={`font-price-display text-price-display ${item.salePrice ? 'text-on-error-container' : 'text-text-muted'}`}>
+                    {formatPrice(item.salePrice || item.basePrice)}
+                  </p>
+                  {item.salePrice && (
+                    <span className="text-text-muted text-[12px] line-through">
+                      {formatPrice(item.basePrice)}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Reviews Section */}
       <section id="reviews" className="mt-xl pt-lg border-t border-border-subtle bg-[#FAFAF8] -mx-margin-mobile md:-mx-margin-desktop px-margin-mobile md:px-margin-desktop">
