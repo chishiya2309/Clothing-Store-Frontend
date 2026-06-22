@@ -13,10 +13,13 @@ import ProductDetail from '../pages/ProductDetail'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import UserManagement from '../pages/admin/UserManagement'
+import BannerManagement from '../pages/admin/BannerManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
+import Membership from '../pages/Membership'
 import ProtectedRoute from './ProtectedRoute'
+import CategoryProducts from '../pages/CategoryProducts'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +27,8 @@ const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Home /> },
+      { path: 'category/:slug', element: <CategoryProducts /> },
+      { path: 'search', element: <CategoryProducts /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'cart', element: <Cart /> },
@@ -41,6 +46,7 @@ const router = createBrowserRouter([
             children: [
               { path: 'profile', element: <Profile /> },
               { path: 'addresses', element: <Addresses /> },
+              { path: 'membership', element: <Membership /> },
               // Thêm các trang quản lý tài khoản khác (orders, ...) ở đây
             ]
           }
@@ -57,7 +63,8 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboard /> },
-          { path: 'users', element: <UserManagement /> }
+          { path: 'users', element: <UserManagement /> },
+          { path: 'banners', element: <BannerManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }

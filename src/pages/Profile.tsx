@@ -113,17 +113,6 @@ export default function Profile() {
         Thông tin tài khoản
       </h1>
       <div className="space-y-xl">
-        {/* Loyalty Points */}
-        <div className="flex items-center gap-6 pb-lg border-b border-border-subtle">
-          <div className="flex flex-col">
-            <span className="text-on-surface-variant font-label-caps text-label-caps mb-2">Điểm tích lũy</span>
-            <div className="flex items-end gap-2">
-              <span className="font-headline-xl text-headline-xl text-primary">{profile?.loyaltyPoints || 0}</span>
-              <span className="text-on-surface-variant font-body-sm text-body-sm mb-1">điểm</span>
-            </div>
-          </div>
-        </div>
-
         {/* Personal Info Form */}
         <form className="space-y-lg" onSubmit={handleSubmit}>
           {error && <div className="text-error mb-4">{error}</div>}

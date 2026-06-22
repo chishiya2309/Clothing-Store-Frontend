@@ -1,12 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
-import { useEffect } from 'react';
+import SearchModal from '../SearchModal';
+import { useCategoryStore } from '../../store/categoryStore';
+
 
 export default function Header() {
   const { token, logout } = useAuthStore();
   const { items, fetchCart } = useCartStore();
+  const { categories, fetchCategories } = useCategoryStore();
   const navigate = useNavigate();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   useEffect(() => {
     fetchCart();
@@ -20,15 +29,41 @@ export default function Header() {
   const cartItemsCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
+    <>
     <header className="bg-surface dark:bg-on-background font-label-caps text-label-caps text-primary dark:text-on-primary docked full-width top-0 sticky border-b border-border-subtle dark:border-outline-variant flat no shadows z-50">
       <div className="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto md:flex hidden relative">
         {/* Navigation Links */}
         <nav className="flex items-center gap-6">
-          <Link className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200" to="#">NAM</Link>
-          <Link className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200" to="#">NỮ</Link>
-          <Link className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200" to="#">TRẺ EM</Link>
-          <Link className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200" to="#">BỘ SƯU TẬP</Link>
-          <Link className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200" to="#">SALE</Link>
+          {categories.map((category) => (
+            <div key={category.id} className="relative group/nav">
+              <Link
+                className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200 py-2 inline-flex items-center"
+                to={`/category/${category.slug}`}
+              >
+                {category.name.toUpperCase()}
+                {category.children && category.children.length > 0 && (
+                  <span className="material-symbols-outlined text-[14px] ml-1 opacity-70">expand_more</span>
+                )}
+              </Link>
+              
+              {/* Dropdown for Sub-categories */}
+              {category.children && category.children.length > 0 && (
+                <div className="absolute left-0 top-full pt-2 opacity-0 group-hover/nav:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/nav:pointer-events-auto z-50">
+                  <div className="bg-surface-container-lowest border border-border-subtle shadow-sm py-2 min-w-[200px] rounded-sm overflow-hidden flex flex-col">
+                    {category.children.map((child) => (
+                      <Link
+                        key={child.id}
+                        className="px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors whitespace-nowrap"
+                        to={`/category/${child.slug}`}
+                      >
+                        {child.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
         </nav>
         {/* Brand Logo */}
         <Link className="font-display-hero text-headline-md tracking-tighter text-primary dark:text-on-primary absolute left-1/2 transform -translate-x-1/2" to="/">
@@ -36,7 +71,10 @@ export default function Header() {
         </Link>
         {/* Trailing Icons */}
         <div className="flex items-center gap-4">
-          <button className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all">
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all"
+          >
             <span className="material-symbols-outlined" data-icon="search">search</span>
           </button>
           
@@ -106,5 +144,9 @@ export default function Header() {
         </Link>
       </div>
     </header>
+      
+      {/* Search Modal */}
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+    </>
   );
 }
