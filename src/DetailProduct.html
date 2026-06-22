@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CLOTHY - Áo Khoác Blazer Tối Giản Premium</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&amp;family=Inter:wght@400;500&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#f9f9f7",
+                        "outline-variant": "#c8c5cd",
+                        "tertiary-container": "#420004",
+                        "success": "#2D8F4E",
+                        "surface-tint": "#5d5c74",
+                        "inverse-surface": "#2f3130",
+                        "surface-dim": "#dadad8",
+                        "on-background": "#1a1c1b",
+                        "secondary-fixed-dim": "#d6c4a7",
+                        "on-secondary-fixed-variant": "#51452f",
+                        "on-primary-fixed": "#1a1a2e",
+                        "inverse-on-surface": "#f1f1ef",
+                        "primary-fixed-dim": "#c6c4df",
+                        "surface-container-low": "#f4f4f2",
+                        "primary-fixed": "#e2e0fc",
+                        "secondary-container": "#f0ddbf",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e2e3e1",
+                        "on-surface-variant": "#47464c",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#f9f9f7",
+                        "surface": "#f9f9f7",
+                        "secondary": "#6a5d45",
+                        "on-primary": "#ffffff",
+                        "outline": "#78767d",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#410004",
+                        "on-primary-fixed-variant": "#45455b",
+                        "text-primary": "#2D2D2D",
+                        "tertiary-fixed": "#ffdad7",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eeeeec",
+                        "border-subtle": "#E5E5E0",
+                        "surface-variant": "#e2e3e1",
+                        "surface-container-high": "#e8e8e6",
+                        "rating-gold": "#F5A623",
+                        "on-secondary-fixed": "#241a07",
+                        "text-muted": "#8C8C8C",
+                        "primary": "#00000b",
+                        "surface-alt": "#F0EDE8",
+                        "on-tertiary-container": "#ed4848",
+                        "on-error": "#ffffff",
+                        "warning": "#E8A317",
+                        "secondary-fixed": "#f3e0c2",
+                        "on-tertiary-fixed-variant": "#930015",
+                        "on-secondary-container": "#6f6149",
+                        "on-primary-container": "#83829b",
+                        "primary-container": "#1a1a2e",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "tertiary": "#050000",
+                        "inverse-primary": "#c6c4df",
+                        "on-surface": "#1a1c1b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "gutter": "24px",
+                        "lg": "48px",
+                        "xs": "4px",
+                        "container-max": "1280px",
+                        "margin-desktop": "80px",
+                        "base": "8px",
+                        "xl": "80px",
+                        "margin-mobile": "24px",
+                        "md": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Outfit"],
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Outfit"],
+                        "headline-md": ["Outfit"],
+                        "headline-xl": ["Outfit"],
+                        "body-sm": ["Inter"],
+                        "price-display": ["Space Mono"],
+                        "headline-lg": ["Outfit"],
+                        "body-md": ["Inter"],
+                        "display-hero": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-xl": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "price-display": ["18px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "display-hero": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <nav
+        class="bg-surface dark:bg-on-background text-primary dark:text-on-primary docked full-width top-0 sticky border-b border-border-subtle dark:border-outline-variant flat no shadows flex justify-between items-center px-80 py-4 w-full max-w-container-max mx-auto z-50">
+        <a class="font-display-hero text-headline-md tracking-tighter text-primary dark:text-on-primary"
+            href="#">CLOTHY</a>
+        <div class="hidden md:flex gap-gutter items-center h-full">
+            <a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200"
+                href="#">NAM</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200"
+                href="#">NỮ</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200"
+                href="#">TRẺ EM</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200"
+                href="#">BỘ SƯU TẬP</a>
+            <a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200"
+                href="#">SALE</a>
+        </div>
+        <div class="flex gap-sm items-center">
+            <button
+                class="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 scale-95 transition-all">
+                <span class="material-symbols-outlined" data-icon="person">person</span>
+            </button>
+            <button
+                class="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 scale-95 transition-all">
+                <span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+            </button>
+            <button
+                class="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 scale-95 transition-all">
+                <span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+            </button>
+        </div>
+    </nav>
+    <!-- Main Content Canvas -->
+    <main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg md:py-xl">
+        <!-- Breadcrumb -->
+        <nav class="mb-gutter text-text-muted font-body-sm text-body-sm flex items-center gap-xs">
+            <a class="hover:text-primary transition-colors" href="#">Trang chủ</a>
+            <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+            <a class="hover:text-primary transition-colors" href="#">Nam</a>
+            <span class="material-symbols-outlined text-[16px]" data-icon="chevron_right">chevron_right</span>
+            <span class="text-on-background">Áo Khoác</span>
+        </nav>
+        <!-- Product Layout -->
+        <div class="flex flex-col lg:flex-row gap-xl">
+            <!-- Left Column: Images (55%) -->
+            <div class="w-full lg:w-[55%] flex flex-col gap-sm">
+                <div class="aspect-[3/4] bg-surface-alt rounded overflow-hidden relative">
+                    <img alt="Main Product" class="w-full h-full object-cover"
+                        data-alt="A high-fashion editorial shot of a premium minimalist men's blazer in a rich beige tone. The setting is a bright, modern studio with high-key lighting that emphasizes the fine texture and structured tailoring of the garment. The background is a crisp off-white, allowing the sophisticated color palette to pop. The mood is confident, clean, and trustworthy, perfectly aligning with a youthful yet refined aesthetic."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmfikCFCLeceG3Fu8Qt8Xw8R9lYE30urCn1IRKSpGEMpVen9kfWvBeUOg-bRB7ZnraX73VVGehQ9xVlVat7Uk-9rlgEOzVuvKJaJ-JkeACls_cJhqfkYWcxsFjGg0sMtrkKyMOeBK94OfzyZz4YI_AR4k6B12tqtuwHHUgXL2HAFO46eVdGdEWSJKkJd9o1hWO5nY6U_j9OEZ3gyCLLL1ya_FRz4gLo-jPkwDadaaAIsYO0fpbPM3KWpnj1h4MjfS1w-jX8CivDQ" />
+                </div>
+                <div class="grid grid-cols-5 gap-sm">
+                    <div
+                        class="aspect-square bg-surface-alt rounded overflow-hidden border-2 border-primary cursor-pointer">
+                        <img alt="Thumb 1" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPWbN5eGLemyV8CqJavIBh5SSm2zJZoGkB5mZ3dqybb90pOxFAJW5zh_pkmPSvm4KFxE5T42cx0CqBDTalk6hGXR0ySHE3Ofb0qWOpMwP1R9z7v9ehGpUMcWywWFf26JdyeJrXcXzwaH254jGSKT-ciSqONX8Pin5M1cLbMT_sGqhTy2_yOR0BIcPppIR5im2MXswbauVjRjfh2Mbag_A0LH_aHIzTIiWvY-tj9lGbtpRRVqZliZKvMbgv01Zsh5sKxzkcY2n1YQ" />
+                    </div>
+                    <div
+                        class="aspect-square bg-surface-alt rounded overflow-hidden opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img alt="Thumb 2" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuByMVAwr1uxAV92R2e-yjvlO-1IUFbZtsr0BuMJrygykkd3GH5GlXXo7GiR8Gg1x9ECHsue0Najn7h8QF13NvZwgF-rk7RrNEXS0M3h-aMaTSzEHzW1QaA2FrLs0hVvS5EP4ySO8j8Vch1BzuTnQxooW4lS8CmEJWGpX-owCdRSHRo-lGanz9q2qC3tWxh00QkDTlyMIOKPeBVSW1Qwi2FIKSD8wcGMPyEgdQXZ7yZ1z2i51kjbVN6moSy5B9vbgCHVgzi7qDhn-A" />
+                    </div>
+                    <div
+                        class="aspect-square bg-surface-alt rounded overflow-hidden opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img alt="Thumb 3" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsnVyae3UYjPqIaZvGia10b4xuHnndl3KC9HdK1-AQrMfr5gQHXU9OQnQYwmnR135zgU37CcUnhvERBigXIR7Q5nrN46-mMJj4gDpztunRmeBt5tmrQM-lx-kvA8fRlMvsAXAj32r9yhi1LLD38n8uKjlbU3aHVjVcTMeFAMfRaVaXjGRaGTDzVGAQE3OFXr2EpR-_HUwlZpHmnUGUHW22x61Eu8GBVuoG8LeCDJlF0XNFPBg1UtIfOPpRvtZ3So7O60PzXPW_GQ" />
+                    </div>
+                    <div
+                        class="aspect-square bg-surface-alt rounded overflow-hidden opacity-70 hover:opacity-100 transition-opacity cursor-pointer">
+                        <img alt="Thumb 4" class="w-full h-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpglrGYhh51A-SB1q49n3wSYouV-0FX51nOeT8oSdtyngk2VjZ4y4tBdBdruB-cl8E99w2AB6D2IoPQOJAHyOa859OGxa26OXikEeTzZlVtZZa_jzMorTK_rMjmC9xzY56HjwmGYzLN_qXSEGW9ZTOHYv1TCOGUqyUr2QOA8Cn2rIvpOaECj5H5cDDT0sMZAg75Rcz_TNMqXdXh8XwC4QScwK5_ficRUHDg703GCDp2b4PE1OKZOt7AuE1nzypJfVP09xDX2UaVw" />
+                    </div>
+                    <div
+                        class="aspect-square bg-surface-alt flex items-center justify-center cursor-pointer hover:bg-border-subtle transition-colors">
+                        <span class="material-symbols-outlined text-text-muted" data-icon="add">add</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Column: Details (45%) -->
+            <div class="w-full lg:w-[45%] flex flex-col">
+                <h1
+                    class="font-headline-lg text-headline-lg md:font-headline-xl md:text-headline-xl text-primary mb-sm">
+                    Áo Khoác Blazer Tối Giản Premium</h1>
+                <div class="flex items-center gap-xs mb-gutter">
+                    <div class="flex text-rating-gold">
+                        <span class="material-symbols-outlined text-[18px]" data-icon="star"
+                            data-weight="fill">star</span>
+                        <span class="material-symbols-outlined text-[18px]" data-icon="star"
+                            data-weight="fill">star</span>
+                        <span class="material-symbols-outlined text-[18px]" data-icon="star"
+                            data-weight="fill">star</span>
+                        <span class="material-symbols-outlined text-[18px]" data-icon="star"
+                            data-weight="fill">star</span>
+                        <span class="material-symbols-outlined text-[18px]" data-icon="star"
+                            data-weight="fill">star</span>
+                    </div>
+                    <a class="font-body-sm text-body-sm text-text-muted hover:text-primary transition-colors underline underline-offset-2"
+                        href="#">(124 đánh giá)</a>
+                </div>
+                <div class="flex items-baseline gap-sm mb-sm">
+                    <span class="font-price-display text-[24px] font-bold text-on-error-container">890.000₫</span>
+                    <span class="font-price-display text-[16px] text-text-muted line-through">1.250.000₫</span>
+                </div>
+                <div class="flex flex-wrap gap-xs mb-gutter pb-gutter border-b border-border-subtle">
+                    <span
+                        class="inline-flex items-center px-2 py-1 border border-dashed border-on-error-container text-on-error-container font-label-caps text-[10px] rounded-sm bg-error-container/20">GIẢM
+                        50K</span>
+                    <span
+                        class="inline-flex items-center px-2 py-1 border border-dashed border-success text-success font-label-caps text-[10px] rounded-sm bg-success/10">MIỄN
+                        PHÍ VẬN CHUYỂN</span>
+                </div>
+                <!-- Color Selector -->
+                <div class="mb-gutter">
+                    <div class="flex justify-between items-end mb-sm">
+                        <span class="font-label-caps text-label-caps text-text-muted">MÀU SẮC: <span
+                                class="text-primary font-bold ml-1">BEIGE</span></span>
+                    </div>
+                    <div class="flex gap-sm">
+                        <button
+                            class="w-8 h-8 rounded-full bg-[#E5D3B3] ring-2 ring-offset-2 ring-primary focus:outline-none"></button>
+                        <button
+                            class="w-8 h-8 rounded-full bg-[#1A1A2E] ring-1 ring-offset-2 ring-transparent hover:ring-outline-variant focus:outline-none"></button>
+                        <button
+                            class="w-8 h-8 rounded-full bg-[#222222] ring-1 ring-offset-2 ring-transparent hover:ring-outline-variant focus:outline-none"></button>
+                    </div>
+                </div>
+                <!-- Size Selector -->
+                <div class="mb-gutter">
+                    <div class="flex justify-between items-end mb-sm">
+                        <span class="font-label-caps text-label-caps text-text-muted">KÍCH CỠ:</span>
+                        <a class="font-body-sm text-body-sm text-primary underline underline-offset-2 hover:text-text-muted transition-colors"
+                            href="#">Bảng quy đổi kích cỡ</a>
+                    </div>
+                    <div class="flex flex-wrap gap-sm">
+                        <button
+                            class="w-12 h-12 flex items-center justify-center border border-border-subtle rounded text-primary hover:border-primary transition-colors font-body-md">S</button>
+                        <button
+                            class="w-12 h-12 flex items-center justify-center border-2 border-primary rounded text-primary font-bold font-body-md">M</button>
+                        <button
+                            class="w-12 h-12 flex items-center justify-center border border-border-subtle rounded text-primary hover:border-primary transition-colors font-body-md">L</button>
+                        <button
+                            class="w-12 h-12 flex items-center justify-center border border-border-subtle rounded text-primary hover:border-primary transition-colors font-body-md">XL</button>
+                        <button
+                            class="w-12 h-12 flex items-center justify-center border border-border-subtle rounded text-outline-variant bg-surface-container relative overflow-hidden font-body-md cursor-not-allowed">
+                            2XL
+                            <div
+                                class="absolute inset-0 w-full h-[1px] bg-outline-variant top-1/2 -translate-y-1/2 rotate-45 origin-center">
+                            </div>
+                        </button>
+                    </div>
+                </div>
+                <!-- Actions -->
+                <div class="flex gap-sm mb-gutter">
+                    <div class="flex border border-border-subtle rounded h-12">
+                        <button
+                            class="w-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined" data-icon="remove">remove</span>
+                        </button>
+                        <input class="w-12 text-center border-none focus:ring-0 font-body-md bg-transparent p-0"
+                            type="text" value="1" />
+                        <button
+                            class="w-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined" data-icon="add">add</span>
+                        </button>
+                    </div>
+                    <button
+                        class="flex-grow bg-primary text-on-primary font-label-caps text-label-caps rounded hover:bg-opacity-90 hover:scale-[1.02] transition-all duration-200 h-12 flex items-center justify-center tracking-widest shadow-sm">
+                        THÊM VÀO GIỎ HÀNG
+                    </button>
+                    <button
+                        class="w-12 h-12 border border-primary text-primary rounded flex items-center justify-center hover:bg-surface-alt transition-colors">
+                        <span class="material-symbols-outlined" data-icon="favorite_border">favorite_border</span>
+                    </button>
+                </div>
+                <!-- Trust Indicators -->
+                <div class="flex flex-col gap-xs py-sm border-t border-b border-border-subtle mb-lg">
+                    <div class="flex items-center gap-sm text-text-muted font-body-sm text-body-sm">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="cycle">cycle</span>
+                        <span>15 ngày đổi trả miễn phí</span>
+                    </div>
+                    <div class="flex items-center gap-sm text-text-muted font-body-sm text-body-sm">
+                        <span class="material-symbols-outlined text-[20px]" data-icon="verified">verified</span>
+                        <span>Hàng chính hãng 100%</span>
+                    </div>
+                </div>
+                <!-- Accordions -->
+                <div class="flex flex-col divide-y divide-border-subtle border-b border-border-subtle">
+                    <details class="group py-sm" open="">
+                        <summary
+                            class="flex justify-between items-center font-headline-md text-[18px] cursor-pointer list-none">
+                            Mô tả sản phẩm
+                            <span
+                                class="material-symbols-outlined transform group-open:rotate-180 transition-transform duration-200"
+                                data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="pt-sm text-text-muted font-body-sm text-body-sm space-y-xs">
+                            <p>Áo khoác blazer được thiết kế với phom dáng suông hiện đại, mang đậm tinh thần tối giản.
+                                Chất liệu vải premium giữ form tốt, ít nhăn và thoáng mát, phù hợp cho cả môi trường
+                                công sở và những buổi dạo phố.</p>
+                            <ul class="list-disc pl-5 mt-2">
+                                <li>Phom dáng suông rộng rãi (Oversized fit)</li>
+                                <li>Lớp lót lụa mềm mại bên trong</li>
+                                <li>Hai túi ốp phía trước tiện dụng</li>
+                            </ul>
+                        </div>
+                    </details>
+                    <details class="group py-sm">
+                        <summary
+                            class="flex justify-between items-center font-headline-md text-[18px] cursor-pointer list-none">
+                            Chất liệu &amp; Cách bảo quản
+                            <span
+                                class="material-symbols-outlined transform group-open:rotate-180 transition-transform duration-200"
+                                data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="pt-sm text-text-muted font-body-sm text-body-sm">
+                            <p>Chất liệu: 65% Polyester, 35% Viscose.<br />Bảo quản: Giặt khô hoặc giặt tay với nước
+                                lạnh. Tránh phơi trực tiếp dưới ánh nắng gắt.</p>
+                        </div>
+                    </details>
+                    <details class="group py-sm">
+                        <summary
+                            class="flex justify-between items-center font-headline-md text-[18px] cursor-pointer list-none">
+                            Chính sách giao hàng
+                            <span
+                                class="material-symbols-outlined transform group-open:rotate-180 transition-transform duration-200"
+                                data-icon="expand_more">expand_more</span>
+                        </summary>
+                        <div class="pt-sm text-text-muted font-body-sm text-body-sm">
+                            <p>Giao hàng tiêu chuẩn 2-4 ngày làm việc. Miễn phí vận chuyển cho đơn hàng từ 500.000₫.</p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+        <!-- Related Products -->
+        <section class="mt-xl pt-lg border-t border-border-subtle">
+            <h2
+                class="font-headline-md text-headline-md md:font-headline-lg md:text-headline-lg text-primary mb-lg text-center">
+                SẢN PHẨM GỢI Ý</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-gutter">
+                <!-- Card 1 -->
+                <div class="group cursor-pointer">
+                    <div class="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
+                        <img alt="Related Product 1"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDytaKxiTWBlDvt6D-by9KItpeM5yii2ibEuUGNaUSBh4YsSasgb-l6UALUcbUysI6YP5KB9Z53ln6-FFGurBY6i9aG-9Huz-jJuH5n_0ANS6SRD75HniTRSJsPiNSxzEsjS7WtrNhshP3Oxe2vX75vxDK9wpx6YfF04tHsf0-Y0MVpNTDxaxwWhmjGGn0m_wcHbhJyrDHatMPPiOVDIjuiYasezqX1xwqW_NlAy3GT3i0uUd-2HCT899yUOIYlMVQRlm6oXhpYeQ" />
+                        <div
+                            class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
+                            <button
+                                class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">QUICK
+                                ADD</button>
+                        </div>
+                    </div>
+                    <h3 class="font-body-md text-body-md text-primary mb-1">Áo Sơ Mi Linen Form Rộng</h3>
+                    <p class="font-price-display text-price-display text-text-muted">650.000₫</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="group cursor-pointer">
+                    <div class="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
+                        <img alt="Related Product 2"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDn9JQl7cGWLkKkSKd966AF-Z7qN32dzbm1E__P2DPI7kO8rAI5_aE-kpwad3Q8WKzPTLZRecAQbTfqUBoS5jKlkroJ7ALFiTCP7NPFLPPtXKQfswQb4R6vACwstdIC9NbaX4TI-MNi1vHSsbuYJH0IHQocV9ucSIN7uXNJotpPOcuy0GtIvMbz9DYVXY2MRuArlxVWUDcYkUx1bDUTG77h9K01AlYkybYKHAdaPybBP1cPk6IS-t7Omb3bfngBK93pekILmcwAtA" />
+                        <div
+                            class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
+                            <button
+                                class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">QUICK
+                                ADD</button>
+                        </div>
+                    </div>
+                    <h3 class="font-body-md text-body-md text-primary mb-1">Quần Tây Nam Ống Suông</h3>
+                    <p class="font-price-display text-price-display text-text-muted">790.000₫</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="group cursor-pointer">
+                    <div class="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
+                        <img alt="Related Product 3"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4KayvDwNltCsEVtPK59-IOE348CPDXq7YAZsR44t9COGL34ZVEcL-_LDk1yZVqM9mMA67XTxY-AWet5mFXMfPFvtqPLqR4S0dI9Ju4cQ69Ky42XbwdfJhbHTMqdwRKI4HtNEtRbGbe_GyXvtKZP0AuDszvTPwHHxsOBV20Dtkr7B83jZANlb7UGv6ZVD1rvxFRcSnzeBSK9u4RYC2fXcwAK_x5SBHu2hfES_YfX8MKRcbYz4WvRR13l0oBzfPYhHy_O8ntB__Dw" />
+                        <div
+                            class="absolute top-2 left-2 bg-on-error-container text-white px-2 py-1 text-[10px] font-label-caps rounded-sm">
+                            SALE</div>
+                        <div
+                            class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
+                            <button
+                                class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">QUICK
+                                ADD</button>
+                        </div>
+                    </div>
+                    <h3 class="font-body-md text-body-md text-primary mb-1">Áo Thun Cotton Basic</h3>
+                    <div class="flex gap-2 items-baseline">
+                        <span class="font-price-display text-price-display text-on-error-container">290.000₫</span>
+                        <span class="font-price-display text-[14px] text-text-muted line-through">450.000₫</span>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="group cursor-pointer">
+                    <div class="aspect-[3/4] bg-surface-alt rounded mb-sm overflow-hidden relative">
+                        <img alt="Related Product 4"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVOc7QIDQNuVr-3XppLOR1PT80ch_UCzXEbgbfcFq2y4ukWdhtk-B68oLTcaUd_cuMsMZdht8uv9o1YmJTkA5Ef9uaNyNwm9RI2tCV-Lrr8CY5IwiraFIa346yFEvLQLq3MeBgCRq3lBTKHPi_klf0se2aBviL18NIGczjsYh2VwKbMr-Fh7E67WDsOQIKgP3KS7eUeS_6JN7jAqr0l2x7sYFFYi5ul5oaw7EwixxoHOmHwUS0AM_xCeeQ8YsQ4nwUvqaS8W_hRg" />
+                        <div
+                            class="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-sm">
+                            <button
+                                class="w-full bg-surface text-primary font-label-caps text-label-caps py-2 rounded shadow-sm opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:bg-border-subtle">QUICK
+                                ADD</button>
+                        </div>
+                    </div>
+                    <h3 class="font-body-md text-body-md text-primary mb-1">Áo Khoác Denim Classic</h3>
+                    <p class="font-price-display text-price-display text-text-muted">1.150.000₫</p>
+                </div>
+            </div>
+        </section>
+        <section
+            class="mt-xl pt-lg border-t border-border-subtle bg-[#FAFAF8] -mx-margin-mobile md:-mx-margin-desktop px-margin-mobile md:px-margin-desktop">
+            <div class="max-w-container-max mx-auto py-lg">
+                <h2
+                    class="font-headline-md text-headline-md md:font-headline-lg md:text-headline-lg text-[#1A1A2E] mb-lg">
+                    ĐÁNH GIÁ SẢN PHẨM</h2>
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-xl mb-xl border-b border-border-subtle pb-xl">
+                    <div
+                        class="md:col-span-4 flex flex-col items-center justify-center text-center border-r border-border-subtle">
+                        <div class="text-[64px] font-bold text-[#1A1A2E] leading-none mb-2">4.8</div>
+                        <div class="flex text-[#C1272D] mb-2">
+                            <span class="material-symbols-outlined fill-1">star</span>
+                            <span class="material-symbols-outlined fill-1">star</span>
+                            <span class="material-symbols-outlined fill-1">star</span>
+                            <span class="material-symbols-outlined fill-1">star</span>
+                            <span class="material-symbols-outlined">star_half</span>
+                        </div>
+                        <p class="font-body-sm text-[#1A1A2E] opacity-70">124 đánh giá &amp; 45 nhận xét</p>
+                        <button
+                            class="mt-gutter bg-[#1A1A2E] text-white px-8 py-3 rounded font-label-caps text-label-caps hover:bg-[#C1272D] transition-colors">VIẾT
+                            ĐÁNH GIÁ</button>
+                    </div>
+                    <div class="md:col-span-8 flex flex-col justify-center gap-2">
+                        <div class="flex items-center gap-4">
+                            <span class="w-12 text-body-sm font-medium">5 sao</span>
+                            <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-[#C1272D] w-[85%]"></div>
+                            </div>
+                            <span class="w-12 text-body-sm text-right opacity-60">105</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-12 text-body-sm font-medium">4 sao</span>
+                            <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-[#C1272D] w-[12%]"></div>
+                            </div>
+                            <span class="w-12 text-body-sm text-right opacity-60">15</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-12 text-body-sm font-medium">3 sao</span>
+                            <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-[#C1272D] w-[2%]"></div>
+                            </div>
+                            <span class="w-12 text-body-sm text-right opacity-60">3</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-12 text-body-sm font-medium">2 sao</span>
+                            <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-[#C1272D] w-[1%]"></div>
+                            </div>
+                            <span class="w-12 text-body-sm text-right opacity-60">1</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="w-12 text-body-sm font-medium">1 sao</span>
+                            <div class="flex-grow h-2 bg-surface-container rounded-full overflow-hidden">
+                                <div class="h-full bg-[#C1272D] w-[0%]"></div>
+                            </div>
+                            <span class="w-12 text-body-sm text-right opacity-60">0</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 mb-lg items-center">
+                    <span class="text-body-sm font-bold mr-2">Lọc theo:</span>
+                    <button
+                        class="px-4 py-1.5 border border-[#1A1A2E] bg-[#1A1A2E] text-white text-body-sm rounded-full">Tất
+                        cả</button>
+                    <button
+                        class="px-4 py-1.5 border border-border-subtle hover:border-[#1A1A2E] text-body-sm rounded-full">5
+                        Sao (105)</button>
+                    <button
+                        class="px-4 py-1.5 border border-border-subtle hover:border-[#1A1A2E] text-body-sm rounded-full">Có
+                        hình ảnh (45)</button>
+                </div>
+                <div class="space-y-lg">
+                    <div class="bg-white p-gutter rounded-lg shadow-sm border border-border-subtle">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-sm">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-[#1A1A2E]">
+                                    H</div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-[#1A1A2E]">Hoàng Nam</span>
+                                        <span
+                                            class="flex items-center gap-1 text-success text-[10px] font-bold border border-success/30 px-1.5 py-0.5 rounded-full bg-success/5">
+                                            <span class="material-symbols-outlined text-[12px]">verified</span>
+                                            Đã mua hàng
+                                        </span>
+                                    </div>
+                                    <div class="flex text-[#C1272D] mt-1">
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="text-body-sm text-text-muted ml-2 font-normal">15/05/2024</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <span class="text-body-sm text-text-muted">Phân loại: <span
+                                    class="text-[#1A1A2E] font-medium">Beige / Size M</span></span>
+                        </div>
+                        <p class="text-body-md text-[#1A1A2E] mb-4">Áo rất đẹp, chất vải dầy dặn và đứng form. Mình cao
+                            1m75 nặng 68kg mặc size M rất vừa vặn. Màu beige sang trọng, dễ phối đồ.</p>
+                        <div class="flex gap-2 mb-6">
+                            <div class="w-24 h-24 rounded overflow-hidden border border-border-subtle cursor-pointer">
+                                <img class="w-full h-full object-cover"
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPWbN5eGLemyV8CqJavIBh5SSm2zJZoGkB5mZ3dqybb90pOxFAJW5zh_pkmPSvm4KFxE5T42cx0CqBDTalk6hGXR0ySHE3Ofb0qWOpMwP1R9z7v9ehGpUMcWywWFf26JdyeJrXcXzwaH254jGSKT-ciSqONX8Pin5M1cLbMT_sGqhTy2_yOR0BIcPppIR5im2MXswbauVjRjfh2Mbag_A0LH_aHIzTIiWvY-tj9lGbtpRRVqZliZKvMbgv01Zsh5sKxzkcY2n1YQ" />
+                            </div>
+                        </div>
+                        <div class="bg-surface-container/50 p-4 rounded mb-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="font-bold text-body-sm text-[#C1272D]">CLOTHY Phản hồi:</span>
+                            </div>
+                            <p class="text-body-sm text-[#1A1A2E] opacity-80">Chào bạn Nam, cảm ơn bạn đã ủng hộ CLOTHY.
+                                Rất vui vì bạn hài lòng với sản phẩm Blazer Premium lần này. Chúc bạn có những trải
+                                nghiệm tuyệt vời cùng sản phẩm nhé!</p>
+                        </div>
+                        <div class="flex items-center gap-4 border-t border-border-subtle pt-4">
+                            <button
+                                class="flex items-center gap-1 text-body-sm text-text-muted hover:text-[#C1272D] transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+                                Hữu ích (12)
+                            </button>
+                            <button
+                                class="flex items-center gap-1 text-body-sm text-text-muted hover:text-[#1A1A2E] transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+                                Trả lời
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-gutter rounded-lg shadow-sm border border-border-subtle">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-sm">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-[#1A1A2E]">
+                                    A</div>
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-[#1A1A2E]">Anh Tuấn</span>
+                                        <span
+                                            class="flex items-center gap-1 text-success text-[10px] font-bold border border-success/30 px-1.5 py-0.5 rounded-full bg-success/5">
+                                            <span class="material-symbols-outlined text-[12px]">verified</span>
+                                            Đã mua hàng
+                                        </span>
+                                    </div>
+                                    <div class="flex text-[#C1272D] mt-1">
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="material-symbols-outlined text-[14px] fill-1">star</span>
+                                        <span class="text-body-sm text-text-muted ml-2 font-normal">12/05/2024</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <span class="text-body-sm text-text-muted">Phân loại: <span
+                                    class="text-[#1A1A2E] font-medium">Dark Navy / Size L</span></span>
+                        </div>
+                        <p class="text-body-md text-[#1A1A2E] mb-4">Giao hàng nhanh, đóng gói rất cẩn thận. Áo không bị
+                            nhăn khi lấy ra khỏi hộp. Xứng đáng với giá tiền.</p>
+                        <div class="flex items-center gap-4 border-t border-border-subtle pt-4">
+                            <button
+                                class="flex items-center gap-1 text-body-sm text-text-muted hover:text-[#C1272D] transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">thumb_up</span>
+                                Hữu ích (5)
+                            </button>
+                            <button
+                                class="flex items-center gap-1 text-body-sm text-text-muted hover:text-[#1A1A2E] transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chat_bubble</span>
+                                Trả lời
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-lg flex justify-center">
+                    <button
+                        class="text-[#1A1A2E] font-bold border-b-2 border-[#1A1A2E] pb-1 hover:text-[#C1272D] hover:border-[#C1272D] transition-all text-body-sm">XEM
+                        THÊM 122 ĐÁNH GIÁ</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer
+        class="bg-primary-container dark:bg-black text-on-primary-container dark:text-surface-container-highest full-width mt-auto">
+        <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-xl w-full max-w-container-max mx-auto">
+            <div class="col-span-1 md:col-span-1">
+                <div
+                    class="font-display-hero text-headline-lg text-on-primary dark:text-surface-container-lowest mb-lg">
+                    CLOTHY</div>
+                <p class="font-body-sm text-body-sm mb-4">© 2024 CLOTHY.<br />All rights reserved.</p>
+            </div>
+            <div class="flex flex-col gap-sm">
+                <a class="font-body-sm text-body-sm text-on-primary-container dark:text-surface-variant hover:text-on-primary dark:hover:text-white transition-colors"
+                    href="#">Về chúng tôi</a>
+            </div>
+            <div class="flex flex-col gap-sm">
+                <a class="font-body-sm text-body-sm text-on-primary-container dark:text-surface-variant hover:text-on-primary dark:hover:text-white transition-colors"
+                    href="#">Hỗ trợ</a>
+                <a class="font-body-sm text-body-sm text-on-primary-container dark:text-surface-variant hover:text-on-primary dark:hover:text-white transition-colors"
+                    href="#">Chính sách</a>
+            </div>
+            <div class="flex flex-col gap-sm">
+                <a class="font-body-sm text-body-sm text-on-primary-container dark:text-surface-variant hover:text-on-primary dark:hover:text-white transition-colors"
+                    href="#">Mạng xã hội</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

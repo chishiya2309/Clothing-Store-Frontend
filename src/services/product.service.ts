@@ -1,3 +1,38 @@
+import api from './api' 
+
+export interface ProductVariantResponse {
+  id: number
+  sku: string
+  size: string
+  color: string
+  stockQuantity: number
+  additionalPrice: number
+}
+
+export interface ProductImageResponse {
+  imageUrl: string
+  imageType: string
+  displayOrder: number
+  altText: string
+}
+
+export interface ProductDetailResponse {
+  id: number
+  name: string
+  slug: string
+  description: string
+  material: string
+  careInstructions: string
+  price: number
+  originalPrice: number | null
+  averageRating: number
+  totalSold: number
+  categoryName: string
+  categorySlug: string
+  images: ProductImageResponse[]
+  variants: ProductVariantResponse[]
+}
+
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
@@ -65,5 +100,10 @@ export const productService = {
             params: { keyword, limit }
         });
         return response.data.data;
+    },
+
+    getProductBySlug: async (slug: string): Promise<ProductDetailResponse> => {
+        const response = await axios.get(`${API_URL}/products/${slug}`)
+        return response.data.data
     }
 };

@@ -1,0 +1,15 @@
+services:
+  clothing-store-frontend:
+    container_name: clothing-store-frontend
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - clothing-store-service
+
+networks:
+  clothing-store-service:
+    name: clothing-store-service
+    external: true

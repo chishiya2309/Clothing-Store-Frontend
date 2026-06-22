@@ -7,6 +7,7 @@ import { registerSchema } from '../utils/auth-schemas';
 import type { RegisterFormData } from '../utils/auth-schemas';
 import { authService } from '../services/auth.service';
 import { useAuthStore } from '../store/authStore';
+import { useCartStore } from '../store/cartStore';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -42,6 +43,13 @@ export default function Register() {
             name: response.data.name,
             role: response.data.role
           });
+
+          // Synchronize guest cart items with DB
+          try {
+            await useCartStore.getState().syncCartAfterLogin();
+          } catch (syncErr) {
+            console.error('Failed to sync cart on Google registration:', syncErr);
+          }
 
           const role = response.data.role?.toLowerCase();
           if (role === 'admin' || role === 'staff') {

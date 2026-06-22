@@ -6,6 +6,7 @@ import { loginSchema } from '../utils/auth-schemas';
 import type { LoginFormData } from '../utils/auth-schemas';
 import { authService } from '../services/auth.service';
 import { useAuthStore } from '../store/authStore';
+import { useCartStore } from '../store/cartStore';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,9 +32,19 @@ export default function Login() {
           role: response.data.role
         });
         
+        // Synchronize guest cart items with DB
+        try {
+          await useCartStore.getState().syncCartAfterLogin();
+        } catch (syncErr) {
+          console.error('Failed to sync cart on login:', syncErr);
+        }
+
+        const redirectPath = searchParams.get('redirect');
         const role = response.data.role?.toLowerCase();
         if (role === 'admin' || role === 'staff') {
           navigate('/admin');
+        } else if (redirectPath) {
+          navigate(`/${redirectPath}`);
         } else {
           navigate('/');
         }
@@ -159,14 +170,29 @@ export default function Login() {
                       role: response.data.role
                     });
 
+                    // Synchronize guest cart items with DB
+                    try {
+                      await useCartStore.getState().syncCartAfterLogin();
+                    } catch (syncErr) {
+                      console.error('Failed to sync cart on Google login:', syncErr);
+                    }
+
+                    const redirectPath = searchParams.get('redirect');
                     const role = response.data.role?.toLowerCase();
                     if (role === 'admin' || role === 'staff') {
                       navigate('/admin');
+                    } else if (redirectPath) {
+                      navigate(`/${redirectPath}`);
                     } else {
                       navigate('/');
                     }
                   } else {
-                    navigate('/');
+                    const redirectPath = searchParams.get('redirect');
+                    if (redirectPath) {
+                      navigate(`/${redirectPath}`);
+                    } else {
+                      navigate('/');
+                    }
                   }
                 } catch (error: any) {
                   console.error('Google login failed', error);
