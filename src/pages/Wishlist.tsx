@@ -8,7 +8,7 @@ export default function Wishlist() {
   const [pageData, setPageData] = useState<PageResponse<ProductGridResponse> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  const { wishlistProductIds, toggleWishlist } = useWishlistStore();
+  const { toggleWishlist } = useWishlistStore();
 
   const fetchWishlist = async (page: number) => {
     setIsLoading(true);
