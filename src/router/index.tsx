@@ -19,6 +19,8 @@ import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
 import Membership from '../pages/Membership'
 import Wishlist from '../pages/Wishlist'
+import OrderHistory from '../pages/OrderHistory'
+import OrderDetail from '../pages/OrderDetail'
 import ProtectedRoute from './ProtectedRoute'
 import CategoryProducts from '../pages/CategoryProducts'
 
@@ -47,6 +49,8 @@ const router = createBrowserRouter([
             children: [
               { path: 'profile', element: <Profile /> },
               { path: 'addresses', element: <Addresses /> },
+              { path: 'orders', element: <OrderHistory /> },
+              { path: 'orders/:orderCode', element: <OrderDetail /> },
               { path: 'membership', element: <Membership /> },
               { path: 'favorites', element: <Wishlist /> },
               // Thêm các trang quản lý tài khoản khác (orders, ...) ở đây
