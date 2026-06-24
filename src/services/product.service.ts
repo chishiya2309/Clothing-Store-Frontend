@@ -111,5 +111,17 @@ export const productService = {
             params: { limit }
         });
         return response.data.data;
+    },
+
+    getNewArrivals: async (): Promise<ProductGridResponse[]> => {
+        const response = await axios.get(`${API_URL}/products/new-arrivals`);
+        return response.data.data;
+    },
+
+    getBestSellers: async (limit: number = 4): Promise<ProductGridResponse[]> => {
+        const response = await axios.get(`${API_URL}/guest/products/best-sellers`, {
+            params: { limit }
+        });
+        return response.data.data;
     }
 };
