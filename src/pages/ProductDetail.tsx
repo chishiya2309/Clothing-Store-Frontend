@@ -2,28 +2,13 @@ import { useParams, Link } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { useState, useEffect } from 'react'
 import { productService } from '../services/product.service'
-import type { ProductDetailResponse } from '../services/product.service'
+import type { ProductDetailResponse, ProductGridResponse } from '../services/product.service'
 import { useWishlistStore } from '../store/wishlistStore'
 import { useAuthStore } from '../store/authStore'
-import type { ProductGridResponse } from '../services/product.service'
 
 interface ColorOption {
   name: string
   hex: string
-}
-
-interface ProductData {
-  id: number
-  name: string
-  price: number
-  originalPrice?: number
-  description: string
-  material: string
-  care: string
-  colors: ColorOption[]
-  sizes: string[]
-  images: string[]
-  outOfStockSizes?: string[]
 }
 
 export default function ProductDetail() {

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>CLOTHY - Chi tiết đơn hàng</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@400;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+    <!-- Tailwind Configuration -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e2e3e1",
+                        "surface-container-high": "#e8e8e6",
+                        "tertiary-fixed": "#ffdad7",
+                        "surface-tint": "#5d5c74",
+                        "on-surface-variant": "#47464c",
+                        "on-error": "#ffffff",
+                        "text-muted": "#8C8C8C",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "border-subtle": "#E5E5E0",
+                        "warning": "#E8A317",
+                        "tertiary": "#050000",
+                        "on-primary-fixed": "#1a1a2e",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#f0ddbf",
+                        "surface-container-low": "#f4f4f2",
+                        "secondary-fixed": "#f3e0c2",
+                        "on-secondary-fixed-variant": "#51452f",
+                        "inverse-on-surface": "#f1f1ef",
+                        "background": "#f9f9f7",
+                        "surface-container-highest": "#e2e3e1",
+                        "surface-bright": "#f9f9f7",
+                        "on-background": "#1a1c1b",
+                        "success": "#2D8F4E",
+                        "secondary": "#6a5d45",
+                        "inverse-surface": "#2f3130",
+                        "primary": "#00000b",
+                        "on-secondary-fixed": "#241a07",
+                        "tertiary-container": "#420004",
+                        "surface-alt": "#F0EDE8",
+                        "surface": "#f9f9f7",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#c6c4df",
+                        "tertiary-fixed-dim": "#ffb3ae",
+                        "on-primary-container": "#83829b",
+                        "on-secondary": "#ffffff",
+                        "outline": "#78767d",
+                        "on-secondary-container": "#6f6149",
+                        "text-primary": "#2D2D2D",
+                        "rating-gold": "#F5A623",
+                        "on-tertiary-container": "#ed4848",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c8c5cd",
+                        "surface-container": "#eeeeec",
+                        "on-tertiary-fixed-variant": "#930015",
+                        "on-surface": "#1a1c1b",
+                        "secondary-fixed-dim": "#d6c4a7",
+                        "surface-dim": "#dadad8",
+                        "primary-fixed": "#e2e0fc",
+                        "inverse-primary": "#c6c4df",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#45455b",
+                        "on-tertiary-fixed": "#410004",
+                        "primary-container": "#1a1a2e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "xl": "80px",
+                        "sm": "12px",
+                        "lg": "48px",
+                        "margin-mobile": "24px",
+                        "margin-desktop": "80px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "md": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Outfit"],
+                        "headline-lg-mobile": ["Outfit"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Outfit"],
+                        "display-hero": ["Outfit"],
+                        "price-display": ["Space Mono"],
+                        "label-caps": ["Outfit"],
+                        "headline-md": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-hero": ["56px", { "lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "price-display": ["18px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <nav
+        class="bg-surface border-b border-border-subtle flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 sticky top-0 z-50">
+        <!-- Mobile Menu Icon (Placeholder) -->
+        <div class="md:hidden">
+            <span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+        </div>
+        <!-- Brand -->
+        <div class="font-display-hero text-headline-md tracking-tighter text-primary">
+            <a href="#">CLOTHY</a>
+        </div>
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex gap-gutter items-center">
+            <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200"
+                href="#">NAM</a>
+            <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200"
+                href="#">NỮ</a>
+            <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200"
+                href="#">TRẺ EM</a>
+            <a class="text-on-surface-variant font-label-caps text-label-caps hover:text-primary transition-colors duration-200"
+                href="#">BỘ SƯU TẬP</a>
+            <a class="text-error font-label-caps text-label-caps hover:text-error transition-colors duration-200"
+                href="#">SALE</a>
+        </div>
+        <!-- Trailing Icons -->
+        <div class="flex gap-md items-center">
+            <button aria-label="Search"
+                class="text-primary hover:text-primary-container transition-colors duration-200">
+                <span class="material-symbols-outlined">search</span>
+            </button>
+            <button aria-label="Account"
+                class="text-primary hover:text-primary-container transition-colors duration-200 hidden md:block">
+                <span class="material-symbols-outlined fill text-primary">person</span>
+            </button>
+            <button aria-label="Wishlist"
+                class="text-primary hover:text-primary-container transition-colors duration-200 hidden md:block">
+                <span class="material-symbols-outlined">favorite</span>
+            </button>
+            <button aria-label="Cart"
+                class="text-primary hover:text-primary-container transition-colors duration-200 relative">
+                <span class="material-symbols-outlined">shopping_bag</span>
+                <span
+                    class="absolute -top-1 -right-1 bg-primary-container text-on-primary w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold">2</span>
+            </button>
+        </div>
+    </nav>
+    <!-- Main Content Layout -->
+    <main class="flex-grow w-full max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg">
+        <div class="flex flex-col md:flex-row gap-xl">
+            <!-- Sidebar Navigation (Left Column) -->
+            <aside class="hidden md:flex flex-col w-64 flex-shrink-0 border-r border-border-subtle pr-md">
+                <h2 class="font-headline-md text-headline-md mb-lg">TÀI KHOẢN</h2>
+                <nav class="flex flex-col gap-4">
+                    <a class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors"
+                        href="#">
+                        <span class="material-symbols-outlined">grid_view</span>
+                        TỔNG QUAN
+                    </a>
+                    <a class="flex items-center gap-3 text-primary font-body-md text-body-md font-medium bg-surface-alt px-3 py-2 -ml-3 rounded"
+                        href="#">
+                        <span class="material-symbols-outlined fill">local_shipping</span>
+                        ĐƠN HÀNG CỦA TÔI
+                    </a>
+                    <a class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors"
+                        href="#">
+                        <span class="material-symbols-outlined">location_on</span>
+                        ĐỊA CHỈ
+                    </a>
+                    <a class="flex items-center gap-3 text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors"
+                        href="#">
+                        <span class="material-symbols-outlined">settings</span>
+                        CÀI ĐẶT
+                    </a>
+                    <div class="h-px bg-border-subtle my-4"></div>
+                    <a class="flex items-center gap-3 text-error font-body-md text-body-md hover:text-on-error-container transition-colors"
+                        href="#">
+                        <span class="material-symbols-outlined">logout</span>
+                        ĐĂNG XUẤT
+                    </a>
+                </nav>
+            </aside>
+            <!-- Main Detail Area (Right Column) -->
+            <section class="flex-grow flex flex-col gap-lg w-full">
+                <!-- Breadcrumb & Header -->
+                <div>
+                    <nav aria-label="Breadcrumb" class="flex text-text-muted font-body-sm text-body-sm mb-4">
+                        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                            <li class="inline-flex items-center">
+                                <a class="hover:text-primary" href="#">Tài khoản</a>
+                            </li>
+                            <li>
+                                <div class="flex items-center">
+                                    <span class="material-symbols-outlined text-sm mx-1">chevron_right</span>
+                                    <a class="hover:text-primary" href="#">Đơn hàng</a>
+                                </div>
+                            </li>
+                            <li aria-current="page">
+                                <div class="flex items-center">
+                                    <span class="material-symbols-outlined text-sm mx-1">chevron_right</span>
+                                    <span class="text-on-surface">Chi tiết</span>
+                                </div>
+                            </li>
+                        </ol>
+                    </nav>
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg">Đơn hàng #CL-98234</h1>
+                        <span
+                            class="inline-flex items-center px-4 py-1.5 rounded-full bg-primary-container text-on-primary font-label-caps text-label-caps self-start sm:self-auto">
+                            ĐANG GIAO HÀNG
+                        </span>
+                    </div>
+                    <p class="text-text-muted font-body-sm text-body-sm mt-2">Ngày đặt: 24/10/2023, 14:30</p>
+                </div>
+                <!-- Order Timeline Tracker -->
+                <div class="bg-surface rounded-lg border border-border-subtle p-md md:p-lg">
+                    <h3 class="font-headline-md text-body-lg font-semibold mb-8">Trạng thái giao hàng</h3>
+                    <div class="relative flex flex-col md:flex-row justify-between w-full">
+                        <!-- Progress Line Background -->
+                        <div
+                            class="absolute left-[15px] top-0 bottom-0 w-0.5 md:w-full md:h-0.5 bg-border-subtle md:top-[15px] md:left-0 z-0">
+                        </div>
+                        <!-- Active Progress Line -->
+                        <div
+                            class="absolute left-[15px] top-0 h-2/3 w-0.5 md:h-0.5 md:w-2/3 bg-primary-container md:top-[15px] md:left-0 z-0 transition-all duration-500">
+                        </div>
+                        <!-- Stage 1 -->
+                        <div
+                            class="flex flex-row md:flex-col items-start md:items-center relative z-10 gap-4 md:gap-2 mb-6 md:mb-0 w-full md:w-1/4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center shrink-0 border-4 border-surface">
+                                <span class="material-symbols-outlined text-[16px]">check</span>
+                            </div>
+                            <div class="md:text-center mt-1 md:mt-2">
+                                <p class="font-body-sm text-body-sm font-semibold text-on-surface">Đã đặt hàng</p>
+                                <p class="font-body-sm text-body-sm text-text-muted text-[12px] mt-1">24/10, 14:30</p>
+                            </div>
+                        </div>
+                        <!-- Stage 2 -->
+                        <div
+                            class="flex flex-row md:flex-col items-start md:items-center relative z-10 gap-4 md:gap-2 mb-6 md:mb-0 w-full md:w-1/4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center shrink-0 border-4 border-surface">
+                                <span class="material-symbols-outlined text-[16px]">inventory_2</span>
+                            </div>
+                            <div class="md:text-center mt-1 md:mt-2">
+                                <p class="font-body-sm text-body-sm font-semibold text-on-surface">Đã xác nhận</p>
+                                <p class="font-body-sm text-body-sm text-text-muted text-[12px] mt-1">24/10, 16:00</p>
+                            </div>
+                        </div>
+                        <!-- Stage 3 (Active) -->
+                        <div
+                            class="flex flex-row md:flex-col items-start md:items-center relative z-10 gap-4 md:gap-2 mb-6 md:mb-0 w-full md:w-1/4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-surface border-2 border-primary-container text-primary-container flex items-center justify-center shrink-0 ring-4 ring-surface shadow-[0_0_0_4px_rgba(26,26,46,0.1)]">
+                                <div class="w-2.5 h-2.5 rounded-full bg-primary-container"></div>
+                            </div>
+                            <div class="md:text-center mt-1 md:mt-2">
+                                <p class="font-body-sm text-body-sm font-semibold text-primary-container">Đang giao hàng
+                                </p>
+                                <p class="font-body-sm text-body-sm text-text-muted text-[12px] mt-1">25/10, 08:15</p>
+                            </div>
+                        </div>
+                        <!-- Stage 4 (Pending) -->
+                        <div
+                            class="flex flex-row md:flex-col items-start md:items-center relative z-10 gap-4 md:gap-2 w-full md:w-1/4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-surface border-2 border-border-subtle text-border-subtle flex items-center justify-center shrink-0 border-4 border-surface">
+                                <span class="material-symbols-outlined text-[16px]">home</span>
+                            </div>
+                            <div class="md:text-center mt-1 md:mt-2 opacity-50">
+                                <p class="font-body-sm text-body-sm font-semibold text-on-surface">Thành công</p>
+                                <p class="font-body-sm text-body-sm text-text-muted text-[12px] mt-1">Dự kiến: 26/10</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Two Column Details: Shipping & Payment -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+                    <!-- Shipping Info -->
+                    <div class="bg-surface rounded-lg border border-border-subtle p-md">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="material-symbols-outlined text-primary-container">location_on</span>
+                            <h3 class="font-headline-md text-body-lg font-semibold">Thông tin giao hàng</h3>
+                        </div>
+                        <div class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant">
+                            <p><strong class="text-on-surface font-medium">Nguyễn Văn A</strong></p>
+                            <p>090 123 4567</p>
+                            <p class="leading-relaxed">123 Đường Lê Lợi, Phường Bến Nghé<br />Quận 1, Thành phố Hồ Chí
+                                Minh<br />Việt Nam</p>
+                        </div>
+                    </div>
+                    <!-- Payment Method -->
+                    <div class="bg-surface rounded-lg border border-border-subtle p-md">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="material-symbols-outlined text-primary-container">payments</span>
+                            <h3 class="font-headline-md text-body-lg font-semibold">Phương thức thanh toán</h3>
+                        </div>
+                        <div class="flex items-center gap-4 bg-surface-alt p-3 rounded border border-border-subtle">
+                            <span class="material-symbols-outlined text-success">local_atm</span>
+                            <div class="font-body-sm text-body-sm">
+                                <p class="font-medium text-on-surface">Thanh toán khi nhận hàng (COD)</p>
+                                <p class="text-text-muted text-[13px] mt-0.5">Chưa thanh toán</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product List -->
+                <div class="bg-surface rounded-lg border border-border-subtle overflow-hidden">
+                    <div class="p-md border-b border-border-subtle bg-surface-alt/50">
+                        <h3 class="font-headline-md text-body-lg font-semibold">Sản phẩm (2)</h3>
+                    </div>
+                    <div class="flex flex-col">
+                        <!-- Item 1 -->
+                        <div
+                            class="flex items-start gap-md p-md border-b border-border-subtle hover:bg-surface-alt/30 transition-colors">
+                            <div class="w-20 h-24 bg-surface-variant rounded overflow-hidden flex-shrink-0">
+                                <img alt="Áo khoác Blazer" class="w-full h-full object-cover"
+                                    data-alt="A modern, high-fashion product photography shot of a structured navy blue blazer for men. The blazer is laid flat against a pristine, seamless white background, emphasizing its clean lines and minimalist cut. Soft, diffused studio lighting creates subtle shadows that highlight the premium texture of the wool blend fabric. The overall aesthetic is highly editorial, reflecting a sophisticated, contemporary Vietnamese fashion brand's visual identity."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfjzYGdW6BEIztwIphCCyPtIqgLrxGPbqcFQ7WMr5xZIL6niDO_NsvjbYjowoSSitweWAHpztTOmyFVgDSQqZXOmP8FV63AoWoOdvaiAZvJ7GD8PHpiUe5deK_tiHF2AgQ3guFHw6DFvGU3zyO89_y-riaE9km-LrENdhlxOD8Hs4iKATdSe32NaAhDYwtuCpA_kz9CFWkOcYF0dZNl8XwxsIj8x6l35srQJwsj7lqA7SptI80oLSJyyluqwxeQjFwG_XfDiGElg" />
+                            </div>
+                            <div class="flex-grow flex flex-col md:flex-row justify-between gap-4">
+                                <div class="flex flex-col">
+                                    <h4 class="font-body-md text-body-md font-medium text-on-surface mb-1">Áo khoác
+                                        Blazer Minimalist</h4>
+                                    <p class="font-body-sm text-body-sm text-text-muted mb-2">Màu: Navy | Size: L</p>
+                                    <span class="md:hidden font-price-display text-price-display mt-auto">1,450,000đ
+                                        <span class="text-sm font-normal text-text-muted ml-1">x1</span></span>
+                                </div>
+                                <div class="hidden md:flex flex-col items-end justify-between">
+                                    <p class="font-price-display text-price-display">1,450,000đ</p>
+                                    <p class="font-body-sm text-body-sm text-text-muted mt-2">SL: 1</p>
+                                    <p
+                                        class="font-price-display text-price-display font-bold mt-auto pt-4 text-primary-container">
+                                        1,450,000đ</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Item 2 -->
+                        <div class="flex items-start gap-md p-md hover:bg-surface-alt/30 transition-colors">
+                            <div class="w-20 h-24 bg-surface-variant rounded overflow-hidden flex-shrink-0">
+                                <img alt="Áo thun Basic" class="w-full h-full object-cover"
+                                    data-alt="A clean, minimalist product shot of a premium white cotton t-shirt folded neatly. The t-shirt rests on a soft, off-white surface, bathed in natural, bright light that creates a crisp, clean aesthetic. The focus is on the flawless, smooth texture of the high-quality fabric. The composition is simple and elegant, embodying a modern, elevated basics fashion brand."
+                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwJNGBTM4rmCNmCOIobEZCjb-RfZHu9HBQHZoUmiOAxGRsRD-UpxtpDvxRn0UkoieycMHHTxiUw6eI7Y2W02W3Cdrg81MU2VstIqwqxjogM8h4QQeJRhgkpNbs5YpPlzkGyrJ87sEfBUdG_BjNtySflY6M6KFIWfcNeZGfCvQZo-12tTSpW4S6Ve4xqzdVQkHe22Dy7vLMOUhVaiKKeknpZLtv4_oaUdcsHTk5Q0FHtwhbdspDfYsO6HHK7I8sgHLmdjyLAQq2aQ" />
+                            </div>
+                            <div class="flex-grow flex flex-col md:flex-row justify-between gap-4">
+                                <div class="flex flex-col">
+                                    <h4 class="font-body-md text-body-md font-medium text-on-surface mb-1">Áo thun
+                                        Premium Cotton</h4>
+                                    <p class="font-body-sm text-body-sm text-text-muted mb-2">Màu: Trắng | Size: M</p>
+                                    <span class="md:hidden font-price-display text-price-display mt-auto">350,000đ <span
+                                            class="text-sm font-normal text-text-muted ml-1">x2</span></span>
+                                </div>
+                                <div class="hidden md:flex flex-col items-end justify-between">
+                                    <p class="font-price-display text-price-display">350,000đ</p>
+                                    <p class="font-body-sm text-body-sm text-text-muted mt-2">SL: 2</p>
+                                    <p
+                                        class="font-price-display text-price-display font-bold mt-auto pt-4 text-primary-container">
+                                        700,000đ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order Summary & Actions Container -->
+                <div class="flex flex-col md:flex-row gap-lg justify-between items-end mt-4">
+                    <!-- Actions -->
+                    <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3 order-2 md:order-1">
+                        <button
+                            class="px-6 py-3 border border-outline text-on-surface font-body-md text-body-md rounded hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+                            Hủy đơn hàng
+                        </button>
+                        <button
+                            class="px-6 py-3 bg-primary-container text-on-primary font-body-md text-body-md rounded hover:opacity-90 hover:-translate-y-0.5 transition-all shadow-sm flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                            Liên hệ hỗ trợ
+                        </button>
+                    </div>
+                    <!-- Summary -->
+                    <div
+                        class="w-full md:w-80 bg-surface p-md rounded-lg border border-border-subtle order-1 md:order-2">
+                        <div
+                            class="flex flex-col gap-3 font-body-md text-body-md text-on-surface-variant border-b border-border-subtle pb-4 mb-4">
+                            <div class="flex justify-between">
+                                <span>Tạm tính</span>
+                                <span class="font-price-display text-on-surface">2,150,000đ</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Phí vận chuyển</span>
+                                <span class="font-price-display text-on-surface">Miễn phí</span>
+                            </div>
+                            <div class="flex justify-between text-success">
+                                <span>Giảm giá (Mã: CLOTHY10)</span>
+                                <span class="font-price-display">-215,000đ</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="font-headline-md text-body-lg font-semibold text-on-surface">Tổng cộng</span>
+                            <span
+                                class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary-container">1,935,000đ</span>
+                        </div>
+                        <p class="text-right text-[12px] text-text-muted mt-2 font-body-sm">(Đã bao gồm VAT nếu có)</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-surface-container-low border-t border-border-subtle w-full mt-auto">
+        <div
+            class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-xl max-w-container-max mx-auto w-full">
+            <!-- Brand Column -->
+            <div class="flex flex-col gap-4">
+                <span class="font-display-hero text-headline-md text-primary">CLOTHY</span>
+                <p class="font-body-sm text-body-sm text-on-surface-variant max-w-[200px]">
+                    Thương hiệu thời trang tối giản đương đại dành cho người Việt.
+                </p>
+            </div>
+            <!-- Links -->
+            <div class="flex flex-col gap-4">
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all duration-300"
+                    href="#">VỀ CHÚNG TÔI</a>
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all duration-300"
+                    href="#">HỖ TRỢ</a>
+            </div>
+            <div class="flex flex-col gap-4">
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all duration-300"
+                    href="#">CHÍNH SÁCH</a>
+                <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary underline transition-all duration-300"
+                    href="#">LIÊN HỆ</a>
+            </div>
+            <!-- Copyright -->
+            <div class="flex flex-col gap-4 md:items-end justify-end">
+                <p class="font-body-sm text-body-sm text-text-muted uppercase text-left md:text-right tracking-wider">
+                    © 2024 CLOTHY. ALL RIGHTS RESERVED.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
