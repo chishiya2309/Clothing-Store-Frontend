@@ -57,7 +57,7 @@ export default function AdminLayout() {
               <span className="material-symbols-outlined">storefront</span>
               <span className="font-label-caps text-label-caps">Về cửa hàng</span>
             </Link>
-            <button 
+            <button
               onClick={handleLogout}
               className="w-full flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors mt-2"
             >
@@ -78,10 +78,10 @@ export default function AdminLayout() {
               <span className="material-symbols-outlined">notifications</span>
             </button>
             <div className="flex items-center gap-md pl-lg border-l border-border-subtle">
-              <img 
-                className="w-10 h-10 rounded-full object-cover" 
-                alt="Avatar" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTgQB2JVcd1ZDp5WIUVVPyR77KD--xbc_AiyFY55723-d__boC0S40cP6btGntk6yeRcFhFEQO3WnqodYz38uqmAZDCgp6d0hcmVx-E7srEW_pWi83vvchEiMzgNTwxe6Ahdefeoy56GRLIrkzp-skSzBc_7CyVYcBJ_iIcBEqRakMPLBePRmHC4nHWQ8fDsxGf4irtFnzqWjV8GQ7YIxv4OF3XUr_e6RqSihQQvVghNSMirH_gyPvbCamfUraiHhTKl7hLi5jlw" 
+              <img
+                className="w-10 h-10 rounded-full object-cover"
+                alt="Avatar"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTgQB2JVcd1ZDp5WIUVVPyR77KD--xbc_AiyFY55723-d__boC0S40cP6btGntk6yeRcFhFEQO3WnqodYz38uqmAZDCgp6d0hcmVx-E7srEW_pWi83vvchEiMzgNTwxe6Ahdefeoy56GRLIrkzp-skSzBc_7CyVYcBJ_iIcBEqRakMPLBePRmHC4nHWQ8fDsxGf4irtFnzqWjV8GQ7YIxv4OF3XUr_e6RqSihQQvVghNSMirH_gyPvbCamfUraiHhTKl7hLi5jlw"
               />
               <div className="hidden md:block">
                 <p className="font-label-caps text-label-caps text-text-primary">{user?.name || 'Admin'}</p>
