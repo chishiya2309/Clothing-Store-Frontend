@@ -389,6 +389,15 @@ export default function OrderDetail() {
                                         {item.productName}
                                     </Link>
                                     <p className="font-body-sm text-body-sm text-text-muted">{item.variantInfo || 'Phân loại mặc định'}</p>
+                                    {detail.status === 'completed' && (
+                                        <Link 
+                                            to={`/product/${item.productSlug}?write-review=true`}
+                                            className="mt-3 self-start px-4 py-1.5 bg-[#1A1A2E] text-white text-[12px] font-bold rounded hover:bg-[#C1272D] transition-colors flex items-center gap-1.5"
+                                        >
+                                            <span className="material-symbols-outlined text-[14px]">rate_review</span>
+                                            Đánh giá sản phẩm
+                                        </Link>
+                                    )}
                                     <span className="md:hidden font-price-display text-price-display mt-auto text-primary">
                                         {formatPrice(item.unitPrice)}
                                         <span className="text-sm font-normal text-text-muted ml-1">x{item.quantity}</span>
