@@ -308,7 +308,7 @@ export default function CategoryProducts() {
                     <div className="relative w-full aspect-[3/4] bg-surface-alt rounded-lg overflow-hidden mb-sm">
                       <img
                         alt={product.name}
-                        className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
+                        className="absolute inset-0 object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                         src={product.thumbnailUrl || 'https://via.placeholder.com/400x533?text=No+Image'}
                       />
                       {product.salePrice && (
