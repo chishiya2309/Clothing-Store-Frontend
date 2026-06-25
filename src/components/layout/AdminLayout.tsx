@@ -25,6 +25,7 @@ export default function AdminLayout() {
 
   const adminNavItems = [
     { path: '/admin', label: 'Báo cáo tổng quan', icon: 'dashboard' },
+    { path: '/admin/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/admin/users', label: 'Quản lý tài khoản', icon: 'manage_accounts' },
   ];
 
@@ -32,6 +33,7 @@ export default function AdminLayout() {
     { path: '/staff/products', label: 'Sản phẩm & danh mục', icon: 'inventory_2' },
     { path: '/staff/collections', label: 'Bộ sưu tập', icon: 'collections_bookmark' },
     { path: '/staff/inventory', label: 'Báo cáo tồn kho', icon: 'warehouse' },
+    { path: '/staff/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/staff/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/staff/reviews', label: 'Đánh giá', icon: 'reviews' },
     { path: '/staff/coupons', label: 'Mã giảm giá', icon: 'local_offer' },

@@ -21,7 +21,9 @@ import Settings from '../pages/admin/Settings'
 import CollectionManagement from '../pages/admin/CollectionManagement'
 import InventoryReport from '../pages/admin/InventoryReport'
 import ReviewManagement from '../pages/admin/ReviewManagement'
+import BestsellersReport from '../pages/admin/BestsellersReport'
 import AccountLayout from '../components/layout/AccountLayout'
+
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
 import Membership from '../pages/Membership'
@@ -76,6 +78,7 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboard /> },
+          { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'users', element: <UserManagement /> },
           { path: 'settings', element: <Settings /> }
         ]
@@ -94,6 +97,7 @@ const router = createBrowserRouter([
           { path: 'products', element: <ProductManagement /> },
           { path: 'collections', element: <CollectionManagement /> },
           { path: 'inventory', element: <InventoryReport /> },
+          { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'orders', element: <OrderManagement /> },
           { path: 'reviews', element: <ReviewManagement /> },
           { path: 'coupons', element: <CouponManagement /> },
