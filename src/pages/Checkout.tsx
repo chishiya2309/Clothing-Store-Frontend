@@ -11,6 +11,7 @@ import {
 import { checkoutService, type PaymentMethod } from '@/services/checkout.service'
 import { voucherService, type AppliedVoucherResponse } from '@/services/voucher.service'
 import { useCartStore } from '@/store/cartStore'
+import { calculateShippingFee } from '@/utils/shipping'
 
 type AddressMode = 'saved' | 'new'
 
@@ -80,7 +81,7 @@ export default function Checkout() {
   const [error, setError] = useState<string | null>(null)
   const [voucherMessage, setVoucherMessage] = useState<string | null>(null)
 
-  const shippingFee = 30000
+  const shippingFee = calculateShippingFee(totalAmount)
   const discountAmount = appliedVoucher ? Number(appliedVoucher.discountAmount || 0) : 0
   const shippingDiscountAmount = appliedVoucher ? Number(appliedVoucher.shippingDiscountAmount || 0) : 0
   const total = appliedVoucher
@@ -504,7 +505,9 @@ export default function Checkout() {
                     <div className="font-body-sm text-body-sm text-text-muted">2-3 ngày làm việc</div>
                   </div>
                 </div>
-                <div className="font-price-display text-price-display text-primary">{formatMoney(shippingFee)}</div>
+                <div className={`font-price-display text-price-display ${shippingFee === 0 ? 'text-success' : 'text-primary'}`}>
+                  {shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)}
+                </div>
               </div>
             </div>
           </section>
@@ -604,7 +607,9 @@ export default function Checkout() {
               </div>
               <div className="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
                 <span>Phí vận chuyển</span>
-                <span className="font-price-display">{formatMoney(shippingFee)}</span>
+                <span className={`font-price-display ${shippingFee === 0 ? 'text-success' : ''}`}>
+                  {shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)}
+                </span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between items-center font-body-md text-body-md text-success">
