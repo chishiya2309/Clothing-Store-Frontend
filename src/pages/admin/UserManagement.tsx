@@ -1,8 +1,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { adminUserService } from '../../services/adminUser.service';
 import type { AdminUserResponse, PaginatedResponse } from '../../services/adminUser.service';
+import { useAuthStore } from '../../store/authStore';
 
 export default function UserManagement() {
+  const currentUser = useAuthStore((state) => state.user);
   const [users, setUsers] = useState<AdminUserResponse[]>([]);
   const [pagination, setPagination] = useState<PaginatedResponse<any> | null>(null);
   const [page, setPage] = useState(0);
@@ -165,9 +167,10 @@ export default function UserManagement() {
                     </td>
                     <td className="py-md px-lg">
                       <select
+                        disabled={user.id === currentUser?.id}
                         value={user.role}
                         onChange={(e) => handleRoleChange(user.id, e.target.value as any)}
-                        className="bg-transparent border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-primary cursor-pointer hover:bg-surface-alt"
+                        className="bg-transparent border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-primary cursor-pointer hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <option value="customer">Customer</option>
                         <option value="staff">Staff</option>
@@ -176,8 +179,9 @@ export default function UserManagement() {
                     </td>
                     <td className="py-md px-lg text-center">
                       <button
+                        disabled={user.id === currentUser?.id}
                         onClick={() => handleStatusChange(user.id, user.isActive)}
-                        className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors border ${
+                        className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors border disabled:opacity-50 disabled:cursor-not-allowed ${
                           user.isActive 
                             ? 'bg-[#E6F4EA] text-success border-[#bce4c6] hover:bg-[#d4ebd9]' 
                             : 'bg-error-container text-on-error-container border-[#fcd8d8] hover:bg-[#fbdada]'
