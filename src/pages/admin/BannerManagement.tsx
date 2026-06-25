@@ -155,18 +155,16 @@ export default function BannerManagement() {
         <table className="w-full">
           <thead>
             <tr className="bg-[#F5F5F0] border-b border-border-subtle">
-              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Hình ảnh</th>
-              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Tiêu đề</th>
-              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Thứ tự</th>
-              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Trạng thái</th>
-              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Thời gian</th>
-              <th className="text-right px-4 py-3 font-label-caps text-label-caps text-text-muted">Hành động</th>
+              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Banner</th>
+              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted">Thứ tự / Thời gian</th>
+              <th className="text-left px-4 py-3 font-label-caps text-label-caps text-text-muted whitespace-nowrap">Trạng thái</th>
+              <th className="text-right px-4 py-3 font-label-caps text-label-caps text-text-muted whitespace-nowrap">Hành động</th>
             </tr>
           </thead>
           <tbody>
             {banners.length === 0 ? (
               <tr>
-                <td colSpan={6} className="text-center py-12 text-text-muted">
+                <td colSpan={4} className="text-center py-12 text-text-muted">
                   <span className="material-symbols-outlined text-4xl block mb-2">image</span>
                   Chưa có banner nào
                 </td>
@@ -175,46 +173,53 @@ export default function BannerManagement() {
               banners.map((banner) => (
                 <tr key={banner.id} className="border-b border-border-subtle hover:bg-[#FAFAF8] transition-colors">
                   <td className="px-4 py-3">
-                    <img
-                      src={banner.imageUrl}
-                      alt={banner.title}
-                      className="w-32 h-16 object-cover rounded-lg border border-border-subtle"
-                    />
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={banner.imageUrl}
+                        alt={banner.title}
+                        className="w-24 h-14 object-cover rounded-lg border border-border-subtle flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="font-body-md text-text-primary font-medium">{banner.title}</p>
+                        {banner.linkUrl && (
+                          <p className="font-body-sm text-text-muted text-xs mt-0.5 truncate max-w-[160px]">{banner.linkUrl}</p>
+                        )}
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
-                    <p className="font-body-md text-text-primary font-medium">{banner.title}</p>
-                    {banner.linkUrl && (
-                      <p className="font-body-sm text-text-muted text-xs mt-0.5 truncate max-w-[200px]">{banner.linkUrl}</p>
-                    )}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className="bg-[#F5F5F0] text-text-primary px-3 py-1 rounded-full text-sm font-medium">
+                    <span className="bg-[#F5F5F0] text-text-primary px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap block w-fit mb-1">
                       #{banner.displayOrder}
                     </span>
+                    <div className="text-text-muted text-xs">
+                      {banner.startDate && <div>Từ: {new Date(banner.startDate).toLocaleDateString('vi-VN')}</div>}
+                      {banner.endDate && <div>Đến: {new Date(banner.endDate).toLocaleDateString('vi-VN')}</div>}
+                      {!banner.startDate && !banner.endDate && <span>Không giới hạn</span>}
+                    </div>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 whitespace-nowrap">
                     <button
                       onClick={() => toggleActive(banner)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-label-caps transition-colors ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-label-caps transition-colors whitespace-nowrap ${
                         banner.isActive
                           ? 'bg-green-100 text-green-700 hover:bg-green-200'
                           : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                       }`}
                     >
-                      <span className={`w-2 h-2 rounded-full ${banner.isActive ? 'bg-green-500' : 'bg-gray-400'}`} />
+                      <span className={`w-2 h-2 rounded-full ${banner.isActive ? 'bg-green-500' : 'bg-gray-400'} whitespace-nowrap`} />
                       {banner.isActive ? 'Đang hiển thị' : 'Đã ẩn'}
                     </button>
                   </td>
-                  <td className="px-4 py-3 text-text-muted text-xs">
+                  <td className="px-4 py-3 text-text-muted text-xs whitespace-nowrap">
                     {banner.startDate && <div>Từ: {new Date(banner.startDate).toLocaleDateString('vi-VN')}</div>}
                     {banner.endDate && <div>Đến: {new Date(banner.endDate).toLocaleDateString('vi-VN')}</div>}
                     {!banner.startDate && !banner.endDate && <span>Không giới hạn</span>}
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-1">
+                  <td className="px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1 whitespace-nowrap">
                       <button
                         onClick={() => openEditModal(banner)}
-                        className="p-2 text-text-muted hover:text-[#1A1A2E] hover:bg-[#F5F5F0] rounded-lg transition-colors"
+                        className="p-2 text-text-muted hover:text-[#1A1A2E] hover:bg-[#F5F5F0] rounded-lg transition-colors whitespace-nowrap"
                         title="Sửa"
                       >
                         <span className="material-symbols-outlined text-lg">edit</span>

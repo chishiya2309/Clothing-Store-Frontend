@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 import Home from '../pages/Home'
@@ -16,8 +16,17 @@ import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
 import UserManagement from '../pages/admin/UserManagement'
 import BannerManagement from '../pages/admin/BannerManagement'
+import ProductManagement from '../pages/admin/ProductManagement'
+import OrderManagement from '../pages/admin/OrderManagement'
+import CouponManagement from '../pages/admin/CouponManagement'
+import Settings from '../pages/admin/Settings'
+import CollectionManagement from '../pages/admin/CollectionManagement'
+import InventoryReport from '../pages/admin/InventoryReport'
+import ReviewManagement from '../pages/admin/ReviewManagement'
+import BestsellersReport from '../pages/admin/BestsellersReport'
 import VoucherManagement from '../pages/admin/VoucherManagement'
 import AccountLayout from '../components/layout/AccountLayout'
+
 import Profile from '../pages/Profile'
 import Addresses from '../pages/Addresses'
 import Membership from '../pages/Membership'
@@ -67,14 +76,38 @@ const router = createBrowserRouter([
   },
   {
     path: '/admin',
-    element: <AdminRoute />,
+    element: <AdminRoute allowedRoles={['admin']} />,
     children: [
       {
         path: '',
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboard /> },
+          { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'users', element: <UserManagement /> },
+          { path: 'settings', element: <Settings /> }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/staff',
+    element: <AdminRoute allowedRoles={['staff']} />,
+    children: [
+      {
+        path: '',
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <Navigate to="/staff/products" replace /> },
+          { path: 'products', element: <ProductManagement /> },
+          { path: 'collections', element: <CollectionManagement /> },
+          { path: 'inventory', element: <InventoryReport /> },
+          { path: 'bestsellers', element: <BestsellersReport /> },
+          { path: 'orders', element: <OrderManagement /> },
+          { path: 'reviews', element: <ReviewManagement /> },
+          { path: 'coupons', element: <CouponManagement /> },
+          { path: 'banners', element: <BannerManagement /> },
+          { path: 'settings', element: <Settings /> },
           { path: 'vouchers', element: <VoucherManagement /> },
           { path: 'banners', element: <BannerManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
