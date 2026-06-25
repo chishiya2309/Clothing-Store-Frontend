@@ -16,7 +16,7 @@ export default function InventoryReport() {
         keyword: keyword || undefined,
         page: 0,
         size: 100,
-        sortBy: 'stockQuantity',
+        sortBy: 'stockAsc',
       });
       setItems(data.content || []);
     } catch (err: any) {
@@ -40,7 +40,7 @@ export default function InventoryReport() {
   const exportUrl = staffService.exportInventoryReportUrl({
     status: status || undefined,
     keyword: keyword || undefined,
-    sortBy: 'stockQuantity',
+    sortBy: 'stockAsc',
   });
 
   return (
@@ -81,12 +81,12 @@ export default function InventoryReport() {
               <tr><td className="p-lg text-center text-text-muted" colSpan={5}>Không có dữ liệu.</td></tr>
             ) : items.map((item) => (
               <tr key={item.variantId} className={`border-b border-border-subtle last:border-0 ${item.status === 'LOW_STOCK' ? 'bg-warning-container/30' : item.status === 'OUT_OF_STOCK' ? 'bg-error-container/30' : ''}`}>
-                <td className="p-md font-mono">{item.productId}</td>
+                <td className="p-md font-mono">{item.productCode}</td>
                 <td className="p-md">
                   <p className="font-semibold">{item.productName}</p>
                   <p className="text-xs text-text-muted">{item.sku}</p>
                 </td>
-                <td className="p-md">{item.size} / {item.color}</td>
+                <td className="p-md">{item.variantInfo}</td>
                 <td className="p-md font-bold">{item.stockQuantity}</td>
                 <td className="p-md">{statusLabel(item.status)}</td>
               </tr>

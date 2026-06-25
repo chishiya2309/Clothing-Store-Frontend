@@ -29,7 +29,6 @@ export default function AdminLayout() {
   ];
 
   const staffNavItems = [
-    { path: '/staff', label: 'Tổng quan', icon: 'dashboard' },
     { path: '/staff/products', label: 'Sản phẩm & danh mục', icon: 'inventory_2' },
     { path: '/staff/collections', label: 'Bộ sưu tập', icon: 'collections_bookmark' },
     { path: '/staff/inventory', label: 'Báo cáo tồn kho', icon: 'warehouse' },

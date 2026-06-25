@@ -387,37 +387,134 @@ export default function ProductManagement() {
 
       {activeTab === 'products' ? (
         <>
-          {/* Filters */}
-          <div className="bg-surface-container-lowest p-lg rounded-lg border border-border-subtle mb-xl flex flex-wrap gap-md">
-            <div className="flex-1 min-w-[240px]">
-              <input
-                type="text"
-                placeholder="Tìm kiếm sản phẩm theo tên, SKU..."
-                className="w-full px-md py-sm border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary transition-colors"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-              />
+          {/* Filters & Search Toolbar */}
+          <div className="bg-surface-container-lowest p-sm md:p-md rounded-lg border border-border-subtle mb-md shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col gap-sm">
+            <div className="flex flex-col md:flex-row md:items-center gap-sm justify-between">
+              {/* Left Side: Search Bar */}
+              <div className="relative flex-1 max-w-lg min-w-[280px]">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[20px] pointer-events-none select-none">
+                  search
+                </span>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm theo tên, SKU..."
+                  className="w-full pl-[38px] pr-[38px] py-[10px] bg-surface-container-low border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary focus:bg-white transition-all text-body-sm placeholder:text-text-muted"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                />
+                {keyword && (
+                  <button
+                    onClick={() => setKeyword('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors flex items-center"
+                    title="Xóa tìm kiếm"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">close</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Right Side: Select Dropdowns */}
+              <div className="flex flex-wrap items-center gap-sm">
+                {/* Category Filter */}
+                <div className="relative min-w-[180px] flex-1 md:flex-initial">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px] pointer-events-none select-none">
+                    category
+                  </span>
+                  <select
+                    className="w-full pl-[36px] pr-[32px] py-[10px] bg-white border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary appearance-none transition-colors text-body-sm cursor-pointer font-medium"
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                  >
+                    <option value="">Tất cả danh mục</option>
+                    {flatCategories.map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none select-none text-[18px]">
+                    expand_more
+                  </span>
+                </div>
+
+                {/* Status Filter */}
+                <div className="relative min-w-[160px] flex-1 md:flex-initial">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-[18px] pointer-events-none select-none">
+                    visibility
+                  </span>
+                  <select
+                    className="w-full pl-[36px] pr-[32px] py-[10px] bg-white border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary appearance-none transition-colors text-body-sm cursor-pointer font-medium"
+                    value={filterStatus}
+                    onChange={(e) => setFilterStatus(e.target.value)}
+                  >
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="ACTIVE">Hiển thị</option>
+                    <option value="DRAFT">Ẩn</option>
+                  </select>
+                  <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none select-none text-[18px]">
+                    expand_more
+                  </span>
+                </div>
+              </div>
             </div>
-            <select
-              className="px-md py-sm border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary transition-colors"
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-            >
-              <option value="">Tất cả danh mục</option>
-              {flatCategories.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
-            <select
-              className="px-md py-sm border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary transition-colors"
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <option value="">Tất cả trạng thái</option>
-              <option value="ACTIVE">Hiển thị</option>
-              <option value="DRAFT">Ẩn</option>
-            </select>
+
+            {/* Active Filters Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-xs pt-xs border-t border-border-subtle/50 text-[12px]">
+              <div className="flex flex-wrap items-center gap-xs">
+                {(keyword || filterCategory || filterStatus) ? (
+                  <>
+                    <span className="text-text-muted mr-xs">Đang lọc theo:</span>
+                    
+                    {keyword && (
+                      <span className="inline-flex items-center gap-[4px] px-2 py-[2px] bg-surface-alt text-text-primary font-medium rounded-DEFAULT border border-border-subtle">
+                        Từ khóa: "{keyword}"
+                        <button onClick={() => setKeyword('')} className="hover:text-error flex items-center">
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    )}
+
+                    {filterCategory && (
+                      <span className="inline-flex items-center gap-[4px] px-2 py-[2px] bg-surface-alt text-text-primary font-medium rounded-DEFAULT border border-border-subtle">
+                        Danh mục: {flatCategories.find(c => String(c.id) === filterCategory)?.name.replace(/^[—\s]+/, '') || filterCategory}
+                        <button onClick={() => setFilterCategory('')} className="hover:text-error flex items-center">
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    )}
+
+                    {filterStatus && (
+                      <span className="inline-flex items-center gap-[4px] px-2 py-[2px] bg-surface-alt text-text-primary font-medium rounded-DEFAULT border border-border-subtle">
+                        Trạng thái: {filterStatus === 'ACTIVE' ? 'Hiển thị' : 'Ẩn'}
+                        <button onClick={() => setFilterStatus('')} className="hover:text-error flex items-center">
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setKeyword('');
+                        setFilterCategory('');
+                        setFilterStatus('');
+                      }}
+                      className="text-text-primary hover:text-error font-semibold underline ml-xs transition-colors"
+                    >
+                      Xóa tất cả bộ lọc
+                    </button>
+                  </>
+                ) : (
+                  <span className="text-text-muted font-medium flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-[16px] text-text-muted/60">filter_list</span>
+                    Sử dụng các tùy chọn ở trên để lọc danh sách sản phẩm.
+                  </span>
+                )}
+              </div>
+              
+              <div className="text-text-muted font-medium self-end sm:self-auto mt-xs sm:mt-0">
+                Tìm thấy <span className="font-semibold text-text-primary">{totalElements}</span> sản phẩm
+              </div>
+            </div>
           </div>
+
 
           {error && (
             <div className="mb-lg p-md bg-error-container text-on-error-container rounded-lg border border-[#ed4848]/30">
@@ -572,25 +669,24 @@ export default function ProductManagement() {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </header>
-
-            <form onSubmit={handleSaveProduct} className="p-xl flex flex-col gap-lg">
+            <form onSubmit={handleSaveProduct} className="p-md md:p-lg flex flex-col gap-md">
               {/* Basic info */}
-              <div className="grid grid-cols-2 gap-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Tên sản phẩm *</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Tên sản phẩm *</label>
                   <input
                     required
                     type="text"
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     value={pName}
                     onChange={(e) => setPName(e.target.value)}
                   />
                 </div>
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Danh mục *</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Danh mục *</label>
                   <select
                     required
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-[10px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer"
                     value={pCategoryId}
                     onChange={(e) => setPCategoryId(Number(e.target.value))}
                   >
@@ -602,113 +698,119 @@ export default function ProductManagement() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-lg">
+              {/* Price Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Giá gốc (đ) *</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Giá gốc (đ) *</label>
                   <input
                     required
                     type="number"
                     min={0}
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     value={pBasePrice}
                     onChange={(e) => setPBasePrice(Number(e.target.value))}
                   />
                 </div>
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Giá khuyến mãi (đ)</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Giá khuyến mãi (đ)</label>
                   <input
                     type="number"
                     min={0}
                     placeholder="Không áp dụng"
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     value={pSalePrice}
                     onChange={(e) => setPSalePrice(e.target.value)}
                   />
                 </div>
-                <div className="flex items-center gap-xl mt-lg">
-                  <label className="flex items-center gap-sm cursor-pointer select-none">
-                    <input 
-                      type="checkbox" 
-                      className="w-4 h-4 text-primary" 
-                      checked={pIsFeatured}
-                      onChange={(e) => setPIsFeatured(e.target.checked)}
-                    />
-                    <span className="text-sm font-semibold">Nổi bật</span>
-                  </label>
-                  <label className="flex items-center gap-sm cursor-pointer select-none">
-                    <input 
-                      type="checkbox" 
-                      className="w-4 h-4 text-primary" 
-                      checked={pIsActive}
-                      onChange={(e) => setPIsActive(e.target.checked)}
-                    />
-                    <span className="text-sm font-semibold">Hiển thị ngay</span>
-                  </label>
-                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-lg">
+              {/* Display & Featured Settings Row */}
+              <div className="bg-surface-container-low p-md rounded border border-border-subtle/50 flex flex-wrap gap-md items-center shadow-[inset_0_1px_2px_rgba(0,0,0,0.01)]">
+                <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider mr-sm select-none">Cài đặt hiển thị:</span>
+                <label className="flex items-center gap-sm cursor-pointer select-none">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 text-primary rounded-DEFAULT focus:ring-primary border-border-subtle cursor-pointer" 
+                    checked={pIsFeatured}
+                    onChange={(e) => setPIsFeatured(e.target.checked)}
+                  />
+                  <span className="text-body-sm font-semibold text-text-primary">Sản phẩm nổi bật</span>
+                </label>
+                <label className="flex items-center gap-sm cursor-pointer select-none">
+                  <input 
+                    type="checkbox" 
+                    className="w-4 h-4 text-primary rounded-DEFAULT focus:ring-primary border-border-subtle cursor-pointer" 
+                    checked={pIsActive}
+                    onChange={(e) => setPIsActive(e.target.checked)}
+                  />
+                  <span className="text-body-sm font-semibold text-text-primary">Kích hoạt hiển thị ngay</span>
+                </label>
+              </div>
+
+              {/* Materials Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Chất liệu</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Chất liệu</label>
                   <input
                     type="text"
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     value={pMaterial}
                     onChange={(e) => setPMaterial(e.target.value)}
                   />
                 </div>
                 <div className="flex flex-col gap-xs">
-                  <label className="font-semibold text-xs text-text-secondary">Hướng dẫn bảo quản</label>
+                  <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Hướng dẫn bảo quản</label>
                   <input
                     type="text"
-                    className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                    className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                     value={pCare}
                     onChange={(e) => setPCare(e.target.value)}
                   />
                 </div>
               </div>
 
+              {/* Description */}
               <div className="flex flex-col gap-xs">
-                <label className="font-semibold text-xs text-text-secondary">Mô tả sản phẩm</label>
+                <label className="font-semibold text-[11px] text-text-muted uppercase tracking-wider">Mô tả sản phẩm</label>
                 <textarea
                   rows={3}
-                  className="px-md py-sm border border-border-subtle rounded focus:outline-none focus:border-primary"
+                  className="w-full px-md py-sm bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-y"
                   value={pDescription}
                   onChange={(e) => setPDescription(e.target.value)}
                 />
               </div>
 
               {/* Variants Configuration */}
-              <div className="border border-border-subtle rounded-lg p-lg bg-surface-alt">
-                <h4 className="font-bold text-sm text-text-primary mb-md">Cấu hình biến thể (Size / Màu / Tồn kho)</h4>
+              <div className="border border-border-subtle rounded-lg p-md md:p-lg bg-surface-alt/40 flex flex-col gap-sm">
+                <h4 className="font-bold text-sm text-text-primary">Cấu hình biến thể (Size / Màu / Tồn kho)</h4>
                 
-                <div className="grid grid-cols-5 gap-md items-end mb-md">
-                  <div className="flex flex-col gap-xs">
-                    <label className="text-xs text-text-secondary">Kích cỡ *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-sm items-end bg-white p-sm border border-border-subtle rounded">
+                  <div className="flex flex-col gap-xs sm:col-span-1">
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Kích cỡ *</label>
                     <select
-                      className="px-sm py-xs border border-border-subtle rounded bg-white"
+                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary cursor-pointer"
                       value={varSize}
                       onChange={(e) => setVarSize(e.target.value)}
                     >
                       {['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL'].map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
-                  <div className="flex flex-col gap-xs col-span-2">
-                    <label className="text-xs text-text-secondary">Màu sắc *</label>
+                  <div className="flex flex-col gap-xs sm:col-span-2">
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Màu sắc *</label>
                     <input
                       type="text"
                       placeholder="vd: Đen, Trắng, Navy..."
-                      className="px-sm py-xs border border-border-subtle rounded"
+                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary"
                       value={varColor}
                       onChange={(e) => setVarColor(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col gap-xs">
-                    <label className="text-xs text-text-secondary">Tồn kho *</label>
+                  <div className="flex flex-col gap-xs sm:col-span-1">
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Tồn kho *</label>
                     <input
                       type="number"
                       min={0}
-                      className="px-sm py-xs border border-border-subtle rounded"
+                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary"
                       value={varStock}
                       onChange={(e) => setVarStock(Number(e.target.value))}
                     />
@@ -716,29 +818,34 @@ export default function ProductManagement() {
                   <button
                     type="button"
                     onClick={addVariantLocally}
-                    className="bg-[#2A2A4A] text-white px-md py-sm rounded text-xs font-semibold"
+                    className="w-full h-[38px] bg-primary hover:bg-primary-hover text-on-primary rounded-DEFAULT text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer select-none"
                   >
                     Thêm biến thể
                   </button>
                 </div>
 
                 {/* Variants List */}
-                <div className="overflow-y-auto max-h-[150px] border-t border-border-subtle pt-md">
+                <div className="overflow-y-auto max-h-[150px] border-t border-border-subtle/50 pt-sm">
                   {pVariants.length === 0 ? (
-                    <p className="text-xs text-text-muted text-center">Chưa cấu hình biến thể nào cho sản phẩm.</p>
+                    <p className="text-xs text-text-muted text-center py-sm">Chưa cấu hình biến thể nào cho sản phẩm.</p>
                   ) : (
-                    <div className="flex flex-col gap-sm">
+                    <div className="flex flex-col gap-xs">
                       {pVariants.map((v, idx) => (
-                        <div key={idx} className="flex justify-between items-center p-xs bg-white rounded border border-border-subtle text-xs">
-                          <span className="font-mono">SKU: {v.sku}</span>
-                          <span>Size: <strong className="text-primary">{v.size}</strong></span>
-                          <span>Màu: <strong className="text-primary">{v.color}</strong></span>
-                          <span>Tồn: <strong>{v.stockQuantity}</strong></span>
+                        <div key={idx} className="flex flex-wrap justify-between items-center gap-xs p-xs bg-white rounded border border-border-subtle text-xs hover:shadow-[0_1px_2px_rgba(0,0,0,0.01)] transition-shadow">
+                          <div className="flex flex-wrap items-center gap-md">
+                            <span className="px-sm py-[2px] bg-surface-alt font-mono text-[10px] text-text-muted rounded-DEFAULT border border-border-subtle">
+                              SKU: {v.sku}
+                            </span>
+                            <span className="text-text-muted">Size: <strong className="text-text-primary font-semibold">{v.size}</strong></span>
+                            <span className="text-text-muted">Màu: <strong className="text-text-primary font-semibold">{v.color}</strong></span>
+                            <span className="text-text-muted">Tồn: <strong className="text-text-primary font-semibold">{v.stockQuantity}</strong></span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => setPVariants(prev => prev.filter((_, i) => i !== idx))}
-                            className="text-error font-semibold"
+                            className="text-error hover:text-error/85 font-semibold flex items-center gap-xs cursor-pointer"
                           >
+                            <span className="material-symbols-outlined text-[14px]">delete</span>
                             Xóa
                           </button>
                         </div>
@@ -749,24 +856,24 @@ export default function ProductManagement() {
               </div>
 
               {/* Images configuration */}
-              <div className="border border-border-subtle rounded-lg p-lg bg-surface-alt">
-                <h4 className="font-bold text-sm text-text-primary mb-md">Quản lý hình ảnh (Urls)</h4>
+              <div className="border border-border-subtle rounded-lg p-md md:p-lg bg-surface-alt/40 flex flex-col gap-sm">
+                <h4 className="font-bold text-sm text-text-primary">Quản lý hình ảnh (Urls)</h4>
                 
-                <div className="grid grid-cols-4 gap-md items-end mb-md">
-                  <div className="flex flex-col gap-xs col-span-2">
-                    <label className="text-xs text-text-secondary">Đường dẫn hình ảnh *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-sm items-end bg-white p-sm border border-border-subtle rounded">
+                  <div className="flex flex-col gap-xs sm:col-span-2">
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Đường dẫn hình ảnh *</label>
                     <input
                       type="text"
                       placeholder="https://images.unsplash.com/..."
-                      className="px-sm py-xs border border-border-subtle rounded"
+                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary"
                       value={imgUrl}
                       onChange={(e) => setImgUrl(e.target.value)}
                     />
                   </div>
-                  <div className="flex flex-col gap-xs">
-                    <label className="text-xs text-text-secondary">Loại ảnh</label>
+                  <div className="flex flex-col gap-xs sm:col-span-1">
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Loại ảnh</label>
                     <select
-                      className="px-sm py-xs border border-border-subtle rounded bg-white"
+                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary cursor-pointer"
                       value={imgType}
                       onChange={(e) => setImgType(e.target.value as any)}
                     >
@@ -777,26 +884,27 @@ export default function ProductManagement() {
                   <button
                     type="button"
                     onClick={addImageLocally}
-                    className="bg-[#2A2A4A] text-white px-md py-sm rounded text-xs font-semibold"
+                    className="w-full h-[38px] bg-primary hover:bg-primary-hover text-on-primary rounded-DEFAULT text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer select-none"
                   >
                     Thêm ảnh
                   </button>
                 </div>
 
-                <div className="overflow-x-auto max-h-[120px] flex gap-sm pt-md border-t border-border-subtle">
+                <div className="overflow-x-auto max-h-[120px] flex gap-sm pt-sm border-t border-border-subtle/50">
                   {pImages.length === 0 ? (
-                    <p className="text-xs text-text-muted w-full text-center">Chưa thêm hình ảnh nào.</p>
+                    <p className="text-xs text-text-muted w-full text-center py-sm">Chưa thêm hình ảnh nào.</p>
                   ) : (
                     pImages.map((img, idx) => (
-                      <div key={idx} className="relative w-16 h-20 rounded border border-border-subtle bg-white flex-shrink-0 overflow-hidden">
+                      <div key={idx} className="relative w-16 h-20 rounded border border-border-subtle bg-white flex-shrink-0 overflow-hidden group shadow-sm">
                         <img src={img.imageUrl} alt="preview" className="w-full h-full object-cover" />
-                        <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[8px] text-center">{img.imageType}</span>
+                        <span className="absolute bottom-0 inset-x-0 bg-black/75 text-white text-[8px] py-[2px] text-center font-medium select-none uppercase tracking-wider">{img.imageType === 'main' ? 'Chính' : 'Phụ'}</span>
                         <button
                           type="button"
                           onClick={() => setPImages(prev => prev.filter((_, i) => i !== idx))}
-                          className="absolute top-0 right-0 bg-error text-white w-4 h-4 text-[9px] rounded-full flex items-center justify-center"
+                          className="absolute top-1 right-1 bg-black/60 hover:bg-error text-white w-4 h-4 text-[9px] rounded-full flex items-center justify-center transition-colors shadow cursor-pointer font-bold"
+                          title="Xóa hình ảnh"
                         >
-                          x
+                          ×
                         </button>
                       </div>
                     ))
@@ -805,17 +913,17 @@ export default function ProductManagement() {
               </div>
 
               {/* Actions Footer */}
-              <div className="border-t border-border-subtle pt-lg flex justify-end gap-md">
+              <div className="border-t border-border-subtle pt-md flex justify-end gap-md">
                 <button
                   type="button"
                   onClick={() => setIsProductModalOpen(false)}
-                  className="px-lg py-sm border border-border-subtle rounded font-semibold"
+                  className="px-lg py-sm border border-border-subtle rounded-DEFAULT hover:bg-surface-alt transition-colors font-semibold text-body-sm cursor-pointer select-none"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
-                  className="px-lg py-sm bg-primary hover:bg-primary-hover text-on-primary rounded font-semibold"
+                  className="px-lg py-sm bg-primary hover:bg-primary-hover text-on-primary rounded-DEFAULT transition-all font-semibold text-body-sm shadow-sm cursor-pointer select-none"
                 >
                   {selectedProductId ? 'Lưu cập nhật' : 'Tạo mới sản phẩm'}
                 </button>

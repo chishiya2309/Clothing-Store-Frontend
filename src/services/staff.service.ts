@@ -133,12 +133,11 @@ export interface StaffOrderDetail {
 }
 
 export interface StaffInventoryReportItem {
-  productId: number;
+  productCode: string;
   productName: string;
   variantId: number;
   sku: string;
-  size: string;
-  color: string;
+  variantInfo: string;
   stockQuantity: number;
   status: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
 }

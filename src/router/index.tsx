@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 import Home from '../pages/Home'
@@ -90,7 +90,7 @@ const router = createBrowserRouter([
         path: '',
         element: <AdminLayout />,
         children: [
-          { index: true, element: <AdminDashboard /> },
+          { index: true, element: <Navigate to="/staff/products" replace /> },
           { path: 'products', element: <ProductManagement /> },
           { path: 'collections', element: <CollectionManagement /> },
           { path: 'inventory', element: <InventoryReport /> },

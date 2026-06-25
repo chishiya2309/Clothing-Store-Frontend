@@ -32,7 +32,7 @@ export default function MainLayout() {
       {isAdminOrStaff && (
         <div className="fixed bottom-6 right-6 z-[9999] group">
           <Link
-            to="/admin"
+            to={user.role?.toLowerCase() === 'admin' ? '/admin' : '/staff'}
             className="flex items-center gap-2 px-6 py-3 bg-[#111122] text-white hover:bg-black border border-[#1D1D35] rounded-full shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-amber-500/10 font-label-caps text-label-caps select-none"
           >
             {/* Subtle glow background */}
