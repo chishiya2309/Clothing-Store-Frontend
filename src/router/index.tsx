@@ -9,6 +9,8 @@ import ForgotPassword from '../pages/ForgotPassword'
 import ResetPassword from '../pages/ResetPassword'
 import NotFound from '../pages/NotFound'
 import Cart from '../pages/Cart'
+import Checkout from '../pages/Checkout'
+import CheckoutResult from '../pages/CheckoutResult'
 import ProductDetail from '../pages/ProductDetail'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
@@ -35,6 +37,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'cart', element: <Cart /> },
+      { path: 'checkout', element: <Checkout /> },
+      { path: 'checkout/result', element: <CheckoutResult /> },
       { path: 'product/:slug', element: <ProductDetail /> },
       { path: 'verify-email', element: <VerifyEmail /> },
       { path: 'forgot-password', element: <ForgotPassword /> },
