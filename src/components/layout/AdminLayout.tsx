@@ -40,7 +40,7 @@ export default function AdminLayout() {
               <span className="font-label-caps text-label-caps">Quản lý tài khoản</span>
             </Link>
           )}
-          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/coupons">
+          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/vouchers">
             <span className="material-symbols-outlined">local_offer</span>
             <span className="font-label-caps text-label-caps">Mã giảm giá</span>
           </Link>
