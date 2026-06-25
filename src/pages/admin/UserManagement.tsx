@@ -117,23 +117,21 @@ export default function UserManagement() {
               <tr>
                 <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Người dùng</th>
                 <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Liên hệ</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Ngày tạo</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Hạng</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Vai trò</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted text-center">Trạng thái</th>
+                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Hạng / Vai trò</th>
+                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted text-center whitespace-nowrap">Trạng thái</th>
               </tr>
             </thead>
             <tbody className="font-body-sm text-body-sm">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="py-xl text-center text-text-muted">
+                  <td colSpan={4} className="py-xl text-center text-text-muted">
                      <span className="material-symbols-outlined animate-spin mb-2">progress_activity</span>
                      <p>Đang tải dữ liệu...</p>
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-xl text-center text-text-muted">Không tìm thấy người dùng nào.</td>
+                  <td colSpan={4} className="py-xl text-center text-text-muted">Không tìm thấy người dùng nào.</td>
                 </tr>
               ) : (
                 users.map((user) => (
@@ -147,7 +145,9 @@ export default function UserManagement() {
                         />
                         <div>
                           <p className="font-medium text-text-primary line-clamp-1">{user.fullName}</p>
-                          <p className="text-text-muted text-[10px]">ID: {user.id}</p>
+                          <p className="text-text-muted text-[10px]">
+                            ID: {user.id} · {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '-'}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -155,33 +155,30 @@ export default function UserManagement() {
                       <p className="line-clamp-1">{user.email}</p>
                       {user.phone && <p className="text-text-muted text-xs">{user.phone}</p>}
                     </td>
-                    <td className="py-md px-lg text-text-muted">
-                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString('vi-VN') : '-'}
-                    </td>
                     <td className="py-md px-lg">
-                      {user.membershipTierName ? (
-                        <span className="inline-flex items-center px-sm py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-[10px]">
-                          {user.membershipTierName}
-                        </span>
-                      ) : '-'}
+                      <div className="flex flex-col gap-[3px]">
+                        {user.membershipTierName ? (
+                          <span className="inline-flex items-center px-sm py-xs rounded-full bg-secondary-container text-on-secondary-container font-label-caps text-[10px] whitespace-nowrap">
+                            {user.membershipTierName}
+                          </span>
+                        ) : <span className="text-text-muted text-xs">-</span>}
+                        <select
+                          disabled={user.id === currentUser?.id}
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value as any)}
+                          className="bg-transparent border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-primary cursor-pointer hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap w-fit"
+                        >
+                          <option value="customer">Customer</option>
+                          <option value="staff">Staff</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </div>
                     </td>
-                    <td className="py-md px-lg">
-                      <select
-                        disabled={user.id === currentUser?.id}
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value as any)}
-                        className="bg-transparent border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-primary cursor-pointer hover:bg-surface-alt disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <option value="customer">Customer</option>
-                        <option value="staff">Staff</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </td>
-                    <td className="py-md px-lg text-center">
+                    <td className="py-md px-lg text-center whitespace-nowrap">
                       <button
                         disabled={user.id === currentUser?.id}
                         onClick={() => handleStatusChange(user.id, user.isActive)}
-                        className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors border disabled:opacity-50 disabled:cursor-not-allowed ${
+                        className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors border disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap ${
                           user.isActive 
                             ? 'bg-[#E6F4EA] text-success border-[#bce4c6] hover:bg-[#d4ebd9]' 
                             : 'bg-error-container text-on-error-container border-[#fcd8d8] hover:bg-[#fbdada]'

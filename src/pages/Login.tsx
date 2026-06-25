@@ -41,8 +41,10 @@ export default function Login() {
 
         const redirectPath = searchParams.get('redirect');
         const role = response.data.role?.toLowerCase();
-        if (role === 'admin' || role === 'staff') {
+        if (role === 'admin') {
           navigate('/admin');
+        } else if (role === 'staff') {
+          navigate('/staff');
         } else if (redirectPath) {
           navigate(`/${redirectPath}`);
         } else {
@@ -179,8 +181,10 @@ export default function Login() {
 
                     const redirectPath = searchParams.get('redirect');
                     const role = response.data.role?.toLowerCase();
-                    if (role === 'admin' || role === 'staff') {
+                    if (role === 'admin') {
                       navigate('/admin');
+                    } else if (role === 'staff') {
+                      navigate('/staff');
                     } else if (redirectPath) {
                       navigate(`/${redirectPath}`);
                     } else {
