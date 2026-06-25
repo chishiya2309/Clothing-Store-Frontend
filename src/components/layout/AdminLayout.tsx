@@ -138,18 +138,24 @@ export default function AdminLayout() {
                 Cài đặt
               </span>
             </Link>
-
-            <Link
-              className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#1C1C33]/50 rounded-DEFAULT transition-all duration-300 relative group overflow-hidden mt-1"
-              to="/"
-            >
-              <div className="absolute left-0 w-1 bg-teal-400 rounded-r transition-all duration-300 origin-center h-3/5 scale-y-0 opacity-0 group-hover:scale-y-75 group-hover:opacity-70" />
-              <span className="material-symbols-outlined text-[22px] transition-all duration-300 group-hover:text-white group-hover:scale-110 group-hover:translate-x-0.5">
-                storefront
-              </span>
-              <span className="font-label-caps text-[13px] tracking-wide transition-transform duration-300 group-hover:translate-x-1">
-                Về cửa hàng
-              </span>
+          )
+          </div>
+          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/vouchers">
+            <span className="material-symbols-outlined">local_offer</span>
+            <span className="font-label-caps text-label-caps">Mã giảm giá</span>
+          </Link>
+          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/banners">
+            <span className="material-symbols-outlined">view_carousel</span>
+            <span className="font-label-caps text-label-caps">Quản lý banner</span>
+          </Link>
+          <div className="mt-auto pt-lg">
+            <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/settings">
+              <span className="material-symbols-outlined">settings</span>
+              <span className="font-label-caps text-label-caps">Cài đặt</span>
+            </Link>
+            <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors mt-2" to="/">
+              <span className="material-symbols-outlined">storefront</span>
+              <span className="font-label-caps text-label-caps">Về cửa hàng</span>
             </Link>
 
             <button

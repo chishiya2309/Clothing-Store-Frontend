@@ -2,11 +2,14 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
+import { calculateShippingFee } from '../utils/shipping'
 
 export default function Cart() {
   const { items, totalAmount, loading, fetchCart, updateQuantity, removeItem } = useCartStore()
   const token = useAuthStore((state) => state.token)
   const navigate = useNavigate()
+  const shippingFee = calculateShippingFee(totalAmount)
+  const orderTotal = Number(totalAmount || 0) + shippingFee
 
   useEffect(() => {
     fetchCart()
@@ -175,8 +178,8 @@ export default function Cart() {
               </div>
               <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                 <span>Phí vận chuyển</span>
-                <span className="font-price-display text-success uppercase text-[12px] font-bold">
-                  Miễn phí
+                <span className={`font-price-display ${shippingFee === 0 ? 'text-success uppercase text-[12px] font-bold' : 'text-primary'}`}>
+                  {shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)}
                 </span>
               </div>
             </div>
@@ -209,7 +212,7 @@ export default function Cart() {
               <span className="font-headline-md text-headline-md text-primary">Tổng cộng</span>
               <div className="text-right">
                 <span className="font-price-display text-primary-container text-[28px] font-bold block leading-none">
-                  {formatPrice(totalAmount)}
+                  {formatPrice(orderTotal)}
                 </span>
                 <span className="font-body-sm text-[12px] text-on-surface-variant italic mt-1">
                   Đã bao gồm VAT

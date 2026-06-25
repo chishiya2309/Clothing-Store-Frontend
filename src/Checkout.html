@@ -1,0 +1,758 @@
+<!doctype html>
+
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Checkout - CLOTHY</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@600;700&amp;family=Space+Mono:wght@400;500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              secondary: "#6a5d45",
+              "surface-dim": "#dadad8",
+              "secondary-fixed": "#f3e0c2",
+              "on-secondary-fixed": "#241a07",
+              "primary-fixed-dim": "#c6c4df",
+              "text-muted": "#8C8C8C",
+              "on-error": "#ffffff",
+              "tertiary-fixed": "#ffdad7",
+              "on-secondary": "#ffffff",
+              "on-surface": "#1a1c1b",
+              outline: "#78767d",
+              "primary-fixed": "#e2e0fc",
+              "surface-tint": "#5d5c74",
+              "on-primary-container": "#83829b",
+              "surface-container-high": "#e8e8e6",
+              "tertiary-container": "#420004",
+              "surface-container-low": "#f4f4f2",
+              "on-surface-variant": "#47464c",
+              "on-tertiary-fixed-variant": "#930015",
+              "inverse-on-surface": "#f1f1ef",
+              "error-container": "#ffdad6",
+              warning: "#E8A317",
+              error: "#ba1a1a",
+              "on-error-container": "#93000a",
+              "surface-container-highest": "#e2e3e1",
+              "on-primary-fixed-variant": "#45455b",
+              "on-secondary-fixed-variant": "#51452f",
+              "text-primary": "#2D2D2D",
+              "inverse-surface": "#2f3130",
+              "border-subtle": "#E5E5E0",
+              surface: "#f9f9f7",
+              "primary-container": "#1a1a2e",
+              background: "#f9f9f7",
+              "surface-container-lowest": "#ffffff",
+              success: "#2D8F4E",
+              "tertiary-fixed-dim": "#ffb3ae",
+              "surface-container": "#eeeeec",
+              "rating-gold": "#F5A623",
+              "secondary-fixed-dim": "#d6c4a7",
+              "secondary-container": "#f0ddbf",
+              "outline-variant": "#c8c5cd",
+              "on-primary": "#ffffff",
+              tertiary: "#050000",
+              "on-primary-fixed": "#1a1a2e",
+              "on-tertiary-container": "#ed4848",
+              "surface-alt": "#F0EDE8",
+              "surface-variant": "#e2e3e1",
+              "on-background": "#1a1c1b",
+              "on-tertiary": "#ffffff",
+              primary: "#00000b",
+              "on-tertiary-fixed": "#410004",
+              "on-secondary-container": "#6f6149",
+              "surface-bright": "#f9f9f7",
+              "inverse-primary": "#c6c4df",
+            },
+            borderRadius: {
+              DEFAULT: "0.125rem",
+              lg: "0.25rem",
+              xl: "0.5rem",
+              full: "0.75rem",
+            },
+            spacing: {
+              md: "24px",
+              "margin-mobile": "24px",
+              "margin-desktop": "80px",
+              xs: "4px",
+              "container-max": "1280px",
+              xl: "80px",
+              sm: "12px",
+              gutter: "24px",
+              lg: "48px",
+              base: "8px",
+            },
+            fontFamily: {
+              "price-display": ["Space Mono"],
+              "headline-xl": ["Outfit"],
+              "display-hero": ["Outfit"],
+              "body-sm": ["Inter"],
+              "body-lg": ["Inter"],
+              "body-md": ["Inter"],
+              "headline-md": ["Outfit"],
+              "headline-lg-mobile": ["Outfit"],
+              "headline-lg": ["Outfit"],
+              "label-caps": ["Outfit"],
+            },
+            fontSize: {
+              "price-display": [
+                "18px",
+                { lineHeight: "24px", fontWeight: "500" },
+              ],
+              "headline-xl": [
+                "40px",
+                {
+                  lineHeight: "44px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "display-hero": [
+                "56px",
+                {
+                  lineHeight: "60px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-sm": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "body-md": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+              "headline-md": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "600" },
+              ],
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "34px", fontWeight: "700" },
+              ],
+              "headline-lg": [
+                "32px",
+                {
+                  lineHeight: "38px",
+                  letterSpacing: "-0.01em",
+                  fontWeight: "700",
+                },
+              ],
+              "label-caps": [
+                "12px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "600",
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .custom-radio:checked + div {
+        border-color: #00000b;
+      }
+      .custom-radio:checked + div .radio-inner {
+        background-color: #00000b;
+      }
+
+      .custom-payment:checked + div {
+        border-color: #00000b;
+        background-color: #f0ede8;
+      }
+      .custom-payment:checked + div .payment-radio-inner {
+        background-color: #00000b;
+        transform: scale(1);
+      }
+      .payment-radio-inner {
+        transform: scale(0);
+        transition: transform 0.2s ease-in-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-primary antialiased flex flex-col min-h-screen font-body-md text-body-md"
+  >
+    <!-- TopNavBar -->
+    <header
+      class="bg-surface dark:bg-on-primary-fixed border-b border-subtle dark:border-outline-variant docked full-width top-0 z-50"
+    >
+      <div
+        class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-20 max-w-container-max mx-auto"
+      >
+        <a
+          class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed"
+          href="#"
+          >MODERN MINIMAL</a
+        >
+        <div class="flex items-center gap-md">
+          <a
+            class="text-on-surface-variant dark:text-surface-variant font-label-caps text-label-caps hover:text-primary-container dark:hover:text-primary-fixed-dim transition-colors hidden sm:block"
+            href="#"
+            >Quay lại giỏ hàng</a
+          >
+          <button
+            aria-label="Shopping Bag"
+            class="scale-95 active:scale-90 transition-transform text-primary dark:text-primary-fixed flex items-center justify-center"
+          >
+            <span
+              class="material-symbols-outlined"
+              style="font-variation-settings: &quot;FILL&quot; 0"
+              >shopping_bag</span
+            >
+          </button>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content -->
+    <main
+      class="flex-grow w-full px-margin-mobile md:px-margin-desktop py-lg max-w-container-max mx-auto"
+    >
+      <div class="flex flex-col lg:flex-row gap-xl">
+        <!-- Left Column (60%) -->
+        <div class="w-full lg:w-3/5 flex flex-col gap-lg">
+          <!-- Step Indicator -->
+          <div
+            class="flex items-center justify-between border-b border-subtle pb-md"
+          >
+            <div class="flex items-center gap-sm">
+              <div
+                class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-caps text-label-caps font-bold"
+              >
+                1
+              </div>
+              <span
+                class="font-label-caps text-label-caps text-primary font-bold"
+                >Thông tin giao hàng</span
+              >
+            </div>
+            <div
+              class="h-[1px] bg-subtle flex-grow mx-md hidden sm:block"
+            ></div>
+            <div class="flex items-center gap-sm opacity-50 hidden sm:flex">
+              <div
+                class="w-8 h-8 rounded-full border border-outline text-text-muted flex items-center justify-center font-label-caps text-label-caps"
+              >
+                2
+              </div>
+              <span class="font-label-caps text-label-caps text-text-muted"
+                >Thanh toán</span
+              >
+            </div>
+            <div
+              class="h-[1px] bg-subtle flex-grow mx-md hidden sm:block"
+            ></div>
+            <div class="flex items-center gap-sm opacity-50 hidden sm:flex">
+              <div
+                class="w-8 h-8 rounded-full border border-outline text-text-muted flex items-center justify-center font-label-caps text-label-caps"
+              >
+                3
+              </div>
+              <span class="font-label-caps text-label-caps text-text-muted"
+                >Hoàn tất</span
+              >
+            </div>
+          </div>
+          <!-- Shipping Address Section -->
+          <section class="flex flex-col gap-md">
+            <h2 class="font-headline-md text-headline-md text-primary">
+              Thông tin giao hàng
+            </h2>
+            <form class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+              <div class="md:col-span-2">
+                <label class="sr-only" for="fullName">Họ và tên</label>
+                <input
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md placeholder-text-muted"
+                  id="fullName"
+                  placeholder="Họ và tên"
+                  type="text"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label class="sr-only" for="phone">Số điện thoại</label>
+                <input
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md placeholder-text-muted"
+                  id="phone"
+                  placeholder="Số điện thoại"
+                  type="tel"
+                />
+              </div>
+              <div>
+                <label class="sr-only" for="city">Tỉnh / Thành phố</label>
+                <select
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md text-text-muted appearance-none"
+                  id="city"
+                >
+                  <option disabled="" selected="" value="">
+                    Tỉnh / Thành phố
+                  </option>
+                  <option value="hcm">Hồ Chí Minh</option>
+                  <option value="hn">Hà Nội</option>
+                </select>
+              </div>
+              <div>
+                <label class="sr-only" for="district">Quận / Huyện</label>
+                <select
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md text-text-muted appearance-none"
+                  id="district"
+                >
+                  <option disabled="" selected="" value="">Quận / Huyện</option>
+                  <option value="q1">Quận 1</option>
+                  <option value="q2">Quận 2</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="sr-only" for="ward">Phường / Xã</label>
+                <select
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md text-text-muted appearance-none"
+                  id="ward"
+                >
+                  <option disabled="" selected="" value="">Phường / Xã</option>
+                  <option value="p1">Phường Bến Nghé</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="sr-only" for="address">Địa chỉ cụ thể</label>
+                <input
+                  class="w-full border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors font-body-md text-body-md placeholder-text-muted"
+                  id="address"
+                  placeholder="Địa chỉ cụ thể (Số nhà, tên đường...)"
+                  type="text"
+                />
+              </div>
+              <div class="md:col-span-2 flex items-center gap-sm mt-xs">
+                <input
+                  class="w-5 h-5 rounded-sm border-subtle text-primary focus:ring-primary cursor-pointer accent-primary"
+                  id="saveInfo"
+                  type="checkbox"
+                />
+                <label
+                  class="font-body-sm text-body-sm text-on-surface-variant cursor-pointer"
+                  for="saveInfo"
+                  >Lưu thông tin cho lần sau</label
+                >
+              </div>
+            </form>
+          </section>
+          <!-- Shipping Method Section -->
+          <section class="flex flex-col gap-md">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Phương thức vận chuyển
+            </h3>
+            <div class="flex flex-col gap-sm">
+              <label class="relative cursor-pointer">
+                <input
+                  checked=""
+                  class="custom-radio sr-only"
+                  name="shipping"
+                  type="radio"
+                />
+                <div
+                  class="border border-subtle rounded-lg p-md flex items-center justify-between transition-colors bg-surface-container-lowest hover:border-outline"
+                >
+                  <div class="flex items-center gap-md">
+                    <div
+                      class="w-5 h-5 rounded-full border border-outline flex items-center justify-center"
+                    >
+                      <div
+                        class="radio-inner w-3 h-3 rounded-full bg-transparent transition-colors"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="font-body-md text-body-md text-primary font-medium"
+                      >
+                        Giao hàng tiêu chuẩn
+                      </div>
+                      <div class="font-body-sm text-body-sm text-text-muted">
+                        2-3 ngày làm việc
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="font-price-display text-price-display text-primary"
+                  >
+                    Miễn phí
+                  </div>
+                </div>
+              </label>
+              <label class="relative cursor-pointer">
+                <input
+                  class="custom-radio sr-only"
+                  name="shipping"
+                  type="radio"
+                />
+                <div
+                  class="border border-subtle rounded-lg p-md flex items-center justify-between transition-colors bg-surface-container-lowest hover:border-outline"
+                >
+                  <div class="flex items-center gap-md">
+                    <div
+                      class="w-5 h-5 rounded-full border border-outline flex items-center justify-center"
+                    >
+                      <div
+                        class="radio-inner w-3 h-3 rounded-full bg-transparent transition-colors"
+                      ></div>
+                    </div>
+                    <div>
+                      <div
+                        class="font-body-md text-body-md text-primary font-medium"
+                      >
+                        Giao hàng hỏa tốc
+                      </div>
+                      <div class="font-body-sm text-body-sm text-text-muted">
+                        Nhận hàng trong 24h
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="font-price-display text-price-display text-primary"
+                  >
+                    30.000đ
+                  </div>
+                </div>
+              </label>
+            </div>
+          </section>
+          <!-- Payment Method Selection -->
+          <section class="flex flex-col gap-md mt-sm">
+            <h3 class="font-headline-md text-headline-md text-primary">
+              Phương thức thanh toán
+            </h3>
+            <div
+              class="border border-subtle rounded-lg overflow-hidden bg-surface-container-lowest"
+            >
+              <!-- COD -->
+              <label
+                class="relative cursor-pointer block border-b border-subtle last:border-b-0"
+              >
+                <input
+                  checked=""
+                  class="custom-payment sr-only"
+                  name="payment"
+                  type="radio"
+                />
+                <div
+                  class="p-md flex items-center gap-md transition-colors hover:bg-surface-alt/50"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border border-outline flex items-center justify-center shrink-0 bg-surface-container-lowest"
+                  >
+                    <div
+                      class="payment-radio-inner w-2.5 h-2.5 rounded-full"
+                    ></div>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-on-surface-variant"
+                    style="font-variation-settings: &quot;FILL&quot; 0"
+                    >local_shipping</span
+                  >
+                  <span class="font-body-md text-body-md text-primary flex-grow"
+                    >Thanh toán khi nhận hàng (COD)</span
+                  >
+                </div>
+              </label>
+              <!-- Bank Transfer -->
+              <label
+                class="relative cursor-pointer block border-b border-subtle last:border-b-0"
+              >
+                <input
+                  class="custom-payment sr-only"
+                  name="payment"
+                  type="radio"
+                />
+                <div
+                  class="p-md flex items-center gap-md transition-colors hover:bg-surface-alt/50"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border border-outline flex items-center justify-center shrink-0 bg-surface-container-lowest"
+                  >
+                    <div
+                      class="payment-radio-inner w-2.5 h-2.5 rounded-full"
+                    ></div>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-on-surface-variant"
+                    style="font-variation-settings: &quot;FILL&quot; 0"
+                    >account_balance</span
+                  >
+                  <span class="font-body-md text-body-md text-primary flex-grow"
+                    >Chuyển khoản ngân hàng</span
+                  >
+                </div>
+              </label>
+              <!-- MoMo -->
+              <label
+                class="relative cursor-pointer block border-b border-subtle last:border-b-0"
+              >
+                <input
+                  class="custom-payment sr-only"
+                  name="payment"
+                  type="radio"
+                />
+                <div
+                  class="p-md flex items-center gap-md transition-colors hover:bg-surface-alt/50"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border border-outline flex items-center justify-center shrink-0 bg-surface-container-lowest"
+                  >
+                    <div
+                      class="payment-radio-inner w-2.5 h-2.5 rounded-full"
+                    ></div>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-[#A50064]"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >account_balance_wallet</span
+                  >
+                  <span class="font-body-md text-body-md text-primary flex-grow"
+                    >Ví MoMo</span
+                  >
+                </div>
+              </label>
+              <!-- VNPay -->
+              <label
+                class="relative cursor-pointer block border-b border-subtle last:border-b-0"
+              >
+                <input
+                  class="custom-payment sr-only"
+                  name="payment"
+                  type="radio"
+                />
+                <div
+                  class="p-md flex items-center gap-md transition-colors hover:bg-surface-alt/50"
+                >
+                  <div
+                    class="w-5 h-5 rounded-full border border-outline flex items-center justify-center shrink-0 bg-surface-container-lowest"
+                  >
+                    <div
+                      class="payment-radio-inner w-2.5 h-2.5 rounded-full"
+                    ></div>
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-[#005BAA]"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >qr_code_scanner</span
+                  >
+                  <span class="font-body-md text-body-md text-primary flex-grow"
+                    >Ví VNPay</span
+                  >
+                </div>
+              </label>
+            </div>
+          </section>
+        </div>
+        <!-- Right Column (40%) - Sticky Order Summary -->
+        <div class="w-full lg:w-2/5">
+          <div
+            class="sticky top-28 bg-surface-alt p-lg rounded-xl flex flex-col gap-lg"
+          >
+            <h3
+              class="font-headline-md text-headline-md text-primary hidden lg:block"
+            >
+              Đơn hàng của bạn
+            </h3>
+            <!-- Product List -->
+            <div
+              class="flex flex-col gap-md max-h-[409px] overflow-y-auto pr-sm"
+            >
+              <!-- Item 1 -->
+              <div class="flex gap-md items-center">
+                <div
+                  class="relative w-20 h-24 shrink-0 bg-surface-container-highest rounded overflow-hidden"
+                >
+                  <img
+                    alt="Áo Sơ Mi Linen Trắng"
+                    class="w-full h-full object-cover"
+                    data-alt="A clean product shot of a minimalist white linen button-down shirt. The shirt is neatly folded or displayed flat against a soft, light grey seamless background. The lighting is bright and even, highlighting the natural texture of the linen fabric. The overall aesthetic is modern, clean, and premium, fitting a high-end minimalist fashion brand."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrmRkTnEUIlY0hprzmNOhj83ex5BLAKe9n3dc5UN6jSGpUOBmr-8B9N7oBmyhw6lrxg7tTkrLjRqnyf1jLDRGFnUE4zEJ-ptgluzzQvDbfcgrdjLgowFIWluH-EFJz9NQ6biugL1nKd8Nqg39E99ugPbbG2NAEMI4LIbZgWuVd2_LPE3EhPgX7jqr4rSb9jeYl6Nlx6CGXExYUaUgfzQFaJd1NVhp-jxGdHcFEUClXSSb5P8HcGHkwT62xgRYZ5CiPRuoGwWYznA"
+                  />
+                  <div
+                    class="absolute -top-2 -right-2 w-6 h-6 bg-primary text-on-primary rounded-full flex items-center justify-center font-label-caps text-[10px] z-10 border-2 border-surface-alt"
+                  >
+                    1
+                  </div>
+                </div>
+                <div class="flex flex-col flex-grow">
+                  <span
+                    class="font-body-md text-body-md text-primary font-medium line-clamp-1"
+                    >Áo Sơ Mi Linen Khuy Giấu</span
+                  >
+                  <span class="font-body-sm text-body-sm text-text-muted"
+                    >Trắng / M</span
+                  >
+                  <span
+                    class="font-price-display text-price-display text-primary mt-xs"
+                    >850.000đ</span
+                  >
+                </div>
+              </div>
+              <!-- Item 2 -->
+              <div class="flex gap-md items-center">
+                <div
+                  class="relative w-20 h-24 shrink-0 bg-surface-container-highest rounded overflow-hidden"
+                >
+                  <img
+                    alt="Quần Tây Đen"
+                    class="w-full h-full object-cover"
+                    data-alt="A detail shot of a pair of high-quality tailored black trousers. The focus is on the fabric texture and clean stitching around the waistband or pocket area. The background is a stark, clean off-white to contrast the deep black of the pants. The lighting is sharp yet soft, creating a premium, modern minimal e-commerce aesthetic."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6jEKvlTj4zXpuTfaQPdMTmjAUKmaWo5lc62jJIYdhKqIFuWrkXyVs04uHhag-qQ2V8dSfvIAtnM_xiNTkZ_mV3PKVZ7Gp734tkNCm1tkjKmH4SJkL31dQM1P8LKtE1sBfONalJpxdoTu8qfseinQwAF2xabW0Fnt84sEcDxbiZul491yw1iEHIBwoGaOXtXdrRcqXYI-nrnpWIDkZwbrB8l0akNvmxooDV5Q8RpN-DBm-EW5A42S2r--RHNmoI-zag8eCZ0XHPg"
+                  />
+                  <div
+                    class="absolute -top-2 -right-2 w-6 h-6 bg-primary text-on-primary rounded-full flex items-center justify-center font-label-caps text-[10px] z-10 border-2 border-surface-alt"
+                  >
+                    2
+                  </div>
+                </div>
+                <div class="flex flex-col flex-grow">
+                  <span
+                    class="font-body-md text-body-md text-primary font-medium line-clamp-1"
+                    >Quần Tây Nam Xếp Ly</span
+                  >
+                  <span class="font-body-sm text-body-sm text-text-muted"
+                    >Đen / L</span
+                  >
+                  <span
+                    class="font-price-display text-price-display text-primary mt-xs"
+                    >650.000đ</span
+                  >
+                </div>
+              </div>
+            </div>
+            <!-- Discount Code -->
+            <div class="flex gap-sm border-y border-subtle py-md">
+              <input
+                class="flex-grow border border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary font-body-md text-body-md uppercase placeholder-text-muted"
+                placeholder="Mã giảm giá"
+                type="text"
+              />
+              <button
+                class="bg-surface-container-high text-primary px-md py-sm rounded font-label-caps text-label-caps hover:bg-outline-variant transition-colors border border-subtle"
+              >
+                ÁP DỤNG
+              </button>
+            </div>
+            <!-- Price Breakdown -->
+            <div class="flex flex-col gap-sm">
+              <div
+                class="flex justify-between items-center font-body-md text-body-md text-on-surface-variant"
+              >
+                <span>Tạm tính</span>
+                <span class="font-price-display">2.150.000đ</span>
+              </div>
+              <div
+                class="flex justify-between items-center font-body-md text-body-md text-on-surface-variant"
+              >
+                <span>Phí vận chuyển</span>
+                <span class="font-price-display">Miễn phí</span>
+              </div>
+              <div
+                class="flex justify-between items-center font-body-md text-body-md text-success hidden"
+              >
+                <span>Giảm giá</span>
+                <span class="font-price-display">-0đ</span>
+              </div>
+            </div>
+            <!-- Total -->
+            <div
+              class="flex justify-between items-end border-t border-subtle pt-md"
+            >
+              <span class="font-headline-md text-headline-md text-primary"
+                >Tổng cộng</span
+              >
+              <div class="flex flex-col items-end">
+                <span class="font-label-caps text-[10px] text-text-muted"
+                  >Đã bao gồm VAT</span
+                >
+                <span class="font-headline-lg text-headline-lg text-primary"
+                  >2.150.000đ</span
+                >
+              </div>
+            </div>
+            <!-- CTA -->
+            <button
+              class="w-full bg-[#C1272D] text-on-error py-md rounded font-label-caps text-label-caps font-bold hover:opacity-90 hover:scale-[1.02] transition-all shadow-[0_4px_14px_0_rgba(193,39,45,0.39)]"
+            >
+              ĐẶT HÀNG
+            </button>
+            <!-- Trust Badges -->
+            <div
+              class="flex justify-center items-center gap-md pt-sm opacity-70"
+            >
+              <div
+                class="flex items-center gap-xs font-label-caps text-[10px] text-primary"
+              >
+                <span
+                  class="material-symbols-outlined text-[16px]"
+                  style="font-variation-settings: &quot;FILL&quot; 0"
+                  >lock</span
+                >
+                <span>SECURE SSL</span>
+              </div>
+              <div class="w-[1px] h-3 bg-outline"></div>
+              <div
+                class="flex items-center gap-xs font-label-caps text-[10px] text-primary"
+              >
+                <span
+                  class="material-symbols-outlined text-[16px]"
+                  style="font-variation-settings: &quot;FILL&quot; 0"
+                  >verified</span
+                >
+                <span>GENUINE WARRANTY</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer -->
+    <footer
+      class="bg-surface-container-low dark:bg-on-primary-fixed border-t border-subtle dark:border-outline-variant w-full mt-auto"
+    >
+      <div
+        class="w-full py-lg px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-base max-w-container-max mx-auto"
+      >
+        <p
+          class="text-label-caps font-label-caps font-bold text-primary dark:text-primary-fixed"
+        >
+          MODERN MINIMAL
+        </p>
+        <div class="flex items-center gap-md">
+          <a
+            class="text-text-muted dark:text-surface-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-caps text-label-caps opacity-80 hover:opacity-100 transition-opacity"
+            href="#"
+            >Điều khoản</a
+          >
+          <a
+            class="text-text-muted dark:text-surface-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-caps text-label-caps opacity-80 hover:opacity-100 transition-opacity"
+            href="#"
+            >Chính sách bảo mật</a
+          >
+          <a
+            class="text-text-muted dark:text-surface-dim hover:text-primary dark:hover:text-primary-fixed transition-colors font-label-caps text-label-caps opacity-80 hover:opacity-100 transition-opacity"
+            href="#"
+            >Liên hệ</a
+          >
+        </div>
+        <p
+          class="text-text-muted dark:text-surface-dim text-body-sm font-body-sm opacity-80"
+        >
+          © 2024 MODERN MINIMAL. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

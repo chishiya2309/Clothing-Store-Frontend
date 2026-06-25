@@ -9,6 +9,8 @@ import ForgotPassword from '../pages/ForgotPassword'
 import ResetPassword from '../pages/ResetPassword'
 import NotFound from '../pages/NotFound'
 import Cart from '../pages/Cart'
+import Checkout from '../pages/Checkout'
+import CheckoutResult from '../pages/CheckoutResult'
 import ProductDetail from '../pages/ProductDetail'
 import AdminRoute from './AdminRoute'
 import AdminDashboard from '../pages/admin/AdminDashboard'
@@ -22,6 +24,7 @@ import CollectionManagement from '../pages/admin/CollectionManagement'
 import InventoryReport from '../pages/admin/InventoryReport'
 import ReviewManagement from '../pages/admin/ReviewManagement'
 import BestsellersReport from '../pages/admin/BestsellersReport'
+import VoucherManagement from '../pages/admin/VoucherManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 
 import Profile from '../pages/Profile'
@@ -44,6 +47,8 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'cart', element: <Cart /> },
+      { path: 'checkout', element: <Checkout /> },
+      { path: 'checkout/result', element: <CheckoutResult /> },
       { path: 'product/:slug', element: <ProductDetail /> },
       { path: 'verify-email', element: <VerifyEmail /> },
       { path: 'forgot-password', element: <ForgotPassword /> },
@@ -102,7 +107,10 @@ const router = createBrowserRouter([
           { path: 'reviews', element: <ReviewManagement /> },
           { path: 'coupons', element: <CouponManagement /> },
           { path: 'banners', element: <BannerManagement /> },
-          { path: 'settings', element: <Settings /> }
+          { path: 'settings', element: <Settings /> },
+          { path: 'vouchers', element: <VoucherManagement /> },
+          { path: 'banners', element: <BannerManagement /> }
+          // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }
     ]
