@@ -2,6 +2,7 @@ import api from './api'
 
 export type DiscountType = 'percentage' | 'fixed_amount'
 
+
 export interface VoucherResponse {
   id: number
   code: string
