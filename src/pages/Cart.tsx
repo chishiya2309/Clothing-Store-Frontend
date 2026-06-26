@@ -2,14 +2,12 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
-import { calculateShippingFee } from '../utils/shipping'
 
 export default function Cart() {
   const { items, totalAmount, loading, fetchCart, updateQuantity, removeItem } = useCartStore()
   const token = useAuthStore((state) => state.token)
   const navigate = useNavigate()
-  const shippingFee = calculateShippingFee(totalAmount)
-  const orderTotal = Number(totalAmount || 0) + shippingFee
+  const orderTotal = Number(totalAmount || 0)
 
   useEffect(() => {
     fetchCart()
@@ -176,36 +174,6 @@ export default function Cart() {
                 <span>Tạm tính ({items.reduce((sum, item) => sum + item.quantity, 0)} sản phẩm)</span>
                 <span className="font-price-display text-primary">{formatPrice(totalAmount)}</span>
               </div>
-              <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
-                <span>Phí vận chuyển</span>
-                <span className={`font-price-display ${shippingFee === 0 ? 'text-success uppercase text-[12px] font-bold' : 'text-primary'}`}>
-                  {shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee)}
-                </span>
-              </div>
-            </div>
-
-            <div className="border-t border-border-subtle pt-md mt-xs flex flex-col gap-xs opacity-60">
-              <label className="font-label-caps text-label-caps text-on-surface-variant" htmlFor="voucher">
-                Mã giảm giá (Tùy chọn)
-              </label>
-              <div className="flex gap-sm">
-                <input
-                  disabled
-                  className="flex-grow border border-border-subtle rounded px-sm py-2 text-body-sm font-body-md bg-surface-alt cursor-not-allowed placeholder-surface-variant"
-                  id="voucher"
-                  placeholder="Nhập mã voucher"
-                  type="text"
-                />
-                <button
-                  disabled
-                  className="bg-surface-variant text-on-surface font-label-caps text-label-caps px-md rounded cursor-not-allowed h-[42px]"
-                >
-                  Áp dụng
-                </button>
-              </div>
-              <p className="text-[11px] text-on-surface-variant italic mt-1">
-                Mã giảm giá sẽ được áp dụng tại trang thanh toán
-              </p>
             </div>
 
             <div className="border-t border-border-subtle mt-sm pt-sm flex justify-between items-end">

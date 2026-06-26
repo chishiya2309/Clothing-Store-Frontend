@@ -433,19 +433,28 @@ export default function ProductDetail() {
           {/* Rating */}
           <div className="flex items-center gap-xs mb-gutter">
             <div className="flex text-rating-gold">
-              {Array.from({ length: 5 }).map((_, i) => {
-                const ratingValue = product.averageRating || 5
-                const isFilled = i < Math.floor(ratingValue)
-                const isHalf = !isFilled && i < ratingValue
-                return (
-                  <span key={i} className="material-symbols-outlined text-[18px] fill-1">
-                    {isFilled ? 'star' : isHalf ? 'star_half' : 'star_outline'}
-                  </span>
-                )
-              })}
+              {(() => {
+                const displayRating = reviewSummary !== null ? (reviewSummary.averageRating || 0) : 0
+                return Array.from({ length: 5 }).map((_, i) => {
+                  const isFilled = i < Math.floor(displayRating)
+                  const isHalf = !isFilled && i < displayRating
+                  return (
+                    <span 
+                      key={i} 
+                      className={`material-symbols-outlined text-[18px] ${isFilled ? 'fill-1' : ''}`}
+                    >
+                      {isFilled ? 'star' : isHalf ? 'star_half' : 'star'}
+                    </span>
+                  )
+                })
+              })()}
             </div>
             <span className="font-body-sm text-body-sm text-text-muted">
-              ({product.averageRating.toFixed(1)} / 5.0)
+              ({(reviewSummary !== null ? (reviewSummary.averageRating || 0) : 0).toFixed(1)} / 5.0)
+            </span>
+            <span className="text-text-muted text-[12px]">•</span>
+            <span className="font-body-sm text-body-sm text-text-muted">
+              {reviewSummary !== null ? (reviewSummary.totalReviews || 0) : 0} đánh giá
             </span>
             <span className="text-text-muted text-[12px]">•</span>
             <span className="font-body-sm text-body-sm text-text-muted">
