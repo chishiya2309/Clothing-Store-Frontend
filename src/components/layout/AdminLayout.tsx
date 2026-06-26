@@ -25,7 +25,15 @@ export default function AdminLayout() {
 
   const adminNavItems = [
     { path: '/admin', label: 'Báo cáo tổng quan', icon: 'dashboard' },
+    { path: '/admin/products', label: 'Sản phẩm & danh mục', icon: 'inventory_2' },
+    { path: '/admin/collections', label: 'Bộ sưu tập', icon: 'collections_bookmark' },
+    { path: '/admin/inventory', label: 'Báo cáo tồn kho', icon: 'warehouse' },
     { path: '/admin/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
+    { path: '/admin/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
+    { path: '/admin/reviews', label: 'Đánh giá', icon: 'reviews' },
+    { path: '/admin/coupons', label: 'Mã giảm giá', icon: 'local_offer' },
+    { path: '/admin/vouchers', label: 'Voucher', icon: 'local_offer' },
+    { path: '/admin/banners', label: 'Banner', icon: 'view_carousel' },
     { path: '/admin/users', label: 'Quản lý tài khoản', icon: 'manage_accounts' },
   ];
 
@@ -37,6 +45,7 @@ export default function AdminLayout() {
     { path: '/staff/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/staff/reviews', label: 'Đánh giá', icon: 'reviews' },
     { path: '/staff/coupons', label: 'Mã giảm giá', icon: 'local_offer' },
+    { path: '/staff/vouchers', label: 'Voucher', icon: 'local_offer' },
     { path: '/staff/banners', label: 'Banner', icon: 'view_carousel' },
   ];
 
@@ -132,27 +141,13 @@ export default function AdminLayout() {
               </span>
               <span
                 className={`font-label-caps text-[13px] tracking-wide transition-transform duration-300 ${
-                  isActive('/admin/settings') ? 'translate-x-0' : 'group-hover:translate-x-1'
+                  isActive(`${basePath}/settings`) ? 'translate-x-0' : 'group-hover:translate-x-1'
                 }`}
               >
                 Cài đặt
               </span>
             </Link>
-          )
-          </div>
-          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/vouchers">
-            <span className="material-symbols-outlined">local_offer</span>
-            <span className="font-label-caps text-label-caps">Mã giảm giá</span>
-          </Link>
-          <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/banners">
-            <span className="material-symbols-outlined">view_carousel</span>
-            <span className="font-label-caps text-label-caps">Quản lý banner</span>
-          </Link>
-          <div className="mt-auto pt-lg">
-            <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors" to="/admin/settings">
-              <span className="material-symbols-outlined">settings</span>
-              <span className="font-label-caps text-label-caps">Cài đặt</span>
-            </Link>
+
             <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors mt-2" to="/">
               <span className="material-symbols-outlined">storefront</span>
               <span className="font-label-caps text-label-caps">Về cửa hàng</span>

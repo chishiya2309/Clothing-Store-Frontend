@@ -505,7 +505,7 @@ export default function AdminDashboard() {
                   <img 
                     className="w-16 h-16 object-cover rounded-DEFAULT bg-surface-alt flex-shrink-0" 
                     alt="Product" 
-                    src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=100&q=80"
+                    src={prod.thumbnailUrl || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=100&q=80"}
                   />
                   <div className="flex-1 min-w-0">
                     <p className="font-body-md text-body-md text-text-primary line-clamp-1 font-semibold">{prod.productName}</p>

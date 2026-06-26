@@ -11,6 +11,7 @@ export interface StaffProductListItem {
   categoryName: string;
   totalSold: number;
   totalStock: number;
+  thumbnailUrl?: string;
 }
 
 export interface StaffVariantDto {
@@ -218,6 +219,17 @@ export const staffService = {
 
   updateStock: async (productId: number, variantId: number, stockQuantity: number) => {
     const res = await api.patch(`/staff/products/${productId}/variants/${variantId}/stock`, { stockQuantity });
+    return res.data.data;
+  },
+
+  uploadProductImage: async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    const res = await api.post('/staff/products/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return res.data.data;
   },
 
