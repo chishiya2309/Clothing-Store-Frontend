@@ -110,25 +110,38 @@ export interface StaffOrderDetail {
   subtotal: number;
   discountAmount: number;
   totalAmount: number;
-  paymentMethod: string;
-  paymentStatus: string;
+  payment: {
+    id: number;
+    method: string;
+    status: string;
+    amount: number;
+    transactionId: string | null;
+    paidAt: string | null;
+    createdAt: string;
+  } | null;
   status: string;
   createdAt: string;
   updatedAt: string;
   items: Array<{
-    id: number;
+    productVariantId: number | null;
+    sku: string | null;
     productName: string;
-    productImage: string | null;
-    size: string;
-    color: string;
+    variantInfo: string | null;
     quantity: number;
-    price: number;
+    unitPrice: number;
     subtotal: number;
   }>;
-  statusHistory: Array<{
+  timeline: Array<{
     id: number;
-    status: string;
-    note: string | null;
+    fromStatus: string | null;
+    toStatus: string;
+    changedById: number | null;
+    changedByName: string | null;
+    changedByEmail: string | null;
+    changedByRole: string | null;
+    actorLabel: string | null;
+    reason: string | null;
+    metadata: Record<string, unknown> | null;
     createdAt: string;
   }>;
 }
@@ -331,7 +344,7 @@ export const staffService = {
     return res.data.data;
   },
 
-  completeOrder: async (orderCode: string, data: { paymentMethod?: string; note?: string }): Promise<StaffOrderDetail> => {
+  completeOrder: async (orderCode: string, data: { confirmationSource: string; note: string }): Promise<StaffOrderDetail> => {
     const res = await api.patch(`/staff/orders/${orderCode}/complete`, data);
     return res.data.data;
   },

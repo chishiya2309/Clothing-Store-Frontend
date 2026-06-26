@@ -27,7 +27,6 @@ export default function OrderManagement() {
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
-  const [completePaymentMethod, setCompletePaymentMethod] = useState('cod');
   const [completeNote, setCompleteNote] = useState('');
   const [submittingAction, setSubmittingAction] = useState(false);
 
@@ -115,8 +114,8 @@ export default function OrderManagement() {
     try {
       setSubmittingAction(true);
       const updated = await staffService.completeOrder(orderDetail.orderCode, {
-        paymentMethod: completePaymentMethod,
-        note: completeNote || undefined
+        confirmationSource: 'internal_shipper',
+        note: completeNote.trim() || 'Nhân viên xác nhận đơn hàng đã giao thành công.'
       });
       setOrderDetail(updated);
       setOrders(prev => prev.map(o => o.orderCode === orderDetail.orderCode ? { ...o, status: 'completed' } : o));
@@ -152,21 +151,95 @@ export default function OrderManagement() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusLabel = (status: string) => {
     switch (status) {
       case 'pending':
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#FFF9E6] text-warning border border-[#ffeebf] whitespace-nowrap">Chờ xác nhận</span>;
+        return 'Chờ xác nhận';
       case 'processing':
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#EBF3FC] text-[#1B72E8] border border-[#cbe1fb] whitespace-nowrap">Đã xác nhận</span>;
+        return 'Đã xác nhận';
       case 'shipping':
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#F3EBF9] text-[#8E24AA] border border-[#ebd2f7] whitespace-nowrap">Đang giao</span>;
+        return 'Đang giao';
       case 'completed':
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#E6F4EA] text-success border border-[#bce4c6] whitespace-nowrap">Hoàn thành</span>;
+        return 'Hoàn thành';
       case 'cancelled':
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-error-container text-on-error-container border border-[#fcd8d8] whitespace-nowrap">Đã hủy</span>;
+        return 'Đã hủy';
       default:
-        return <span className="px-3 py-1 rounded-full text-[11px] font-medium bg-surface-container text-text-muted border border-border-subtle whitespace-nowrap">{status}</span>;
+        return status;
     }
+  };
+
+  const getStatusTextClass = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'text-warning';
+      case 'processing':
+        return 'text-[#1B72E8]';
+      case 'shipping':
+        return 'text-[#8E24AA]';
+      case 'completed':
+        return 'text-success';
+      case 'cancelled':
+        return 'text-error';
+      default:
+        return 'text-text-muted';
+    }
+  };
+
+  const getPaymentMethodLabel = (method: string) => {
+    const normalized = method?.toLowerCase();
+    switch (normalized) {
+      case 'cod':
+        return 'COD';
+      case 'vnpay':
+        return 'VNPay';
+      case 'momo':
+        return 'MoMo';
+      case 'bank_transfer':
+        return 'Chuyển khoản';
+      default:
+        return method || '-';
+    }
+  };
+
+  const getPaymentStatusLabel = (status: string) => {
+    const normalized = status?.toLowerCase();
+    switch (normalized) {
+      case 'paid':
+      case 'completed':
+        return 'Đã thanh toán';
+      case 'pending':
+        return 'Chưa thanh toán';
+      case 'failed':
+        return 'Thanh toán lỗi';
+      case 'refunded':
+        return 'Đã hoàn tiền';
+      default:
+        return status || '-';
+    }
+  };
+
+  const getPaymentStatusTextClass = (status: string) => {
+    const normalized = status?.toLowerCase();
+    if (normalized === 'paid' || normalized === 'completed' || normalized === 'refunded') {
+      return 'text-success';
+    }
+    if (normalized === 'failed') {
+      return 'text-error';
+    }
+    return 'text-warning';
+  };
+
+  const formatMetadataValue = (value: unknown) => {
+    if (value == null || value === '') return '-';
+    if (typeof value === 'boolean') return value ? 'Có' : 'Không';
+    if (typeof value === 'object') return JSON.stringify(value);
+    return String(value);
+  };
+
+  const formatOrderDate = (date: string) => {
+    if (!date) return '-';
+    const parsedDate = new Date(date);
+    return `${parsedDate.toLocaleDateString('vi-VN')} · ${parsedDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
   };
 
   return (
@@ -177,7 +250,7 @@ export default function OrderManagement() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-border-subtle mb-md overflow-x-auto gap-sm">
+      <div className="flex flex-wrap border-b border-border-subtle mb-md gap-sm">
         {(['all', 'pending', 'processing', 'shipping', 'completed', 'cancelled'] as OrderTabStatus[]).map((tab) => {
           const labels: Record<string, string> = {
             all: 'Tất cả đơn',
@@ -209,7 +282,7 @@ export default function OrderManagement() {
           <label className="block text-xs font-semibold text-text-muted mb-1 font-label-caps">Tìm kiếm</label>
           <input
             type="text"
-            placeholder="Mã đơn hàng, tên khách hàng..."
+            placeholder="Tên khách hàng..."
             className="w-full px-md py-sm border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary transition-colors text-xs"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
@@ -244,62 +317,76 @@ export default function OrderManagement() {
 
       {/* List Table */}
       <div className="bg-surface-container-lowest rounded-lg border border-border-subtle overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-surface-alt border-b border-border-subtle">
+        <table className="w-full table-fixed text-left">
+          <colgroup>
+            <col className="w-[22%]" />
+            <col className="w-[20%]" />
+            <col className="w-[18%]" />
+            <col className="w-[19%]" />
+            <col className="w-[21%]" />
+          </colgroup>
+          <thead className="bg-surface-alt border-b border-border-subtle">
+            <tr>
+              <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Khách hàng</th>
+              <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Ngày đặt</th>
+              <th className="py-md px-lg font-label-caps text-label-caps text-text-muted whitespace-nowrap">Số tiền thanh toán</th>
+              <th className="py-md px-lg font-label-caps text-label-caps text-text-muted whitespace-nowrap">Phương thức thanh toán</th>
+              <th className="py-md px-lg font-label-caps text-label-caps text-text-muted whitespace-nowrap">Trạng thái đơn hàng</th>
+            </tr>
+          </thead>
+          <tbody className="font-body-sm text-body-sm">
+            {loading ? (
               <tr>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Mã đơn / Ngày</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted">Khách hàng / PT thanh toán</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted whitespace-nowrap">Tổng tiền</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted whitespace-nowrap">Trạng thái</th>
-                <th className="py-md px-lg font-label-caps text-label-caps text-text-muted text-center whitespace-nowrap">Hành động</th>
+                <td colSpan={5} className="py-xl text-center text-text-muted">
+                  <span className="material-symbols-outlined animate-spin mb-2 text-primary">progress_activity</span>
+                  <p>Đang tải danh sách đơn hàng...</p>
+                </td>
               </tr>
-            </thead>
-            <tbody className="font-body-sm text-body-sm">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="py-xl text-center text-text-muted">
-                    <span className="material-symbols-outlined animate-spin mb-2 text-primary">progress_activity</span>
-                    <p>Đang tải danh sách đơn hàng...</p>
+            ) : orders.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-xl text-center text-text-muted">Không tìm thấy đơn hàng nào.</td>
+              </tr>
+            ) : (
+              orders.map((order) => (
+                <tr
+                  key={order.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleFetchDetail(order.orderCode)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      handleFetchDetail(order.orderCode);
+                    }
+                  }}
+                  aria-label={`Xem chi tiết đơn hàng của ${order.customerName || 'khách vãng lai'}`}
+                  className="border-b border-surface-container cursor-pointer hover:bg-surface-alt focus:bg-surface-alt focus:outline-none transition-colors"
+                >
+                  <td className="py-md px-lg align-middle">
+                    <p className="font-medium text-text-primary break-words">{order.customerName || 'Khách vãng lai'}</p>
+                    <p className="mt-1 font-mono text-[11px] text-text-muted whitespace-nowrap overflow-hidden text-ellipsis" title={order.orderCode}>
+                      {order.orderCode}
+                    </p>
+                  </td>
+                  <td className="py-md px-lg align-middle text-xs text-text-muted break-words">
+                    {formatOrderDate(order.createdAt)}
+                  </td>
+                  <td className="py-md px-lg align-middle font-semibold text-primary font-mono whitespace-nowrap">
+                    {order.totalAmount?.toLocaleString('vi-VN') ?? 0}đ
+                  </td>
+                  <td className="py-md px-lg align-middle text-xs font-semibold uppercase text-text-primary whitespace-nowrap">
+                    {getPaymentMethodLabel(order.paymentMethod)}
+                  </td>
+                  <td className="py-md px-lg align-middle">
+                    <span className={`text-xs font-semibold whitespace-nowrap ${getStatusTextClass(order.status)}`}>
+                      {getStatusLabel(order.status)}
+                    </span>
                   </td>
                 </tr>
-              ) : orders.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-xl text-center text-text-muted">Không tìm thấy đơn hàng nào.</td>
-                </tr>
-              ) : (
-                orders.map((order) => (
-                  <tr key={order.id} className="border-b border-surface-container hover:bg-surface-alt transition-colors">
-                    <td className="py-md px-lg">
-                      <p className="font-mono font-semibold text-primary text-sm">{order.orderCode}</p>
-                      <p className="text-[10px] text-text-muted mt-[2px]">
-                        {order.createdAt ? new Date(order.createdAt).toLocaleDateString('vi-VN') + ' · ' + new Date(order.createdAt).toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}) : '-'}
-                      </p>
-                    </td>
-                    <td className="py-md px-lg">
-                      <p className="font-medium text-text-primary">{order.customerName || 'Khách vãng lai'}</p>
-                      <span className="text-[10px] uppercase font-medium bg-[#F0EDE8] px-sm py-[2px] rounded-DEFAULT whitespace-nowrap mt-1 inline-block">
-                        {order.paymentMethod}
-                      </span>
-                    </td>
-                    <td className="py-md px-lg font-semibold text-primary font-mono whitespace-nowrap">
-                      {order.totalAmount?.toLocaleString('vi-VN') ?? 0}đ
-                    </td>
-                    <td className="py-md px-lg whitespace-nowrap">{getStatusBadge(order.status)}</td>
-                    <td className="py-md px-lg text-center whitespace-nowrap">
-                      <button
-                        onClick={() => handleFetchDetail(order.orderCode)}
-                        className="px-3 py-1 border border-primary text-primary hover:bg-primary hover:text-white transition-colors text-xs font-semibold whitespace-nowrap"
-                      >
-                        Chi tiết
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
 
         {/* Pagination */}
         {totalElements > 0 && totalPages > 1 && (
@@ -332,10 +419,10 @@ export default function OrderManagement() {
         <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs transition-opacity duration-300">
           <div className="w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="p-lg border-b border-border-subtle flex justify-between items-center bg-[#1A1A2E] text-white">
+            <div className="px-lg py-md border-b border-border-subtle flex justify-between items-center bg-[#1A1A2E] text-white">
               <div>
                 <p className="text-xs uppercase text-white/60 font-semibold font-label-caps animate-pulse">Chi tiết đơn hàng</p>
-                <h3 className="font-headline-md text-headline-md font-mono mt-xs text-white">{orderDetail.orderCode}</h3>
+                <h3 className="font-mono text-lg font-semibold mt-[2px] text-white">{orderDetail.orderCode}</h3>
               </div>
               <button 
                 onClick={() => { setSelectedOrderCode(null); setOrderDetail(null); }}
@@ -346,7 +433,7 @@ export default function OrderManagement() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-lg space-y-md">
+            <div className="flex-1 overflow-y-auto p-md space-y-md">
               {/* Customer and Shipping Info */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-sm bg-[#FAFAF8] p-sm border border-border-subtle rounded-lg">
                 <div>
@@ -366,19 +453,23 @@ export default function OrderManagement() {
               </div>
 
               {/* Order Status & Payments */}
-              <div className="flex items-center justify-between border border-border-subtle p-sm rounded-lg bg-white">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-sm border border-border-subtle p-sm rounded-lg bg-white">
                 <div>
                   <p className="text-xs text-text-muted uppercase font-label-caps mb-1">Trạng thái đơn</p>
-                  {getStatusBadge(orderDetail.status)}
+                  <span className={`text-xs font-semibold ${getStatusTextClass(orderDetail.status)}`}>
+                    {getStatusLabel(orderDetail.status)}
+                  </span>
                 </div>
                 <div>
-                  <p className="text-xs text-text-muted uppercase font-label-caps mb-1">Thanh toán</p>
-                  <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                    orderDetail.paymentStatus === 'PAID' || orderDetail.paymentStatus === 'completed'
-                      ? 'bg-success/10 text-success border border-[#cbe1fb]' 
-                      : 'bg-[#FFF9E6] text-warning border border-[#ffeebf]'
-                  }`}>
-                    {orderDetail.paymentStatus === 'PAID' || orderDetail.paymentStatus === 'completed' ? 'Đã thanh toán' : 'Chưa thanh toán'}
+                  <p className="text-xs text-text-muted uppercase font-label-caps mb-1">Phương thức thanh toán</p>
+                  <span className="text-xs font-semibold uppercase text-text-primary">
+                    {getPaymentMethodLabel(orderDetail.payment?.method || '')}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-text-muted uppercase font-label-caps mb-1">Trạng thái thanh toán</p>
+                  <span className={`text-xs font-semibold ${getPaymentStatusTextClass(orderDetail.payment?.status || '')}`}>
+                    {getPaymentStatusLabel(orderDetail.payment?.status || '')}
                   </span>
                 </div>
               </div>
@@ -398,21 +489,21 @@ export default function OrderManagement() {
                       </tr>
                     </thead>
                     <tbody>
-                      {orderDetail.items.map((item) => (
-                        <tr key={item.id} className="border-b border-surface-container last:border-0 hover:bg-surface-container-low transition-colors">
+                      {orderDetail.items.map((item, index) => (
+                        <tr key={`${item.productVariantId ?? item.sku ?? item.productName}-${index}`} className="border-b border-surface-container last:border-0 hover:bg-surface-container-low transition-colors">
                           <td className="py-sm px-md flex items-center gap-sm">
                             <img
-                              src={item.productImage || 'https://placehold.co/100x130?text=Clothy'}
+                              src="https://placehold.co/100x130?text=Clothy"
                               className="w-10 h-12 object-cover border border-border-subtle rounded"
                               alt=""
                             />
                             <p className="font-medium text-xs line-clamp-2">{item.productName}</p>
                           </td>
                           <td className="py-sm px-md text-xs text-center text-text-muted font-medium">
-                            {item.color} / {item.size}
+                            {item.variantInfo || item.sku || '-'}
                           </td>
                           <td className="py-sm px-md text-xs text-center font-mono font-semibold">{item.quantity}</td>
-                          <td className="py-sm px-md text-xs text-right font-mono font-medium">{item.price?.toLocaleString('vi-VN') ?? 0}đ</td>
+                          <td className="py-sm px-md text-xs text-right font-mono font-medium">{item.unitPrice?.toLocaleString('vi-VN') ?? 0}đ</td>
                           <td className="py-sm px-md text-xs text-right font-mono font-semibold">{item.subtotal?.toLocaleString('vi-VN') ?? 0}đ</td>
                         </tr>
                       ))}
@@ -448,34 +539,70 @@ export default function OrderManagement() {
               {/* Order Status History Timeline */}
               <div className="pt-xs">
                 <h4 className="font-semibold mb-sm text-[#1A1A2E] uppercase font-label-caps">Lịch sử trạng thái</h4>
-                <div className="space-y-sm pl-sm border-l border-border-subtle ml-xs">
-                  {orderDetail.statusHistory?.map((history, idx) => (
-                    <div key={idx} className="relative pl-md">
-                      <div className="absolute top-[6px] -left-[14px] w-2.5 h-2.5 rounded-full bg-[#1A1A2E] border-2 border-white"></div>
-                      <p className="text-xs font-semibold text-text-primary capitalize">
-                        {history.status === 'pending' ? 'Chờ xác nhận' : 
-                         history.status === 'processing' ? 'Đã xác nhận / Chuẩn bị hàng' : 
-                         history.status === 'shipping' ? 'Đang bàn giao vận chuyển' : 
-                         history.status === 'completed' ? 'Giao hàng thành công' : 
-                         history.status === 'cancelled' ? 'Hủy đơn hàng' : history.status}
-                      </p>
-                      {history.note && <p className="text-[11px] text-[#ba1a1a] mt-xs bg-error-container/20 px-2 py-0.5 rounded inline-block">Lý do/Ghi chú: {history.note}</p>}
-                      <p className="text-[10px] text-text-muted mt-[2px]">
-                        {history.createdAt ? new Date(history.createdAt).toLocaleString('vi-VN') : '-'}
-                      </p>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full table-fixed text-left">
+                    <colgroup>
+                      <col className="w-[34%]" />
+                      <col className="w-[26%]" />
+                      <col className="w-[20%]" />
+                      <col className="w-[20%]" />
+                    </colgroup>
+                    <thead>
+                      <tr className="text-[10px] uppercase font-label-caps text-text-muted">
+                        <th className="py-xs pr-sm font-semibold">Trạng thái</th>
+                        <th className="py-xs px-sm font-semibold">Thời gian</th>
+                        <th className="py-xs px-sm font-semibold">Thao tác bởi</th>
+                        <th className="py-xs pl-sm font-semibold">Ghi chú</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {orderDetail.timeline?.map((history) => (
+                        <tr key={history.id} className="align-top hover:bg-surface-alt/60">
+                          <td className="py-xs pr-sm">
+                            <div className="flex items-center gap-xs whitespace-nowrap">
+                              {history.fromStatus && (
+                                <>
+                                  <span className={`text-xs font-semibold ${getStatusTextClass(history.fromStatus)}`}>
+                                    {getStatusLabel(history.fromStatus)}
+                                  </span>
+                                  <span className="text-[10px] text-text-muted">→</span>
+                                </>
+                              )}
+                              <span className={`text-xs font-semibold ${getStatusTextClass(history.toStatus)}`}>
+                                {getStatusLabel(history.toStatus)}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-xs px-sm text-[11px] text-text-muted whitespace-nowrap">
+                            {history.createdAt ? new Date(history.createdAt).toLocaleString('vi-VN') : '-'}
+                          </td>
+                          <td className="py-xs px-sm text-[11px] text-text-muted truncate">
+                            {history.actorLabel || '-'}
+                          </td>
+                          <td className="py-xs pl-sm text-[11px] text-text-muted">
+                            <span className="line-clamp-1">
+                              {history.reason || (
+                                history.metadata && Object.keys(history.metadata).length > 0
+                                  ? Object.entries(history.metadata).map(([key, value]) => `${key}: ${formatMetadataValue(value)}`).join(', ')
+                                  : '-'
+                              )}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
 
             {/* Footer Action Buttons */}
-            <div className="p-lg border-t border-border-subtle bg-[#FAFAF8] flex justify-between gap-md">
-              {(orderDetail.status === 'pending' || orderDetail.status === 'processing' || orderDetail.status === 'shipping') && (
+            <div className="px-lg py-md border-t border-border-subtle bg-[#FAFAF8] flex justify-between gap-md">
+              {(orderDetail.status === 'pending' || orderDetail.status === 'processing') && (
                 <button
                   disabled={submittingAction}
                   onClick={() => setIsCancelModalOpen(true)}
-                  className="px-md py-sm bg-white border border-[#ba1a1a] text-[#ba1a1a] hover:bg-error-container/20 transition-colors font-semibold disabled:opacity-50 text-xs"
+                  className="px-md py-xs bg-white border border-[#ba1a1a] text-[#ba1a1a] hover:bg-error-container/20 transition-colors font-semibold disabled:opacity-50 text-xs"
                 >
                   Hủy đơn hàng
                 </button>
@@ -486,7 +613,7 @@ export default function OrderManagement() {
                   <button
                     disabled={submittingAction}
                     onClick={() => handleConfirm(orderDetail.orderCode)}
-                    className="px-md py-sm bg-[#1A1A2E] text-white hover:bg-black transition-colors font-semibold disabled:opacity-50 text-xs"
+                    className="px-md py-xs bg-[#1A1A2E] text-white hover:bg-black transition-colors font-semibold disabled:opacity-50 text-xs"
                   >
                     {submittingAction ? 'Đang xử lý...' : 'Xác nhận đơn'}
                   </button>
@@ -495,7 +622,7 @@ export default function OrderManagement() {
                   <button
                     disabled={submittingAction}
                     onClick={() => handleShip(orderDetail.orderCode)}
-                    className="px-md py-sm bg-[#1A1A2E] text-white hover:bg-black transition-colors font-semibold disabled:opacity-50 text-xs"
+                    className="px-md py-xs bg-[#1A1A2E] text-white hover:bg-black transition-colors font-semibold disabled:opacity-50 text-xs"
                   >
                     {submittingAction ? 'Đang xử lý...' : 'Giao hàng'}
                   </button>
@@ -504,14 +631,14 @@ export default function OrderManagement() {
                   <button
                     disabled={submittingAction}
                     onClick={() => setIsCompleteModalOpen(true)}
-                    className="px-md py-sm bg-success text-white hover:bg-[#206938] transition-colors font-semibold disabled:opacity-50 text-xs"
+                    className="px-md py-xs bg-success text-white hover:bg-[#206938] transition-colors font-semibold disabled:opacity-50 text-xs"
                   >
                     Giao thành công
                   </button>
                 )}
                 <button
                   onClick={() => { setSelectedOrderCode(null); setOrderDetail(null); }}
-                  className="px-md py-sm bg-[#e2e3e1] text-text-primary hover:bg-[#d5d6d4] transition-colors font-semibold text-xs"
+                  className="px-md py-xs bg-[#e2e3e1] text-text-primary hover:bg-[#d5d6d4] transition-colors font-semibold text-xs"
                 >
                   Đóng
                 </button>
@@ -564,24 +691,11 @@ export default function OrderManagement() {
             
             <div className="space-y-sm">
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1 font-label-caps">Phương thức thanh toán thực tế</label>
-                <select
-                  className="w-full px-md py-sm border border-border-subtle rounded-DEFAULT focus:outline-none focus:border-primary transition-colors text-xs"
-                  value={completePaymentMethod}
-                  onChange={(e) => setCompletePaymentMethod(e.target.value)}
-                >
-                  <option value="cod">Tiền mặt khi giao hàng (COD)</option>
-                  <option value="vnpay">Chuyển khoản VNPay</option>
-                  <option value="momo">Ví điện tử MoMo</option>
-                  <option value="bank_transfer">Chuyển khoản ngân hàng trực tiếp</option>
-                </select>
-              </div>
-              <div>
                 <label className="block text-xs font-semibold text-text-muted mb-1 font-label-caps">Ghi chú giao nhận</label>
                 <textarea
                   rows={3}
                   className="w-full border border-border-subtle p-md rounded-DEFAULT focus:outline-none focus:border-primary transition-colors text-xs"
-                  placeholder="Ghi chú người nhận hàng, người giao,..."
+                  placeholder="Để trống sẽ dùng ghi chú xác nhận giao thành công mặc định."
                   value={completeNote}
                   onChange={(e) => setCompleteNote(e.target.value)}
                 />
