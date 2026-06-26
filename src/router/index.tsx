@@ -18,7 +18,6 @@ import UserManagement from '../pages/admin/UserManagement'
 import BannerManagement from '../pages/admin/BannerManagement'
 import ProductManagement from '../pages/admin/ProductManagement'
 import OrderManagement from '../pages/admin/OrderManagement'
-import CouponManagement from '../pages/admin/CouponManagement'
 import Settings from '../pages/admin/Settings'
 import CollectionManagement from '../pages/admin/CollectionManagement'
 import InventoryReport from '../pages/admin/InventoryReport'
@@ -89,7 +88,6 @@ const router = createBrowserRouter([
           { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'orders', element: <OrderManagement /> },
           { path: 'reviews', element: <ReviewManagement /> },
-          { path: 'coupons', element: <CouponManagement /> },
           { path: 'banners', element: <BannerManagement /> },
           { path: 'vouchers', element: <VoucherManagement /> },
           { path: 'users', element: <UserManagement /> },
@@ -113,7 +111,6 @@ const router = createBrowserRouter([
           { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'orders', element: <OrderManagement /> },
           { path: 'reviews', element: <ReviewManagement /> },
-          { path: 'coupons', element: <CouponManagement /> },
           { path: 'banners', element: <BannerManagement /> },
           { path: 'settings', element: <Settings /> },
           { path: 'vouchers', element: <VoucherManagement /> }
