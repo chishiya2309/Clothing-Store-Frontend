@@ -83,7 +83,15 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { index: true, element: <AdminDashboard /> },
+          { path: 'products', element: <ProductManagement /> },
+          { path: 'collections', element: <CollectionManagement /> },
+          { path: 'inventory', element: <InventoryReport /> },
           { path: 'bestsellers', element: <BestsellersReport /> },
+          { path: 'orders', element: <OrderManagement /> },
+          { path: 'reviews', element: <ReviewManagement /> },
+          { path: 'coupons', element: <CouponManagement /> },
+          { path: 'banners', element: <BannerManagement /> },
+          { path: 'vouchers', element: <VoucherManagement /> },
           { path: 'users', element: <UserManagement /> },
           { path: 'settings', element: <Settings /> }
         ]
@@ -108,8 +116,7 @@ const router = createBrowserRouter([
           { path: 'coupons', element: <CouponManagement /> },
           { path: 'banners', element: <BannerManagement /> },
           { path: 'settings', element: <Settings /> },
-          { path: 'vouchers', element: <VoucherManagement /> },
-          { path: 'banners', element: <BannerManagement /> }
+          { path: 'vouchers', element: <VoucherManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }

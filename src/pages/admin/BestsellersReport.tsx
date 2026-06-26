@@ -222,7 +222,7 @@ export default function BestsellersReport() {
                       <img
                         className="w-10 h-10 object-cover rounded-DEFAULT bg-surface-alt flex-shrink-0 border border-border-subtle"
                         alt="Product"
-                        src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=80&q=80"
+                        src={item.thumbnailUrl || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=80&q=80"}
                       />
                       <div>
                         <p className="font-semibold text-sm text-text-primary">{item.productName}</p>

@@ -16,6 +16,7 @@ export interface BestsellerReportResponse {
   categoryName: string;
   totalQuantitySold: number;
   totalRevenue: number;
+  thumbnailUrl?: string;
 }
 
 export interface LoyaltyCustomerReportResponse {

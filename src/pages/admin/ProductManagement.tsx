@@ -46,6 +46,7 @@ export default function ProductManagement() {
   const [varPrice, setVarPrice] = useState(0);
   const [imgUrl, setImgUrl] = useState('');
   const [imgType, setImgType] = useState<'main' | 'gallery'>('gallery');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   // Category CRUD states
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -201,6 +202,24 @@ export default function ProductManagement() {
     };
     setPImages([...pImages, newImg]);
     setImgUrl('');
+    const fileInput = document.getElementById('image-upload-input') as HTMLInputElement;
+    if (fileInput) fileInput.value = '';
+  };
+
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingImage(true);
+      const url = await staffService.uploadProductImage(file);
+      setImgUrl(url);
+    } catch (err: any) {
+      console.error('Lỗi khi upload ảnh:', err);
+      alert('Không thể upload ảnh, vui lòng thử lại.');
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   const handleSaveProduct = async (e: React.FormEvent) => {
@@ -554,8 +573,8 @@ export default function ProductManagement() {
                           <div className="flex items-center gap-sm">
                             <div className="w-12 h-16 bg-surface rounded overflow-hidden border border-border-subtle flex-shrink-0">
                               <img 
-                                src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=100&q=80" 
-                                alt="thumb"
+                                src={product.thumbnailUrl || "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=100&q=80"} 
+                                alt={product.name}
                                 className="w-full h-full object-cover" 
                               />
                             </div>
@@ -861,14 +880,22 @@ export default function ProductManagement() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-sm items-end bg-white p-sm border border-border-subtle rounded">
                   <div className="flex flex-col gap-xs sm:col-span-2">
-                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Đường dẫn hình ảnh *</label>
-                    <input
-                      type="text"
-                      placeholder="https://images.unsplash.com/..."
-                      className="w-full px-md py-[8px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary"
-                      value={imgUrl}
-                      onChange={(e) => setImgUrl(e.target.value)}
-                    />
+                    <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Tải lên hình ảnh *</label>
+                    <div className="relative">
+                      <input
+                        id="image-upload-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleUploadImage}
+                        disabled={isUploadingImage}
+                        className="w-full px-md py-[5px] bg-white border border-border-subtle rounded-DEFAULT text-body-sm focus:outline-none focus:border-primary file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer disabled:opacity-50"
+                      />
+                      {isUploadingImage && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <span className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin block"></span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="flex flex-col gap-xs sm:col-span-1">
                     <label className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Loại ảnh</label>
@@ -884,7 +911,8 @@ export default function ProductManagement() {
                   <button
                     type="button"
                     onClick={addImageLocally}
-                    className="w-full h-[38px] bg-primary hover:bg-primary-hover text-on-primary rounded-DEFAULT text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer select-none"
+                    disabled={!imgUrl || isUploadingImage}
+                    className="w-full h-[38px] bg-primary hover:bg-primary-hover text-on-primary rounded-DEFAULT text-xs font-semibold flex items-center justify-center transition-colors cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Thêm ảnh
                   </button>
