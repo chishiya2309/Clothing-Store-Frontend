@@ -154,6 +154,36 @@ export interface StaffInventoryReportItem {
   variantInfo: string;
   stockQuantity: number;
   status: 'IN_STOCK' | 'LOW_STOCK' | 'OUT_OF_STOCK';
+  statusLabel?: string;
+  categoryId?: number | null;
+  categoryName?: string | null;
+}
+
+export type StaffInventoryReportStatus = StaffInventoryReportItem['status'];
+
+export type StaffInventoryReportSortBy =
+  | 'stockAsc'
+  | 'stockDesc'
+  | 'productNameAsc'
+  | 'productNameDesc'
+  | 'updatedDesc'
+  | 'skuAsc';
+
+export interface PageResponse<T> {
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  content: T[];
+}
+
+export interface StaffInventoryReportParams {
+  status?: StaffInventoryReportStatus;
+  categoryId?: number;
+  keyword?: string;
+  page?: number;
+  size?: number;
+  sortBy?: StaffInventoryReportSortBy;
 }
 
 export interface StaffCollectionResponse {
@@ -355,29 +385,26 @@ export const staffService = {
   },
 
   // INVENTORY REPORT
-  getInventoryReport: async (params: {
-    status?: string;
-    categoryId?: number;
-    keyword?: string;
-    page?: number;
-    size?: number;
-    sortBy?: string;
-  }) => {
+  getInventoryReport: async (params: StaffInventoryReportParams): Promise<PageResponse<StaffInventoryReportItem>> => {
     const res = await api.get('/staff/reports/inventory', { params });
     return res.data.data;
   },
 
-  exportInventoryReportUrl: (params: {
-    status?: string;
-    categoryId?: number;
-    keyword?: string;
-    sortBy?: string;
-  }) => {
+  exportInventoryReport: async (params: StaffInventoryReportParams): Promise<Blob> => {
+    const res = await api.get('/staff/reports/inventory/export', {
+      params: { ...params, format: 'CSV' },
+      responseType: 'blob',
+    });
+    return res.data;
+  },
+
+  exportInventoryReportUrl: (params: StaffInventoryReportParams) => {
     const query = new URLSearchParams();
     if (params.status) query.append('status', params.status);
     if (params.categoryId) query.append('categoryId', String(params.categoryId));
     if (params.keyword) query.append('keyword', params.keyword);
     if (params.sortBy) query.append('sortBy', params.sortBy);
+    query.append('format', 'CSV');
     
     const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
     return `${baseURL}/staff/reports/inventory/export?${query.toString()}`;
