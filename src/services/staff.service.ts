@@ -85,28 +85,17 @@ export interface StaffVoucherResponse {
 }
 
 export interface StaffOrderListItem {
+  id: number;
   orderCode: string;
   customerName: string;
-  customerEmail?: string | null;
-  customerPhone?: string | null;
   createdAt: string;
   totalAmount: number;
-  paymentMethod: 'cod' | 'vnpay' | 'momo' | null;
-  paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded' | null;
+  paymentMethod: string;
   status: string;
 }
 
-export interface StaffPaymentSummary {
-  id: number;
-  method: 'cod' | 'vnpay' | 'momo';
-  status: 'pending' | 'completed' | 'failed' | 'refunded';
-  amount: number;
-  transactionId: string | null;
-  paidAt: string | null;
-  createdAt: string;
-}
-
 export interface StaffOrderDetail {
+  id: number;
   orderCode: string;
   customerName: string;
   customerEmail: string;
@@ -121,12 +110,18 @@ export interface StaffOrderDetail {
   subtotal: number;
   discountAmount: number;
   totalAmount: number;
+  payment: {
+    id: number;
+    method: string;
+    status: string;
+    amount: number;
+    transactionId: string | null;
+    paidAt: string | null;
+    createdAt: string;
+  } | null;
   status: string;
   createdAt: string;
   updatedAt: string;
-  voucherId: number | null;
-  voucherCode: string | null;
-  payment: StaffPaymentSummary | null;
   items: Array<{
     productVariantId: number | null;
     sku: string | null;
@@ -140,7 +135,11 @@ export interface StaffOrderDetail {
     id: number;
     fromStatus: string | null;
     toStatus: string;
-    actorLabel: string;
+    changedById: number | null;
+    changedByName: string | null;
+    changedByEmail: string | null;
+    changedByRole: string | null;
+    actorLabel: string | null;
     reason: string | null;
     metadata: Record<string, unknown> | null;
     createdAt: string;
