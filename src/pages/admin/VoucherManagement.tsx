@@ -662,13 +662,18 @@ export default function VoucherManagement() {
                   <input
                     type="text"
                     value={form.code}
-                    onChange={(event) => setForm({ ...form, code: event.target.value.toUpperCase() })}
-                    className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all uppercase"
+                    onChange={(event) => {
+                      if (editingVoucher) return
+                      setForm({ ...form, code: event.target.value.toUpperCase() })
+                    }}
+                    className={`w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all uppercase ${
+                      editingVoucher ? 'bg-surface-container text-text-muted cursor-not-allowed' : ''
+                    }`}
                     placeholder="SALE10"
-                    disabled={Boolean(editingVoucher && editingVoucher.timesUsed > 0)}
+                    disabled={Boolean(editingVoucher)}
                   />
-                  {editingVoucher && editingVoucher.timesUsed > 0 && (
-                    <p className="text-xs text-text-muted mt-1">Mã đã phát sinh đơn hàng nên không nên chỉnh sửa.</p>
+                  {editingVoucher && (
+                    <p className="text-xs text-text-muted mt-1">Mã voucher không thể chỉnh sửa sau khi tạo.</p>
                   )}
                 </div>
 
