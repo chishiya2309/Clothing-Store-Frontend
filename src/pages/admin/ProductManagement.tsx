@@ -247,7 +247,7 @@ export default function ProductManagement() {
       categoryId: pCategoryId,
       isFeatured: pIsFeatured,
       isActive: pIsActive,
-      variants: pVariants,
+      variants: pVariants.map(v => ({ ...v, isActive: true })),
       images: pImages
     };
 
