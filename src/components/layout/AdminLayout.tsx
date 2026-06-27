@@ -31,7 +31,6 @@ export default function AdminLayout() {
     { path: '/admin/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/admin/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/admin/reviews', label: 'Đánh giá', icon: 'reviews' },
-    { path: '/admin/coupons', label: 'Mã giảm giá', icon: 'local_offer' },
     { path: '/admin/vouchers', label: 'Voucher', icon: 'local_offer' },
     { path: '/admin/banners', label: 'Banner', icon: 'view_carousel' },
     { path: '/admin/users', label: 'Quản lý tài khoản', icon: 'manage_accounts' },
@@ -44,7 +43,6 @@ export default function AdminLayout() {
     { path: '/staff/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/staff/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/staff/reviews', label: 'Đánh giá', icon: 'reviews' },
-    { path: '/staff/coupons', label: 'Mã giảm giá', icon: 'local_offer' },
     { path: '/staff/vouchers', label: 'Voucher', icon: 'local_offer' },
     { path: '/staff/banners', label: 'Banner', icon: 'view_carousel' },
   ];

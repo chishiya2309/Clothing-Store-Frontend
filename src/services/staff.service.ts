@@ -85,17 +85,28 @@ export interface StaffVoucherResponse {
 }
 
 export interface StaffOrderListItem {
-  id: number;
   orderCode: string;
   customerName: string;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
   createdAt: string;
   totalAmount: number;
-  paymentMethod: string;
+  paymentMethod: 'cod' | 'vnpay' | 'momo' | null;
+  paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded' | null;
   status: string;
 }
 
-export interface StaffOrderDetail {
+export interface StaffPaymentSummary {
   id: number;
+  method: 'cod' | 'vnpay' | 'momo';
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  amount: number;
+  transactionId: string | null;
+  paidAt: string | null;
+  createdAt: string;
+}
+
+export interface StaffOrderDetail {
   orderCode: string;
   customerName: string;
   customerEmail: string;
@@ -110,25 +121,28 @@ export interface StaffOrderDetail {
   subtotal: number;
   discountAmount: number;
   totalAmount: number;
-  paymentMethod: string;
-  paymentStatus: string;
   status: string;
   createdAt: string;
   updatedAt: string;
+  voucherId: number | null;
+  voucherCode: string | null;
+  payment: StaffPaymentSummary | null;
   items: Array<{
-    id: number;
+    productVariantId: number | null;
+    sku: string | null;
     productName: string;
-    productImage: string | null;
-    size: string;
-    color: string;
+    variantInfo: string | null;
     quantity: number;
-    price: number;
+    unitPrice: number;
     subtotal: number;
   }>;
-  statusHistory: Array<{
+  timeline: Array<{
     id: number;
-    status: string;
-    note: string | null;
+    fromStatus: string | null;
+    toStatus: string;
+    actorLabel: string;
+    reason: string | null;
+    metadata: Record<string, unknown> | null;
     createdAt: string;
   }>;
 }
@@ -331,7 +345,7 @@ export const staffService = {
     return res.data.data;
   },
 
-  completeOrder: async (orderCode: string, data: { paymentMethod?: string; note?: string }): Promise<StaffOrderDetail> => {
+  completeOrder: async (orderCode: string, data: { confirmationSource: string; note: string }): Promise<StaffOrderDetail> => {
     const res = await api.patch(`/staff/orders/${orderCode}/complete`, data);
     return res.data.data;
   },
