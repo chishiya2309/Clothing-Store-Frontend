@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { useCartStore } from '../../store/cartStore';
 import SearchModal from '../SearchModal';
+import CategoryMenuItem from './CategoryMenuItem';
 import { useCategoryStore } from '../../store/categoryStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 
@@ -37,34 +38,7 @@ export default function Header() {
         {/* Navigation Links */}
         <nav className="flex items-center gap-6">
           {categories.map((category) => (
-            <div key={category.id} className="relative group/nav">
-              <Link
-                className="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-on-primary transition-colors duration-200 py-2 inline-flex items-center"
-                to={`/category/${category.slug}`}
-              >
-                {category.name.toUpperCase()}
-                {category.children && category.children.length > 0 && (
-                  <span className="material-symbols-outlined text-[14px] ml-1 opacity-70">expand_more</span>
-                )}
-              </Link>
-              
-              {/* Dropdown for Sub-categories */}
-              {category.children && category.children.length > 0 && (
-                <div className="absolute left-0 top-full pt-2 opacity-0 group-hover/nav:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/nav:pointer-events-auto z-50">
-                  <div className="bg-surface-container-lowest border border-border-subtle shadow-sm py-2 min-w-[200px] rounded-sm overflow-hidden flex flex-col">
-                    {category.children.map((child) => (
-                      <Link
-                        key={child.id}
-                        className="px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors whitespace-nowrap"
-                        to={`/category/${child.slug}`}
-                      >
-                        {child.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <CategoryMenuItem key={category.id} category={category} isRoot={true} />
           ))}
         </nav>
         {/* Brand Logo */}
