@@ -297,6 +297,11 @@ export const staffService = {
     return res.data;
   },
 
+  updateCategoryOrders: async (data: { id: number; displayOrder: number }[]) => {
+    const res = await api.put('/staff/categories/bulk-order', data);
+    return res.data.data;
+  },
+
   // COLLECTIONS
   getCollections: async (params?: { page?: number; size?: number; keyword?: string }) => {
     const res = await api.get('/staff/collections', { params });

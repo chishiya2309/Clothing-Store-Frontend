@@ -208,7 +208,7 @@ export default function Home() {
             style={{ transform: `translateX(-${newArrivalsSlide * 100}%)` }}
           >
             {newArrivals.map((product) => (
-              <div key={product.id} className="min-w-full sm:min-w-[50%] lg:min-w-[25%] px-2 md:px-2 flex-shrink-0">
+              <div key={product.id} className="w-full sm:w-1/2 lg:w-1/4 px-2 md:px-2 flex-shrink-0">
                 <Link to={`/product/${product.slug}`} className="group cursor-pointer flex flex-col gap-3 relative h-full">
                   <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low rounded-DEFAULT">
                     <div className="absolute top-2 left-2 z-10 bg-on-tertiary-container text-white font-label-caps text-[10px] px-2 py-1 rounded-sm">

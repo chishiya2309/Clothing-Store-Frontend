@@ -3,6 +3,7 @@ import { staffService } from '../../services/staff.service';
 import type { StaffProductListItem, StaffCreateProductRequest, StaffVariantDto, StaffImageDto } from '../../services/staff.service';
 import { categoryService } from '../../services/category.service';
 import type { CategoryResponse } from '../../services/category.service';
+import { SortableCategoryTree } from './components/SortableCategoryTree';
 
 export default function ProductManagement() {
   const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products');
@@ -185,7 +186,17 @@ export default function ProductManagement() {
       stockQuantity: varStock,
       additionalPrice: varPrice
     };
-    setPVariants([...pVariants, newVariant]);
+    
+    setPVariants(prev => {
+      const existsIndex = prev.findIndex(v => v.size === varSize && v.color.toLowerCase() === varColor.toLowerCase());
+      if (existsIndex >= 0) {
+        const newVariants = [...prev];
+        newVariants[existsIndex] = { ...newVariants[existsIndex], stockQuantity: varStock, additionalPrice: varPrice };
+        return newVariants;
+      }
+      return [...prev, newVariant];
+    });
+    
     setVarColor('');
     setVarStock(0);
     setVarPrice(0);
@@ -228,7 +239,31 @@ export default function ProductManagement() {
       alert('Vui lòng chọn danh mục');
       return;
     }
-    if (pVariants.length === 0) {
+
+    let finalVariants = [...pVariants];
+
+    if (varColor) {
+      const sku = `${pName.substring(0, 3).toUpperCase()}-${varColor.substring(0, 2).toUpperCase()}-${varSize}-${Date.now().toString().slice(-4)}`;
+      const newVariant: StaffVariantDto = {
+        sku,
+        size: varSize,
+        color: varColor,
+        stockQuantity: varStock,
+        additionalPrice: varPrice
+      };
+      const existsIndex = finalVariants.findIndex(v => v.size === varSize && v.color.toLowerCase() === varColor.toLowerCase());
+      if (existsIndex >= 0) {
+        finalVariants[existsIndex] = { ...finalVariants[existsIndex], stockQuantity: varStock, additionalPrice: varPrice };
+      } else {
+        finalVariants.push(newVariant);
+      }
+      setPVariants(finalVariants);
+      setVarColor('');
+      setVarStock(0);
+      setVarPrice(0);
+    }
+
+    if (finalVariants.length === 0) {
       alert('Vui lòng thêm ít nhất 1 biến thể (Size/Màu)');
       return;
     }
@@ -247,7 +282,7 @@ export default function ProductManagement() {
       categoryId: pCategoryId,
       isFeatured: pIsFeatured,
       isActive: pIsActive,
-      variants: pVariants.map(v => ({ ...v, isActive: true })),
+      variants: finalVariants.map(v => ({ ...v, isActive: true })),
       images: pImages
     };
 
@@ -281,6 +316,7 @@ export default function ProductManagement() {
     setCatName(node.name);
     setCatDescription(node.description || '');
     setCatParentId(parentId ? String(parentId) : '');
+    setCatOrder(node.displayOrder ?? 1);
     setIsCategoryModalOpen(true);
   };
 
@@ -321,42 +357,22 @@ export default function ProductManagement() {
     }
   };
 
-  // Recursive Category List Renderer
-  const renderCategoryTree = (nodes: CategoryResponse[], parentId: number | null = null) => {
-    return (
-      <ul className="pl-lg border-l border-border-subtle flex flex-col gap-sm">
-        {nodes.map(node => (
-          <li key={node.id} className="py-xs">
-            <div className="flex items-center justify-between p-sm bg-surface-alt rounded border border-border-subtle hover:bg-surface-container-low transition-colors">
-              <div>
-                <span className="font-semibold text-text-primary">{node.name}</span>
-                <span className="text-[10px] text-text-muted ml-sm">Slug: {node.slug}</span>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handleOpenEditCategory(node, parentId)}
-                  className="px-2 py-1 text-xs text-primary hover:bg-primary-container rounded transition-colors"
-                >
-                  Sửa
-                </button>
-                <button
-                  onClick={() => handleDeleteCategory(node.id)}
-                  className="px-2 py-1 text-xs text-error hover:bg-error-container rounded transition-colors"
-                >
-                  Xóa
-                </button>
-              </div>
-            </div>
-            {node.children && node.children.length > 0 && (
-              <div className="mt-xs">
-                {renderCategoryTree(node.children, node.id)}
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
+  const handleCategoryOrderChange = async (reorderedChildren: CategoryResponse[]) => {
+    try {
+      const updates = reorderedChildren.map((child, index) => ({
+        id: child.id,
+        displayOrder: index, // Ensure order matches index
+      }));
+      await staffService.updateCategoryOrders(updates);
+      // Optional: don't need to fetchCategories() immediately if the UI is updated locally correctly by dnd-kit,
+      // but good to fetch to keep consistency if other properties changed.
+    } catch (err: any) {
+      alert('Lỗi khi lưu thứ tự danh mục');
+      fetchCategories(); // Revert UI
+    }
   };
+
+
 
   return (
     <div className="bg-[#FAFAF8] min-h-full">
@@ -668,7 +684,12 @@ export default function ProductManagement() {
           {categories.length === 0 ? (
             <p className="text-text-muted">Chưa cấu hình danh mục nào.</p>
           ) : (
-            renderCategoryTree(categories)
+            <SortableCategoryTree
+              categories={categories}
+              onEdit={handleOpenEditCategory}
+              onDelete={handleDeleteCategory}
+              onOrderChange={handleCategoryOrderChange}
+            />
           )}
         </div>
       )}
