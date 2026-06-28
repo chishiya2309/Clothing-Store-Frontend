@@ -126,6 +126,7 @@ export interface StaffOrderDetail {
     productVariantId: number | null;
     sku: string | null;
     productName: string;
+    productImage: string | null;
     variantInfo: string | null;
     quantity: number;
     unitPrice: number;

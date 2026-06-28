@@ -711,17 +711,13 @@ export default function ProductDetail() {
               </p>
               
               {token ? (
-                eligibleOrders.length > 0 ? (
+                eligibleOrders.length > 0 && (
                   <button 
                     onClick={() => setShowReviewForm(true)}
                     className="mt-gutter bg-[#1A1A2E] text-white px-8 py-3 rounded font-label-caps text-label-caps hover:bg-[#C1272D] transition-colors"
                   >
                     VIẾT ĐÁNH GIÁ
                   </button>
-                ) : (
-                  <div className="mt-gutter text-body-sm text-[#C1272D] font-medium bg-red-50 border border-red-200 p-3 rounded">
-                    Bạn chưa có đơn hàng hoàn thành nào chưa đánh giá cho sản phẩm này.
-                  </div>
                 )
               ) : (
                 <div className="mt-gutter text-body-sm text-text-muted">
