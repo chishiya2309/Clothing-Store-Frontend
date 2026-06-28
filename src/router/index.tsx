@@ -20,6 +20,7 @@ import ProductManagement from '../pages/admin/ProductManagement'
 import OrderManagement from '../pages/admin/OrderManagement'
 import Settings from '../pages/admin/Settings'
 import CollectionManagement from '../pages/admin/CollectionManagement'
+import CollectionProductsManagement from '../pages/admin/CollectionProductsManagement'
 import InventoryReport from '../pages/admin/InventoryReport'
 import ReviewManagement from '../pages/admin/ReviewManagement'
 import BestsellersReport from '../pages/admin/BestsellersReport'
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Home /> },
       { path: 'category/:slug', element: <CategoryProducts /> },
+      { path: 'collections/:collectionSlug', element: <CategoryProducts /> },
       { path: 'search', element: <CategoryProducts /> },
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
@@ -84,6 +86,7 @@ const router = createBrowserRouter([
           { index: true, element: <AdminDashboard /> },
           { path: 'products', element: <ProductManagement /> },
           { path: 'collections', element: <CollectionManagement /> },
+          { path: 'collections/:id/products', element: <CollectionProductsManagement /> },
           { path: 'inventory', element: <InventoryReport /> },
           { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'orders', element: <OrderManagement /> },
@@ -107,6 +110,7 @@ const router = createBrowserRouter([
           { index: true, element: <Navigate to="/staff/products" replace /> },
           { path: 'products', element: <ProductManagement /> },
           { path: 'collections', element: <CollectionManagement /> },
+          { path: 'collections/:id/products', element: <CollectionProductsManagement /> },
           { path: 'inventory', element: <InventoryReport /> },
           { path: 'bestsellers', element: <BestsellersReport /> },
           { path: 'orders', element: <OrderManagement /> },

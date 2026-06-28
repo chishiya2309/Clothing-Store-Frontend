@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { bannerService, type BannerResponse } from '@/services/banner.service'
+import { staffService } from '@/services/staff.service'
 
 export default function BannerManagement() {
   const [banners, setBanners] = useState<BannerResponse[]>([])
@@ -9,6 +10,9 @@ export default function BannerManagement() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [previewUrl, setPreviewUrl] = useState('')
+  const [linkType, setLinkType] = useState<'collection' | 'category' | 'custom'>('custom')
+  const [collections, setCollections] = useState<any[]>([])
+  const [categories, setCategories] = useState<any[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [form, setForm] = useState({
@@ -31,11 +35,28 @@ export default function BannerManagement() {
     }
   }
 
-  useEffect(() => { fetchBanners() }, [])
+  const fetchOptions = async () => {
+    try {
+      const [colData, catData] = await Promise.all([
+        staffService.getCollections({ size: 100 }),
+        staffService.getCategoryHierarchy()
+      ]);
+      setCollections(colData.content || colData || []);
+      setCategories(catData || []);
+    } catch (err) {
+      console.error("Failed to load options", err);
+    }
+  }
+
+  useEffect(() => { 
+    fetchBanners()
+    fetchOptions() 
+  }, [])
 
   const openCreateModal = () => {
     setEditBanner(null)
     setForm({ title: '', linkUrl: '', displayOrder: 0, isActive: true, startDate: '', endDate: '' })
+    setLinkType('custom')
     setPreviewUrl('')
     setShowModal(true)
     setError('')
@@ -51,6 +72,17 @@ export default function BannerManagement() {
       startDate: banner.startDate ? banner.startDate.slice(0, 16) : '',
       endDate: banner.endDate ? banner.endDate.slice(0, 16) : ''
     })
+    
+    // Parse link to set linkType correctly
+    const url = banner.linkUrl || '';
+    if (url.startsWith('/collections/')) {
+      setLinkType('collection');
+    } else if (url.startsWith('/category/')) {
+      setLinkType('category');
+    } else {
+      setLinkType('custom');
+    }
+    
     setPreviewUrl(banner.imageUrl)
     setShowModal(true)
     setError('')
@@ -301,15 +333,64 @@ export default function BannerManagement() {
               </div>
 
               {/* Link URL */}
-              <div>
-                <label className="block font-label-caps text-label-caps text-text-muted mb-2">Link điều hướng</label>
-                <input
-                  type="text"
-                  value={form.linkUrl}
-                  onChange={(e) => setForm({ ...form, linkUrl: e.target.value })}
-                  placeholder="/products hoặc https://..."
-                  className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-label-caps text-label-caps text-text-muted mb-2">Loại liên kết</label>
+                  <select
+                    value={linkType}
+                    onChange={(e) => {
+                      const type = e.target.value as any;
+                      setLinkType(type);
+                      setForm({ ...form, linkUrl: '' });
+                    }}
+                    className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
+                  >
+                    <option value="collection">Bộ sưu tập</option>
+                    <option value="category">Danh mục</option>
+                    <option value="custom">Tùy chỉnh</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-label-caps text-label-caps text-text-muted mb-2">Giá trị liên kết</label>
+                  {linkType === 'collection' && (
+                    <select
+                      value={form.linkUrl}
+                      onChange={(e) => setForm({ ...form, linkUrl: e.target.value })}
+                      className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
+                    >
+                      <option value="">-- Chọn bộ sưu tập --</option>
+                      {collections.map(c => (
+                        <option key={c.id} value={`/collections/${c.slug}`}>{c.name}</option>
+                      ))}
+                    </select>
+                  )}
+                  {linkType === 'category' && (
+                    <select
+                      value={form.linkUrl}
+                      onChange={(e) => setForm({ ...form, linkUrl: e.target.value })}
+                      className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
+                    >
+                      <option value="">-- Chọn danh mục --</option>
+                      {categories.map(c => (
+                        <optgroup key={c.id} label={c.name}>
+                          <option value={`/category/${c.slug}`}>{c.name}</option>
+                          {c.children && c.children.map((child: any) => (
+                            <option key={child.id} value={`/category/${child.slug}`}>-- {child.name}</option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  )}
+                  {linkType === 'custom' && (
+                    <input
+                      type="text"
+                      value={form.linkUrl}
+                      onChange={(e) => setForm({ ...form, linkUrl: e.target.value })}
+                      placeholder="/products hoặc https://..."
+                      className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
+                    />
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

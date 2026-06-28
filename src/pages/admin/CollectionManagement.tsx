@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { staffService } from '../../services/staff.service';
 import type { StaffCollectionResponse } from '../../services/staff.service';
 
 export default function CollectionManagement() {
+  const navigate = useNavigate();
   const [collections, setCollections] = useState<StaffCollectionResponse[]>([]);
   const [keyword, setKeyword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -139,6 +141,7 @@ export default function CollectionManagement() {
                   {collection.startDate ? new Date(collection.startDate).toLocaleDateString('vi-VN') : 'Không đặt'} - {collection.endDate ? new Date(collection.endDate).toLocaleDateString('vi-VN') : 'Không đặt'}
                 </td>
                 <td className="p-md text-right space-x-sm">
+                  <button onClick={() => navigate(`/admin/collections/${collection.id}/products`)} className="px-sm py-xs border border-primary text-primary rounded">Sản phẩm</button>
                   <button onClick={() => openEdit(collection)} className="px-sm py-xs border border-border-subtle rounded">Sửa</button>
                   <button onClick={() => handleDelete(collection.id)} className="px-sm py-xs border border-error text-error rounded">Xóa</button>
                 </td>

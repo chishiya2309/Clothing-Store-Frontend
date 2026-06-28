@@ -14,5 +14,9 @@ export const collectionService = {
     getCollectionBySlug: async (slug: string): Promise<CollectionResponse> => {
         const response = await axios.get(`${API_URL}/guest/collections/${slug}`);
         return response.data.data;
+    },
+    getActiveCollections: async (): Promise<CollectionResponse[]> => {
+        const response = await axios.get(`${API_URL}/guest/collections`);
+        return response.data.data;
     }
 };

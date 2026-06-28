@@ -6,7 +6,8 @@ import SearchModal from '../SearchModal';
 import CategoryMenuItem from './CategoryMenuItem';
 import { useCategoryStore } from '../../store/categoryStore';
 import { useWishlistStore } from '../../store/wishlistStore';
-
+import { collectionService } from '../../services/collection.service';
+import type { CollectionResponse } from '../../services/collection.service';
 
 export default function Header() {
   const { token, user, logout } = useAuthStore();
@@ -15,9 +16,11 @@ export default function Header() {
   const { wishlistProductIds } = useWishlistStore();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [collections, setCollections] = useState<CollectionResponse[]>([]);
 
   useEffect(() => {
     fetchCategories();
+    collectionService.getActiveCollections().then(setCollections).catch(console.error);
   }, [fetchCategories]);
 
   useEffect(() => {
@@ -37,6 +40,21 @@ export default function Header() {
       <div className="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto md:flex hidden relative">
         {/* Navigation Links */}
         <nav className="flex items-center gap-6">
+          <div className="relative group/collection">
+            <button className="flex items-center gap-1 font-semibold hover:text-primary transition-colors py-2 opacity-80 hover:opacity-100 uppercase text-xs tracking-wider">
+              BỘ SƯU TẬP
+              <span className="material-symbols-outlined text-[16px] group-hover/collection:rotate-180 transition-transform duration-200">expand_more</span>
+            </button>
+            <div className="absolute left-0 top-full pt-2 opacity-0 group-hover/collection:opacity-100 transition-opacity duration-200 pointer-events-none group-hover/collection:pointer-events-auto z-50">
+              <div className="bg-surface-container-lowest border border-border-subtle shadow-sm py-2 w-48 rounded-sm overflow-hidden">
+                {collections.map(col => (
+                  <Link key={col.id} to={`/collections/${col.slug}`} className="block px-4 py-2 hover:bg-surface-alt transition-colors font-body-md text-[14px]">
+                    {col.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
           {categories.map((category) => (
             <CategoryMenuItem key={category.id} category={category} isRoot={true} />
           ))}

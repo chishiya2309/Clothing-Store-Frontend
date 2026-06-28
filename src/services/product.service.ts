@@ -57,6 +57,7 @@ export interface PageResponse<T> {
 export interface ProductSearchParams {
     keyword?: string;
     categorySlug?: string;
+    collectionSlug?: string;
     colors?: string[];
     sizes?: string[];
     minPrice?: number;
@@ -79,6 +80,7 @@ export const productService = {
             params: {
                 keyword: params.keyword || undefined,
                 categorySlug: params.categorySlug || undefined,
+                collectionSlug: params.collectionSlug || undefined,
                 colors: params.colors?.length ? params.colors : undefined,
                 sizes: params.sizes?.length ? params.sizes : undefined,
                 minPrice: params.minPrice ?? undefined,

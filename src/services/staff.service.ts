@@ -323,6 +323,21 @@ export const staffService = {
     return res.data;
   },
 
+  getCollectionDetail: async (id: number) => {
+    const res = await api.get(`/staff/collections/${id}`);
+    return res.data.data;
+  },
+
+  addProductsToCollection: async (id: number, productIds: number[]) => {
+    const res = await api.post(`/staff/collections/${id}/products`, { productIds });
+    return res.data.data;
+  },
+
+  removeProductsFromCollection: async (id: number, productIds: number[]) => {
+    const res = await api.delete(`/staff/collections/${id}/products`, { data: { productIds } });
+    return res.data.data;
+  },
+
   // VOUCHERS
   getVouchers: async (): Promise<StaffVoucherResponse[]> => {
     const res = await api.get('/staff/vouchers');

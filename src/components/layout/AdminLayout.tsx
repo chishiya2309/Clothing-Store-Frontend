@@ -31,7 +31,7 @@ export default function AdminLayout() {
     { path: '/admin/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/admin/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/admin/reviews', label: 'Đánh giá', icon: 'reviews' },
-    { path: '/admin/vouchers', label: 'Voucher', icon: 'local_offer' },
+    { path: '/admin/vouchers', label: 'Mã giảm giá', icon: 'local_offer' },
     { path: '/admin/banners', label: 'Banner', icon: 'view_carousel' },
     { path: '/admin/users', label: 'Quản lý tài khoản', icon: 'manage_accounts' },
   ];
@@ -43,7 +43,7 @@ export default function AdminLayout() {
     { path: '/staff/bestsellers', label: 'Sản phẩm bán chạy', icon: 'trending_up' },
     { path: '/staff/orders', label: 'Đơn hàng', icon: 'shopping_cart' },
     { path: '/staff/reviews', label: 'Đánh giá', icon: 'reviews' },
-    { path: '/staff/vouchers', label: 'Voucher', icon: 'local_offer' },
+    { path: '/staff/vouchers', label: 'Mã giảm giá', icon: 'local_offer' },
     { path: '/staff/banners', label: 'Banner', icon: 'view_carousel' },
   ];
 
@@ -64,13 +64,13 @@ export default function AdminLayout() {
         </div>
 
         {/* Scrollable Navigation */}
-        <nav className="flex-1 py-lg px-md flex flex-col gap-xs overflow-y-auto hide-scrollbar select-none">
+        <nav className="flex-1 py-lg px-md flex flex-col gap-2 overflow-y-auto hide-scrollbar select-none">
           {navItems.map((item) => {
             const active = isActive(item.path);
             return (
               <Link
                 key={item.path}
-                className={`flex items-center gap-md px-md py-sm rounded-DEFAULT transition-all duration-300 relative group overflow-hidden ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-DEFAULT transition-all duration-300 relative group ${
                   active
                     ? 'bg-gradient-to-r from-[#1D1D3D] to-[#16162B] text-white font-semibold'
                     : 'text-[#8C8C8C] hover:text-white hover:bg-[#1C1C33]/50'
@@ -99,7 +99,7 @@ export default function AdminLayout() {
 
                 {/* Link label with slide translation */}
                 <span
-                  className={`font-label-caps text-[13px] tracking-wide transition-transform duration-300 ${
+                  className={`font-label-caps text-[13px] tracking-wide whitespace-nowrap transition-transform duration-300 ${
                     active
                       ? 'translate-x-0'
                       : 'group-hover:translate-x-1'
@@ -114,7 +114,7 @@ export default function AdminLayout() {
           {/* Bottom Utility Items */}
           <div className="mt-auto pt-lg border-t border-[#1D1D35] flex flex-col gap-xs">
             <Link
-              className={`flex items-center gap-md px-md py-sm rounded-DEFAULT transition-all duration-300 relative group overflow-hidden ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-DEFAULT transition-all duration-300 relative group ${
                 isActive(`${basePath}/settings`)
                   ? 'bg-gradient-to-r from-[#1D1D3D] to-[#16162B] text-white font-semibold'
                   : 'text-[#8C8C8C] hover:text-white hover:bg-[#1C1C33]/50'
@@ -138,7 +138,7 @@ export default function AdminLayout() {
                 settings
               </span>
               <span
-                className={`font-label-caps text-[13px] tracking-wide transition-transform duration-300 ${
+                className={`font-label-caps text-[13px] tracking-wide whitespace-nowrap transition-transform duration-300 ${
                   isActive(`${basePath}/settings`) ? 'translate-x-0' : 'group-hover:translate-x-1'
                 }`}
               >
@@ -146,20 +146,20 @@ export default function AdminLayout() {
               </span>
             </Link>
 
-            <Link className="flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors mt-2" to="/">
+            <Link className="flex items-center gap-3 px-4 py-3 text-[#8C8C8C] hover:text-white hover:bg-[#2A2A4A] rounded-DEFAULT transition-colors mt-2" to="/">
               <span className="material-symbols-outlined">storefront</span>
-              <span className="font-label-caps text-label-caps">Về cửa hàng</span>
+              <span className="font-label-caps text-[13px] whitespace-nowrap">Về cửa hàng</span>
             </Link>
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-md px-md py-sm text-[#8C8C8C] hover:text-[#FF4D4D] hover:bg-[#FF4D4D]/10 rounded-DEFAULT transition-all duration-300 relative group overflow-hidden mt-1 text-left"
+              className="w-full flex items-center gap-3 px-4 py-3 text-[#8C8C8C] hover:text-[#FF4D4D] hover:bg-[#FF4D4D]/10 rounded-DEFAULT transition-all duration-300 relative group mt-1 text-left"
             >
               <div className="absolute left-0 w-1 bg-[#FF4D4D] rounded-r transition-all duration-300 origin-center h-3/5 scale-y-0 opacity-0 group-hover:scale-y-75 group-hover:opacity-70" />
               <span className="material-symbols-outlined text-[22px] transition-all duration-300 group-hover:scale-110 group-hover:translate-x-0.5">
                 logout
               </span>
-              <span className="font-label-caps text-[13px] tracking-wide transition-transform duration-300 group-hover:translate-x-1">
+              <span className="font-label-caps text-[13px] tracking-wide whitespace-nowrap transition-transform duration-300 group-hover:translate-x-1">
                 Đăng xuất
               </span>
             </button>

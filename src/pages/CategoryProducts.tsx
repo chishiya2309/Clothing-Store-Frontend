@@ -5,6 +5,7 @@ import { useCategoryStore } from '@/store/categoryStore';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useAuthStore } from '@/store/authStore';
 import ProductFilterSidebar, { type FilterState } from '@/components/ProductFilterSidebar';
+import { collectionService } from '@/services/collection.service';
 
 const colorMap: Record<string, string> = {
   'trắng': '#ffffff',
@@ -36,17 +37,18 @@ const sortOptions = [
 ];
 
 export default function CategoryProducts() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug, collectionSlug } = useParams<{ slug: string, collectionSlug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const [pageData, setPageData] = useState<PageResponse<ProductGridResponse> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
+  const [collectionName, setCollectionName] = useState<string | null>(null);
   const { categories } = useCategoryStore();
   const { wishlistProductIds, toggleWishlist } = useWishlistStore();
   const { token } = useAuthStore();
 
   // Determine if this is a search page
-  const isSearchPage = !slug;
+  const isSearchPage = !slug && !collectionSlug;
   const searchKeyword = searchParams.get('q') || '';
 
   // Read filter state from URL search params
@@ -71,9 +73,19 @@ export default function CategoryProducts() {
     return null;
   };
 
-  const currentCategoryName = slug
-    ? findCategoryName(categories, slug) || 'Tất cả sản phẩm'
-    : `Kết quả tìm kiếm "${searchKeyword}"`;
+  useEffect(() => {
+    if (collectionSlug) {
+      collectionService.getCollectionBySlug(collectionSlug)
+        .then(res => setCollectionName(res.name))
+        .catch(err => console.error(err));
+    }
+  }, [collectionSlug]);
+
+  const currentCategoryName = collectionSlug
+    ? collectionName || 'Bộ sưu tập'
+    : slug
+      ? findCategoryName(categories, slug) || 'Tất cả sản phẩm'
+      : `Kết quả tìm kiếm "${searchKeyword}"`;
 
   // Sync URL params helper
   const updateParams = useCallback((updates: Record<string, string | string[] | undefined>) => {
@@ -103,6 +115,7 @@ export default function CategoryProducts() {
         const data = await productService.searchProducts({
           keyword: searchKeyword || undefined,
           categorySlug: slug || undefined,
+          collectionSlug: collectionSlug || undefined,
           colors: filterState.colors.length > 0 ? filterState.colors : undefined,
           sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
           minPrice: filterState.minPrice,
@@ -120,7 +133,7 @@ export default function CategoryProducts() {
     };
     fetchProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, searchParams.toString()]);
+  }, [slug, collectionSlug, searchParams.toString()]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     updateParams({
@@ -205,6 +218,16 @@ export default function CategoryProducts() {
               Trang chủ
             </Link>
           </li>
+          {collectionSlug && (
+            <li>
+              <div className="flex items-center">
+                <span className="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
+                <span className="text-on-surface-variant hover:text-primary transition-colors ml-1 md:ml-2">
+                  Bộ sưu tập
+                </span>
+              </div>
+            </li>
+          )}
           <li aria-current="page">
             <div className="flex items-center">
               <span className="material-symbols-outlined text-[16px] mx-1">chevron_right</span>
