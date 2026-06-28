@@ -7,8 +7,10 @@ import type {
   StaffInventoryReportSortBy,
   StaffInventoryReportStatus,
 } from "../../services/staff.service";
+import { useToast } from '../../components/ui/ToastProvider';
 
 export default function InventoryReport() {
+  const toast = useToast();
   const [items, setItems] = useState<StaffInventoryReportItem[]>([]);
   const [status, setStatus] = useState<StaffInventoryReportStatus | "">("");
   const [categoryId, setCategoryId] = useState("");
@@ -119,8 +121,9 @@ export default function InventoryReport() {
         sortBy,
       });
       downloadBlob(blob, "inventory_report.csv");
+      toast.success("Xuất báo cáo tồn kho thành công");
     } catch (err: any) {
-      alert(err.response?.data?.message || "Không xuất được báo cáo tồn kho.");
+      toast.error(err.response?.data?.message || "Không xuất được báo cáo tồn kho.");
     } finally {
       setExporting(false);
     }

@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { staffService } from '../../services/staff.service';
 import type { StaffCollectionResponse, StaffProductListItem } from '../../services/staff.service';
+import { useToast } from '../../components/ui/ToastProvider';
+import { useConfirm } from '../../components/ui/ConfirmProvider';
 
 export default function CollectionProductsManagement() {
+  const toast = useToast();
+  const confirm = useConfirm();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [collection, setCollection] = useState<StaffCollectionResponse | null>(null);
@@ -61,6 +65,7 @@ export default function CollectionProductsManagement() {
     if (selectedProductIds.length === 0 || !id) return;
     try {
       await staffService.addProductsToCollection(Number(id), selectedProductIds);
+      toast.success('Thêm sản phẩm vào bộ sưu tập thành công');
       setIsAddModalOpen(false);
       setSelectedProductIds([]);
       setSearchResults([]);
@@ -68,16 +73,27 @@ export default function CollectionProductsManagement() {
       fetchCollectionDetails(); // Refresh list
     } catch (error) {
       console.error("Error adding products:", error);
+      toast.error('Lỗi khi thêm sản phẩm vào bộ sưu tập');
     }
   };
 
   const handleRemoveProduct = async (productId: number) => {
-    if (!id || !window.confirm('Bạn có chắc muốn xóa sản phẩm này khỏi bộ sưu tập?')) return;
+    if (!id) return;
+    const confirmed = await confirm({
+      title: 'Xác nhận xóa sản phẩm',
+      message: 'Bạn có chắc muốn xóa sản phẩm này khỏi bộ sưu tập?',
+      confirmText: 'Xóa',
+      cancelText: 'Hủy',
+      type: 'danger'
+    });
+    if (!confirmed) return;
     try {
       await staffService.removeProductsFromCollection(Number(id), [productId]);
+      toast.success('Xóa sản phẩm khỏi bộ sưu tập thành công');
       fetchCollectionDetails(); // Refresh list
     } catch (error) {
       console.error("Error removing product:", error);
+      toast.error('Lỗi khi xóa sản phẩm khỏi bộ sưu tập');
     }
   };
 

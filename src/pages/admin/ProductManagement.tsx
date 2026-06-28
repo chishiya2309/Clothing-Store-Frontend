@@ -4,8 +4,12 @@ import type { StaffProductListItem, StaffCreateProductRequest, StaffVariantDto, 
 import { categoryService } from '../../services/category.service';
 import type { CategoryResponse } from '../../services/category.service';
 import { SortableCategoryTree } from './components/SortableCategoryTree';
+import { useToast } from '../../components/ui/ToastProvider';
+import { useConfirm } from '../../components/ui/ConfirmProvider';
 
 export default function ProductManagement() {
+  const toast = useToast();
+  const confirm = useConfirm();
   const [activeTab, setActiveTab] = useState<'products' | 'categories'>('products');
   
   // Products states
@@ -117,19 +121,27 @@ export default function ProductManagement() {
     try {
       await staffService.updateVisibility(id, !current);
       setProducts(prev => prev.map(p => p.id === id ? { ...p, isActive: !current } : p));
+      toast.success(current ? 'Đã ẩn sản phẩm' : 'Đã hiển thị sản phẩm');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi cập nhật trạng thái hiển thị');
+      toast.error(err.response?.data?.message || 'Lỗi cập nhật trạng thái hiển thị');
     }
   };
 
   const handleDeleteProduct = async (id: number) => {
-    if (!window.confirm('Bạn có chắc chắn muốn ẩn/xóa sản phẩm này?')) return;
+    const confirmed = await confirm({
+      title: 'Xác nhận xóa sản phẩm',
+      message: 'Bạn có chắc chắn muốn xóa sản phẩm này? Thao tác này không thể hoàn tác.',
+      confirmText: 'Xóa',
+      cancelText: 'Hủy',
+      type: 'danger'
+    });
+    if (!confirmed) return;
     try {
       await staffService.deleteProduct(id);
-      alert('Xóa sản phẩm thành công');
+      toast.success('Xóa sản phẩm thành công');
       fetchProducts();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi khi xóa sản phẩm');
+      toast.error(err.response?.data?.message || 'Lỗi khi xóa sản phẩm');
     }
   };
 
@@ -168,14 +180,14 @@ export default function ProductManagement() {
       setPImages(detail.images);
       setIsProductModalOpen(true);
     } catch (err: any) {
-      alert('Lỗi tải chi tiết sản phẩm: ' + (err.response?.data?.message || err.message));
+      toast.error('Lỗi tải chi tiết sản phẩm: ' + (err.response?.data?.message || err.message));
     }
   };
 
   // Add variant locally
   const addVariantLocally = () => {
     if (!varColor) {
-      alert('Vui lòng nhập màu sắc');
+      toast.warning('Vui lòng nhập màu sắc');
       return;
     }
     const sku = `${pName.substring(0, 3).toUpperCase()}-${varColor.substring(0, 2).toUpperCase()}-${varSize}-${Date.now().toString().slice(-4)}`;
@@ -227,7 +239,7 @@ export default function ProductManagement() {
       setImgUrl(url);
     } catch (err: any) {
       console.error('Lỗi khi upload ảnh:', err);
-      alert('Không thể upload ảnh, vui lòng thử lại.');
+      toast.error('Không thể upload ảnh, vui lòng thử lại.');
     } finally {
       setIsUploadingImage(false);
     }
@@ -236,7 +248,7 @@ export default function ProductManagement() {
   const handleSaveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pCategoryId) {
-      alert('Vui lòng chọn danh mục');
+      toast.warning('Vui lòng chọn danh mục');
       return;
     }
 
@@ -264,11 +276,11 @@ export default function ProductManagement() {
     }
 
     if (finalVariants.length === 0) {
-      alert('Vui lòng thêm ít nhất 1 biến thể (Size/Màu)');
+      toast.warning('Vui lòng thêm ít nhất 1 biến thể (Size/Màu)');
       return;
     }
     if (pImages.length === 0) {
-      alert('Vui lòng thêm ít nhất 1 hình ảnh');
+      toast.warning('Vui lòng thêm ít nhất 1 hình ảnh');
       return;
     }
 
@@ -289,15 +301,15 @@ export default function ProductManagement() {
     try {
       if (selectedProductId) {
         await staffService.updateProduct(selectedProductId, payload);
-        alert('Cập nhật sản phẩm thành công');
+        toast.success('Cập nhật sản phẩm thành công');
       } else {
         await staffService.createProduct(payload);
-        alert('Tạo sản phẩm thành công');
+        toast.success('Tạo sản phẩm thành công');
       }
       setIsProductModalOpen(false);
       fetchProducts();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Có lỗi xảy ra khi lưu sản phẩm');
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra khi lưu sản phẩm');
     }
   };
 
@@ -334,26 +346,33 @@ export default function ProductManagement() {
     try {
       if (selectedCategoryId) {
         await staffService.updateCategory(selectedCategoryId, payload);
-        alert('Cập nhật danh mục thành công');
+        toast.success('Cập nhật danh mục thành công');
       } else {
         await staffService.createCategory(payload);
-        alert('Tạo danh mục thành công');
+        toast.success('Tạo danh mục thành công');
       }
       setIsCategoryModalOpen(false);
       fetchCategories();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi khi lưu danh mục');
+      toast.error(err.response?.data?.message || 'Lỗi khi lưu danh mục');
     }
   };
 
   const handleDeleteCategory = async (id: number) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return;
+    const confirmed = await confirm({
+      title: 'Xác nhận xóa danh mục',
+      message: 'Bạn có chắc chắn muốn xóa danh mục này? Thao tác này không thể hoàn tác.',
+      confirmText: 'Xóa',
+      cancelText: 'Hủy',
+      type: 'danger'
+    });
+    if (!confirmed) return;
     try {
       await staffService.deleteCategory(id);
-      alert('Xóa danh mục thành công');
+      toast.success('Xóa danh mục thành công');
       fetchCategories();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi khi xóa danh mục');
+      toast.error(err.response?.data?.message || 'Lỗi khi xóa danh mục');
     }
   };
 
@@ -367,7 +386,7 @@ export default function ProductManagement() {
       // Optional: don't need to fetchCategories() immediately if the UI is updated locally correctly by dnd-kit,
       // but good to fetch to keep consistency if other properties changed.
     } catch (err: any) {
-      alert('Lỗi khi lưu thứ tự danh mục');
+      toast.error('Lỗi khi lưu thứ tự danh mục');
       fetchCategories(); // Revert UI
     }
   };
@@ -482,7 +501,7 @@ export default function ProductManagement() {
                   >
                     <option value="">Tất cả trạng thái</option>
                     <option value="ACTIVE">Hiển thị</option>
-                    <option value="DRAFT">Ẩn</option>
+                    <option value="INACTIVE">Ẩn</option>
                   </select>
                   <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none select-none text-[18px]">
                     expand_more
