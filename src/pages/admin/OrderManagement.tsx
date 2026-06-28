@@ -493,9 +493,9 @@ export default function OrderManagement() {
                         <tr key={`${item.productVariantId ?? item.sku ?? item.productName}-${index}`} className="border-b border-surface-container last:border-0 hover:bg-surface-container-low transition-colors">
                           <td className="py-sm px-md flex items-center gap-sm">
                             <img
-                              src="https://placehold.co/100x130?text=Clothy"
+                              src={item.productImage || "https://placehold.co/100x130?text=Clothy"}
                               className="w-10 h-12 object-cover border border-border-subtle rounded"
-                              alt=""
+                              alt={item.productName}
                             />
                             <p className="font-medium text-xs line-clamp-2">{item.productName}</p>
                           </td>

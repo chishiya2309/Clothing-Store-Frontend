@@ -184,30 +184,6 @@ export default function Cart() {
               </div>
             </div>
 
-            <div className="border-t border-border-subtle pt-md mt-xs flex flex-col gap-xs opacity-60">
-              <label className="font-label-caps text-label-caps text-on-surface-variant" htmlFor="voucher">
-                Mã giảm giá (Tùy chọn)
-              </label>
-              <div className="flex gap-sm">
-                <input
-                  disabled
-                  className="flex-grow border border-border-subtle rounded px-sm py-2 text-body-sm font-body-md bg-surface-alt cursor-not-allowed placeholder-surface-variant"
-                  id="voucher"
-                  placeholder="Nhập mã voucher"
-                  type="text"
-                />
-                <button
-                  disabled
-                  className="bg-surface-variant text-on-surface font-label-caps text-label-caps px-md rounded cursor-not-allowed h-[42px]"
-                >
-                  Áp dụng
-                </button>
-              </div>
-              <p className="text-[11px] text-on-surface-variant italic mt-1">
-                Mã giảm giá sẽ được áp dụng tại trang thanh toán
-              </p>
-            </div>
-
             <div className="border-t border-border-subtle mt-sm pt-sm flex justify-between items-end">
               <span className="font-headline-md text-headline-md text-primary">Tổng cộng</span>
               <div className="text-right">

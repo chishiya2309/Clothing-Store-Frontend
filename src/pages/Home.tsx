@@ -54,7 +54,7 @@ export default function Home() {
     };
     const fetchBestSellerCollection = async () => {
       try {
-        const data = await collectionService.getCollectionBySlug('best-seller');
+        const data = await collectionService.getCollectionBySlug('best-sellers');
         setBestSellerCollection(data);
       } catch (error) {
         console.error('Failed to fetch best seller collection', error);
@@ -264,7 +264,7 @@ export default function Home() {
               <p className="font-body-md text-body-md text-surface mb-6 max-w-sm">
                 {bestSellerCollection?.description || "Những thiết kế được yêu thích nhất mùa này. Khám phá ngay để không bỏ lỡ."}
               </p>
-              <button onClick={(e) => { e.preventDefault(); navigate('/collections/best-seller'); }} className="bg-white text-primary px-6 py-3 rounded-DEFAULT font-label-caps text-label-caps hover:bg-surface-container transition-colors w-fit">
+              <button onClick={(e) => { e.preventDefault(); navigate('/collections/best-sellers'); }} className="bg-white text-primary px-6 py-3 rounded-DEFAULT font-label-caps text-label-caps hover:bg-surface-container transition-colors w-fit">
                 KHÁM PHÁ NGAY
               </button>
             </div>

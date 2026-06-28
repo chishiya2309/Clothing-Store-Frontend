@@ -94,7 +94,7 @@ export default function Header() {
                     <span className="material-symbols-outlined text-[20px]">account_circle</span>
                     <span>Thông tin tài khoản</span>
                   </Link>
-                  <Link className="flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors" to="/orders">
+                  <Link className="flex items-center gap-3 px-4 py-3 text-[14px] font-body-md text-primary hover:bg-surface-alt transition-colors" to="/account/orders">
                     <span className="material-symbols-outlined text-[20px]">package</span>
                     <span>Đơn hàng của tôi</span>
                   </Link>

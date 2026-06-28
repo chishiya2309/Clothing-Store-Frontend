@@ -9,6 +9,7 @@ import {
   type Ward,
 } from '@/services/address.service'
 import { checkoutService, type PaymentMethod } from '@/services/checkout.service'
+import { profileService } from '@/services/profile.service'
 import { voucherService, type AppliedVoucherResponse } from '@/services/voucher.service'
 import { useCartStore } from '@/store/cartStore'
 import { calculateShippingFee } from '@/utils/shipping'
@@ -74,6 +75,7 @@ export default function Checkout() {
   const [districts, setDistricts] = useState<District[]>([])
   const [wards, setWards] = useState<Ward[]>([])
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod')
+  const [membershipDiscountPercent, setMembershipDiscountPercent] = useState<number>(0)
   const [voucherCode, setVoucherCode] = useState('')
   const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucherResponse | null>(null)
   const [voucherLoading, setVoucherLoading] = useState(false)
@@ -82,11 +84,12 @@ export default function Checkout() {
   const [voucherMessage, setVoucherMessage] = useState<string | null>(null)
 
   const shippingFee = calculateShippingFee(totalAmount)
+  const membershipDiscountAmount = totalAmount ? (Number(totalAmount) * membershipDiscountPercent / 100) : 0
   const discountAmount = appliedVoucher ? Number(appliedVoucher.discountAmount || 0) : 0
   const shippingDiscountAmount = appliedVoucher ? Number(appliedVoucher.shippingDiscountAmount || 0) : 0
   const total = appliedVoucher
-    ? Number(appliedVoucher.totalAmount || 0)
-    : Math.max(0, Number(totalAmount || 0) + shippingFee)
+    ? Math.max(0, Number(appliedVoucher.totalAmount || 0) - membershipDiscountAmount)
+    : Math.max(0, Number(totalAmount || 0) + shippingFee - membershipDiscountAmount)
 
   const selectedAddress = useMemo(
     () => addresses.find((address) => address.id === selectedAddressId) || null,
@@ -122,7 +125,19 @@ export default function Checkout() {
       }
     }
 
+    const loadMembership = async () => {
+      try {
+        const info = await profileService.getMembershipInfo()
+        if (mounted && info) {
+          setMembershipDiscountPercent(info.currentTierDiscount || 0)
+        }
+      } catch (err) {
+        console.error('Failed to load membership info', err)
+      }
+    }
+
     loadAddresses()
+    loadMembership()
     addressService.getProvinces().then(setProvinces).catch(() => setProvinces([]))
 
     return () => {
@@ -611,9 +626,15 @@ export default function Checkout() {
                   {shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)}
                 </span>
               </div>
+              {membershipDiscountAmount > 0 && (
+                <div className="flex justify-between items-center font-body-md text-body-md text-success">
+                  <span>Ưu đãi hạng thành viên (-{membershipDiscountPercent}%)</span>
+                  <span className="font-price-display">-{formatMoney(membershipDiscountAmount)}</span>
+                </div>
+              )}
               {discountAmount > 0 && (
                 <div className="flex justify-between items-center font-body-md text-body-md text-success">
-                  <span>Giảm giá</span>
+                  <span>Giảm giá voucher</span>
                   <span className="font-price-display">-{formatMoney(discountAmount)}</span>
                 </div>
               )}
