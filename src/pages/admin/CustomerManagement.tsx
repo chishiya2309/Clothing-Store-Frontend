@@ -1,8 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { adminUserService } from '../../services/adminUser.service';
 import type { AdminUserResponse } from '../../services/adminUser.service';
+import { useToast } from '../../components/ui/ToastProvider';
+import { useConfirm } from '../../components/ui/ConfirmProvider';
 
 export default function CustomerManagement() {
+  const toast = useToast();
+  const confirm = useConfirm();
   const [customers, setCustomers] = useState<AdminUserResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,16 +55,23 @@ export default function CustomerManagement() {
 
   const handleStatusChange = async (id: number, currentStatus: boolean) => {
     const actionText = currentStatus ? 'khóa' : 'mở khóa';
-    if (!window.confirm(`Bạn có chắc muốn ${actionText} tài khoản này?`)) return;
+    const confirmed = await confirm({
+      title: `Xác nhận ${actionText} tài khoản`,
+      message: `Bạn có chắc muốn ${actionText} tài khoản này?`,
+      confirmText: actionText === 'khóa' ? 'Khóa' : 'Mở khóa',
+      cancelText: 'Hủy',
+      type: currentStatus ? 'danger' : 'info'
+    });
+    if (!confirmed) return;
     try {
       await adminUserService.updateUserStatus(id, !currentStatus);
       setCustomers(prev => prev.map(u => u.id === id ? { ...u, isActive: !currentStatus } : u));
       if (selectedCustomer && selectedCustomer.id === id) {
         setSelectedCustomer(prev => prev ? { ...prev, isActive: !currentStatus } : null);
       }
-      alert(`Đã ${actionText} tài khoản khách hàng thành công.`);
+      toast.success(`Đã ${actionText} tài khoản khách hàng thành công.`);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi khi cập nhật trạng thái.');
+      toast.error(err.response?.data?.message || 'Lỗi khi cập nhật trạng thái.');
     }
   };
 

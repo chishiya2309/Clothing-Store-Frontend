@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { staffService } from '../../services/staff.service';
 import type { StaffReviewResponse } from '../../services/staff.service';
+import { useToast } from '../../components/ui/ToastProvider';
 
 type ReviewTab = 'PENDING' | 'APPROVED' | 'FLAGGED' | 'DELETED';
 
@@ -258,6 +259,8 @@ function DeleteModal({ review, onClose, onSubmit }: DeleteModalProps) {
 
 // ─── Main Component ─────────────────────────────────────────────────────────
 export default function ReviewManagement() {
+  const toast = useToast();
+
   const [tab, setTab] = useState<ReviewTab>('PENDING');
   const [reviews, setReviews] = useState<StaffReviewResponse[]>([]);
   const [loading, setLoading] = useState(false);
@@ -272,7 +275,7 @@ export default function ReviewManagement() {
       const all: StaffReviewResponse[] = data.content || [];
       setReviews(tab === 'FLAGGED' ? all.filter(r => r.isFlagged) : all);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Không tải được đánh giá.');
+      toast.error(err.response?.data?.message || 'Không tải được đánh giá.');
     } finally {
       setLoading(false);
     }
@@ -281,8 +284,12 @@ export default function ReviewManagement() {
   useEffect(() => { fetchReviews(); }, [tab]);
 
   const approve = async (id: number) => {
-    try { await staffService.approveReview(id); fetchReviews(); }
-    catch (err: any) { alert(err.response?.data?.message || 'Không duyệt được.'); }
+    try {
+      await staffService.approveReview(id);
+      toast.success('Đã duyệt đánh giá');
+      fetchReviews();
+    }
+    catch (err: any) { toast.error(err.response?.data?.message || 'Không duyệt được.'); }
   };
 
   const submitReply = async (replyText: string) => {
@@ -302,126 +309,132 @@ export default function ReviewManagement() {
   const stars = (rating: number) => Array.from({ length: 5 }, (_, i) => i < rating);
 
   return (
-    <div className="space-y-lg">
+    <div className="bg-[#FAFAF8] min-h-full p-4 md:p-6">
       {/* Page Header */}
-      <div>
-        <h1 className="font-headline-lg text-headline-lg font-bold">Quản lý đánh giá</h1>
-        <p className="text-sm text-text-muted">Duyệt, phản hồi hoặc xóa mềm đánh giá sản phẩm.</p>
+      <div className="mb-6">
+        <h1 className="font-headline-lg text-headline-lg font-bold text-[#1F2421]">Quản lý đánh giá</h1>
+        <p className="text-sm text-[#8A8A80] mt-1">Duyệt, phản hồi hoặc xóa đánh giá sản phẩm từ khách hàng</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-sm border-b border-border-subtle">
+      <div className="flex gap-2 border-b-2 border-[#E2D9C8] mb-6 overflow-x-auto">
         {(['PENDING', 'APPROVED', 'FLAGGED', 'DELETED'] as ReviewTab[]).map((item) => (
           <button key={item} onClick={() => setTab(item)}
-            className={`px-md py-sm border-b-2 font-semibold text-sm transition-all ${tab === item ? 'border-primary text-primary' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
+            className={`px-5 py-3 border-b-2 font-semibold text-sm transition-all whitespace-nowrap ${
+              tab === item
+                ? 'border-[#1F2421] text-[#1F2421] bg-[#F6F1E8]'
+                : 'border-transparent text-[#8A8A80] hover:text-[#1F2421] hover:bg-[#FBF7EF]'
+            }`}>
             {TAB_LABELS[item]}
           </button>
         ))}
       </div>
 
       {/* Table */}
-      <div className="bg-surface-container-lowest border border-border-subtle rounded-xl overflow-hidden">
-        <table className="w-full text-left">
-          <thead className="bg-surface-alt border-b border-border-subtle">
-            <tr>
-              <th className="px-md py-sm text-xs font-semibold text-text-muted uppercase tracking-wide">Khách hàng</th>
-              <th className="px-md py-sm text-xs font-semibold text-text-muted uppercase tracking-wide">Sản phẩm</th>
-              <th className="px-md py-sm text-xs font-semibold text-text-muted uppercase tracking-wide">Đánh giá</th>
-              <th className="px-md py-sm text-xs font-semibold text-text-muted uppercase tracking-wide">Phản hồi của shop</th>
-              <th className="px-md py-sm text-xs font-semibold text-text-muted uppercase tracking-wide text-right">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr><td className="p-xl text-center text-text-muted" colSpan={5}>
-                <div className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-                  </svg>
-                  Đang tải...
-                </div>
-              </td></tr>
-            ) : reviews.length === 0 ? (
-              <tr><td className="p-xl text-center text-text-muted" colSpan={5}>
-                <span className="material-symbols-outlined text-4xl block mb-2 opacity-40">rate_review</span>
-                Không có đánh giá nào.
-              </td></tr>
-            ) : reviews.map((review) => (
-              <tr key={review.id} className="border-b border-border-subtle last:border-0 align-top hover:bg-surface-alt/40 transition-colors">
+      <div className="bg-white border border-[#E2D9C8] rounded-xl overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead className="bg-[#F6F1E8] border-b border-[#E2D9C8]">
+              <tr>
+                <th className="px-4 md:px-6 py-4 text-xs font-semibold text-[#8A8A80] uppercase tracking-wider">Khách hàng</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-semibold text-[#8A8A80] uppercase tracking-wider">Sản phẩm</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-semibold text-[#8A8A80] uppercase tracking-wider">Đánh giá</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-semibold text-[#8A8A80] uppercase tracking-wider">Phản hồi</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-semibold text-[#8A8A80] uppercase tracking-wider text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E2D9C8]">
+              {loading ? (
+                <tr><td className="p-16 text-center text-[#8A8A80]" colSpan={5}>
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <span className="material-symbols-outlined animate-spin text-[#C8853F] text-4xl">progress_activity</span>
+                    <p>Đang tải đánh giá...</p>
+                  </div>
+                </td></tr>
+              ) : reviews.length === 0 ? (
+                <tr><td className="p-16 text-center text-[#8A8A80]" colSpan={5}>
+                  <span className="material-symbols-outlined text-6xl block mb-3 opacity-30">rate_review</span>
+                  <p className="text-lg">Không có đánh giá nào</p>
+                </td></tr>
+              ) : reviews.map((review) => (
+              <tr key={review.id} className="align-top hover:bg-[#FBF7EF] transition-colors">
                 {/* Customer */}
-                <td className="px-md py-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                <td className="px-4 md:px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#1F2421] to-[#2A2723] flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm">
                       {review.reviewerName?.charAt(0)?.toUpperCase() || '?'}
                     </div>
-                    <div>
-                      <p className="font-semibold text-sm">{review.reviewerName}</p>
-                      <p className="text-xs text-text-muted">{review.reviewerEmail}</p>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-sm text-[#1F2421] truncate">{review.reviewerName}</p>
+                      <p className="text-xs text-[#8A8A80] truncate">{review.reviewerEmail}</p>
                     </div>
                   </div>
                 </td>
 
                 {/* Product */}
-                <td className="px-md py-sm">
-                  <p className="text-sm font-medium">{review.productName}</p>
-                  <p className="text-xs text-text-muted">{review.productSku}</p>
+                <td className="px-4 md:px-6 py-4">
+                  <p className="text-sm font-semibold text-[#1F2421] line-clamp-2">{review.productName}</p>
+                  <p className="text-xs text-[#8A8A80] mt-1">SKU: {review.productSku}</p>
                 </td>
 
                 {/* Review content */}
-                <td className="px-md py-sm max-w-xs">
-                  <div className="flex items-center gap-1 mb-1">
+                <td className="px-4 md:px-6 py-4 max-w-xs">
+                  <div className="flex items-center gap-1 mb-2">
                     {stars(review.rating).map((filled, i) => (
-                      <span key={i} className={`material-symbols-outlined text-sm ${filled ? 'text-amber-400' : 'text-gray-200'}`}
+                      <span key={i} className={`material-symbols-outlined text-base ${filled ? 'text-[#F59E0B]' : 'text-[#E2D9C8]'}`}
                         style={{ fontVariationSettings: filled ? "'FILL' 1" : "'FILL' 0" }}>star</span>
                     ))}
-                    <span className="text-xs text-text-muted ml-1">{review.rating}/5</span>
+                    <span className="text-xs text-[#8A8A80] ml-1 font-semibold">{review.rating}/5</span>
                   </div>
-                  <p className="text-sm text-text-primary line-clamp-2">{review.content}</p>
+                  <p className="text-sm text-[#1F2421] leading-relaxed line-clamp-3 mb-2">{review.content}</p>
                   {review.isFlagged && (
-                    <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-700 text-xs rounded-full font-medium">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#FEF3C7] border border-[#FDE68A] text-[#92400E] text-xs rounded-full font-semibold">
                       <span className="material-symbols-outlined text-sm">flag</span>
                       {review.flagReason?.split('|')[0]?.trim()}
                     </span>
                   )}
                   {review.deleteReason && (
-                    <p className="text-xs text-error mt-1">Lý do xóa: {review.deleteReason}</p>
+                    <p className="text-xs text-[#991B1B] mt-2 bg-[#FEF2F2] px-2 py-1 rounded border border-[#FCA5A5]">
+                      <span className="font-semibold">Lý do xóa:</span> {review.deleteReason}
+                    </p>
                   )}
                 </td>
 
                 {/* Admin reply */}
-                <td className="px-md py-sm max-w-xs">
+                <td className="px-4 md:px-6 py-4 max-w-xs">
                   {review.adminReply ? (
-                    <p className="text-sm text-text-primary italic line-clamp-2">"{review.adminReply}"</p>
+                    <div className="bg-[#F0E3D0] border border-[#E2D9C8] rounded-lg p-3">
+                      <p className="text-sm text-[#1F2421] italic line-clamp-3">"{review.adminReply}"</p>
+                    </div>
                   ) : (
-                    <span className="text-xs text-text-muted">Chưa phản hồi</span>
+                    <span className="text-xs text-[#8A8A80] italic">Chưa phản hồi</span>
                   )}
                 </td>
 
                 {/* Actions */}
-                <td className="px-md py-sm text-right">
+                <td className="px-4 md:px-6 py-4 text-right">
                   <div className="flex items-center justify-end gap-2 flex-wrap">
                     {/* Duyệt — chỉ hiện khi chưa duyệt và còn active */}
                     {!review.isApproved && review.isActive && (
                       <button onClick={() => approve(review.id)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold border border-emerald-500 text-emerald-600 rounded-lg hover:bg-emerald-50 transition-all">
-                        <span className="material-symbols-outlined text-sm">check_circle</span>Duyệt
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#E6F4EA] border-2 border-[#A8DAB5] text-[#137333] rounded-lg hover:bg-[#CEEAD6] transition-all shadow-sm">
+                        <span className="material-symbols-outlined text-base">check_circle</span>Duyệt
                       </button>
                     )}
 
                     {/* Phản hồi — CHỈ hiện khi đã được duyệt */}
                     {review.isApproved && review.isActive && (
                       <button onClick={() => setReplyTarget(review)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold border border-indigo-400 text-indigo-600 rounded-lg hover:bg-indigo-50 transition-all">
-                        <span className="material-symbols-outlined text-sm">reply</span>Phản hồi
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#EFF6FF] border-2 border-[#BFDBFE] text-[#1E40AF] rounded-lg hover:bg-[#DBEAFE] transition-all shadow-sm">
+                        <span className="material-symbols-outlined text-base">reply</span>Phản hồi
                       </button>
                     )}
 
                     {/* Xóa — hiện khi còn active */}
                     {review.isActive && (
                       <button onClick={() => setDeleteTarget(review)}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold border border-red-400 text-red-500 rounded-lg hover:bg-red-50 transition-all">
-                        <span className="material-symbols-outlined text-sm">delete</span>Xóa
+                        className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold bg-[#FEF2F2] border-2 border-[#FCA5A5] text-[#991B1B] rounded-lg hover:bg-[#FEE2E2] transition-all shadow-sm">
+                        <span className="material-symbols-outlined text-base">delete</span>Xóa
                       </button>
                     )}
                   </div>
@@ -430,6 +443,7 @@ export default function ReviewManagement() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Modals */}

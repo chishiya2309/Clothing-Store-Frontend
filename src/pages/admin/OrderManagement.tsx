@@ -1,10 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { staffService } from '../../services/staff.service';
 import type { StaffOrderListItem, StaffOrderDetail } from '../../services/staff.service';
+import { useToast } from '../../components/ui/ToastProvider';
+import { useConfirm } from '../../components/ui/ConfirmProvider';
 
 type OrderTabStatus = 'all' | 'pending' | 'processing' | 'shipping' | 'completed' | 'cancelled';
 
 export default function OrderManagement() {
+  const toast = useToast();
+  const confirm = useConfirm();
+
   const [activeTab, setActiveTab] = useState<OrderTabStatus>('all');
   const [orders, setOrders] = useState<StaffOrderListItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -75,35 +80,49 @@ export default function OrderManagement() {
       setOrderDetail(detail);
       setSelectedOrderCode(code);
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Lỗi khi tải chi tiết đơn hàng');
+      toast.error(err.response?.data?.message || 'Lỗi khi tải chi tiết đơn hàng');
     }
   };
 
   const handleConfirm = async (code: string) => {
-    if (!window.confirm(`Xác nhận đơn hàng ${code}?`)) return;
+    const confirmed = await confirm({
+      title: 'Xác nhận đơn hàng',
+      message: `Xác nhận đơn hàng ${code}?`,
+      confirmText: 'Xác nhận',
+      cancelText: 'Hủy',
+      type: 'info'
+    });
+    if (!confirmed) return;
     try {
       setSubmittingAction(true);
       const updated = await staffService.confirmOrder(code);
       setOrderDetail(updated);
       setOrders(prev => prev.map(o => o.orderCode === code ? { ...o, status: 'processing' } : o));
-      alert('Xác nhận đơn hàng thành công.');
+      toast.success('Xác nhận đơn hàng thành công.');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Có lỗi xảy ra.');
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra.');
     } finally {
       setSubmittingAction(false);
     }
   };
 
   const handleShip = async (code: string) => {
-    if (!window.confirm(`Xác nhận bắt đầu giao hàng cho đơn ${code}?`)) return;
+    const confirmed = await confirm({
+      title: 'Xác nhận giao hàng',
+      message: `Xác nhận bắt đầu giao hàng cho đơn ${code}?`,
+      confirmText: 'Giao hàng',
+      cancelText: 'Hủy',
+      type: 'info'
+    });
+    if (!confirmed) return;
     try {
       setSubmittingAction(true);
       const updated = await staffService.shipOrder(code);
       setOrderDetail(updated);
       setOrders(prev => prev.map(o => o.orderCode === code ? { ...o, status: 'shipping' } : o));
-      alert('Đang giao hàng.');
+      toast.success('Đang giao hàng.');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Có lỗi xảy ra.');
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra.');
     } finally {
       setSubmittingAction(false);
     }
@@ -121,9 +140,9 @@ export default function OrderManagement() {
       setOrders(prev => prev.map(o => o.orderCode === orderDetail.orderCode ? { ...o, status: 'completed' } : o));
       setIsCompleteModalOpen(false);
       setCompleteNote('');
-      alert('Đơn hàng đã hoàn thành thành công.');
+      toast.success('Đơn hàng đã hoàn thành thành công.');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Có lỗi xảy ra.');
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra.');
     } finally {
       setSubmittingAction(false);
     }
@@ -131,7 +150,7 @@ export default function OrderManagement() {
 
   const handleCancel = async () => {
     if (!orderDetail || !cancelReason.trim()) {
-      alert('Vui lòng nhập lý do hủy đơn.');
+      toast.warning('Vui lòng nhập lý do hủy đơn.');
       return;
     }
     try {
@@ -143,9 +162,9 @@ export default function OrderManagement() {
       setOrders(prev => prev.map(o => o.orderCode === orderDetail.orderCode ? { ...o, status: 'cancelled' } : o));
       setIsCancelModalOpen(false);
       setCancelReason('');
-      alert('Đơn hàng đã được hủy.');
+      toast.success('Đơn hàng đã được hủy.');
     } catch (err: any) {
-      alert(err.response?.data?.message || 'Có lỗi xảy ra.');
+      toast.error(err.response?.data?.message || 'Có lỗi xảy ra.');
     } finally {
       setSubmittingAction(false);
     }
