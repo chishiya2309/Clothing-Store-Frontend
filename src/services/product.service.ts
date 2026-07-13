@@ -42,7 +42,7 @@ export interface ProductSearchDto {
   slug: string;
   image: string | null;
   category: string;
-  price: number;
+  basePrice: number;
   salePrice: number | null;
   rating: number;
   soldQuantity: number;
@@ -96,7 +96,7 @@ export const productService = {
         maxPrice?: number;
         colors?: string[];
         sizes?: string[];
-        brand?: string;
+        brands?: string[];
     }): Promise<PageResponse<ProductSearchDto>> => {
         const response = await axios.get(`${API_URL}/products/search`, {
             params: {
@@ -109,7 +109,7 @@ export const productService = {
                 maxPrice: params.maxPrice ?? undefined,
                 colors: params.colors?.length ? params.colors : undefined,
                 sizes: params.sizes?.length ? params.sizes : undefined,
-                brand: params.brand || undefined,
+                brands: params.brands?.length ? params.brands : undefined,
             },
             paramsSerializer: {
                 indexes: null,

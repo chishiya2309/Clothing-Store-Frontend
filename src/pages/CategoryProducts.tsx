@@ -125,7 +125,7 @@ export default function CategoryProducts() {
             maxPrice: filterState.maxPrice,
             colors: filterState.colors.length > 0 ? filterState.colors : undefined,
             sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
-            brand: filterState.brands.length > 0 ? filterState.brands[0] : undefined, // passes single brand filter to backend
+            brands: filterState.brands.length > 0 ? filterState.brands : undefined, // passes multiple brand filters to backend
             sortBy: currentSort,
             page: currentPage,
             size: 12,
