@@ -84,6 +84,102 @@ export default function ProductDetail() {
     return '#CCCCCC'
   }
 
+  // Dynamic SEO and Structured Data injection
+  useEffect(() => {
+    if (!product) return;
+
+    // 1. Dynamic Meta Tags
+    document.title = `${product.name} | Clothy Fashion`;
+
+    // Update meta tags dynamically helper
+    const updateOrCreateMeta = (nameOrProperty: string, content: string, isProperty = false) => {
+      const attribute = isProperty ? 'property' : 'name';
+      let element = document.querySelector(`meta[${attribute}="${nameOrProperty}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, nameOrProperty);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
+
+    const descriptionText = product.description
+      ? product.description.substring(0, 160)
+      : `Mua ${product.name} chất lượng cao tại Clothy Fashion. ${product.material || ''}`;
+
+    updateOrCreateMeta('description', descriptionText);
+    updateOrCreateMeta('keywords', `${product.name}, ${product.categoryName}, thời trang Clothy, quần áo đẹp`);
+
+    // Open Graph
+    updateOrCreateMeta('og:title', `${product.name} | Clothy Fashion`, true);
+    updateOrCreateMeta('og:description', descriptionText, true);
+    updateOrCreateMeta('og:type', 'product', true);
+    updateOrCreateMeta('og:url', window.location.href, true);
+    const mainImage = product.images?.[0]?.imageUrl || '';
+    if (mainImage) {
+      updateOrCreateMeta('og:image', mainImage, true);
+    }
+
+    // Twitter Card
+    updateOrCreateMeta('twitter:card', 'summary_large_image');
+    updateOrCreateMeta('twitter:title', `${product.name} | Clothy Fashion`);
+    updateOrCreateMeta('twitter:description', descriptionText);
+    if (mainImage) {
+      updateOrCreateMeta('twitter:image', mainImage);
+    }
+
+    // 2. Structured Data (JSON-LD)
+    const existingScript = document.getElementById('product-structured-data');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": product.name,
+      "image": product.images?.map(img => img.imageUrl) || [],
+      "description": product.description || '',
+      "brand": {
+        "@type": "Brand",
+        "name": "Clothy"
+      },
+      "category": product.categoryName,
+      "sku": product.variants?.[0]?.sku || `CLOTHY-${product.id}`,
+      "offers": {
+        "@type": "Offer",
+        "url": window.location.href,
+        "priceCurrency": "VND",
+        "price": product.price,
+        "availability": product.variants?.some(v => v.stockQuantity > 0)
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        "itemCondition": "https://schema.org/NewCondition"
+      },
+      "aggregateRating": product.averageRating > 0 ? {
+        "@type": "AggregateRating",
+        "ratingValue": product.averageRating,
+        "bestRating": "5",
+        "worstRating": "1",
+        "ratingCount": product.totalSold > 0 ? product.totalSold : 1
+      } : undefined
+    };
+
+    const script = document.createElement('script');
+    script.id = 'product-structured-data';
+    script.type = 'application/ld+json';
+    script.innerHTML = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+
+    // Cleanup on unmount
+    return () => {
+      const currentScript = document.getElementById('product-structured-data');
+      if (currentScript) {
+        currentScript.remove();
+      }
+    };
+  }, [product]);
+
   // Load product detail on slug change
   useEffect(() => {
     if (!slug) return

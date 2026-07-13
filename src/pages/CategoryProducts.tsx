@@ -30,6 +30,7 @@ const getHexColor = (colorName: string) => {
 };
 
 const sortOptions = [
+  { value: 'relevance', label: 'Độ liên quan' },
   { value: 'latest', label: 'Mới nhất' },
   { value: 'price_asc', label: 'Giá tăng dần' },
   { value: 'price_desc', label: 'Giá giảm dần' },
@@ -53,12 +54,15 @@ export default function CategoryProducts() {
 
   // Read filter state from URL search params
   const currentPage = parseInt(searchParams.get('page') || '0', 10);
-  const currentSort = searchParams.get('sort') || 'latest';
+  const currentSort = searchParams.get('sort') || (isSearchPage ? 'relevance' : 'latest');
+  
   const filterState: FilterState = {
     colors: searchParams.getAll('colors'),
     sizes: searchParams.getAll('sizes'),
     minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
     maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
+    brands: searchParams.getAll('brands'),
+    categorySlug: searchParams.get('categorySlug') || undefined,
   };
 
   // Find current category name for title/breadcrumb
@@ -112,19 +116,54 @@ export default function CategoryProducts() {
     const fetchProducts = async () => {
       setIsLoading(true);
       try {
-        const data = await productService.searchProducts({
-          keyword: searchKeyword || undefined,
-          categorySlug: slug || undefined,
-          collectionSlug: collectionSlug || undefined,
-          colors: filterState.colors.length > 0 ? filterState.colors : undefined,
-          sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
-          minPrice: filterState.minPrice,
-          maxPrice: filterState.maxPrice,
-          sortBy: currentSort,
-          page: currentPage,
-          size: 12,
-        });
-        setPageData(data);
+        if (isSearchPage) {
+          // Call the brand-new advanced search endpoint
+          const data = await productService.searchProductsFullText({
+            q: searchKeyword || undefined,
+            categorySlug: filterState.categorySlug || undefined,
+            minPrice: filterState.minPrice,
+            maxPrice: filterState.maxPrice,
+            colors: filterState.colors.length > 0 ? filterState.colors : undefined,
+            sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
+            brand: filterState.brands.length > 0 ? filterState.brands[0] : undefined, // passes single brand filter to backend
+            sortBy: currentSort,
+            page: currentPage,
+            size: 12,
+          });
+
+          // Map ProductSearchDto -> ProductGridResponse for compatibility
+          const transformed: PageResponse<ProductGridResponse> = {
+            pageNumber: data.pageNumber,
+            pageSize: data.pageSize,
+            totalElements: data.totalElements,
+            totalPages: data.totalPages,
+            content: data.content.map((item) => ({
+              id: item.id,
+              name: item.name,
+              slug: item.slug,
+              thumbnailUrl: item.image,
+              basePrice: item.basePrice,
+              salePrice: item.salePrice,
+              colors: [], // colors are handled dynamically inside product card or fallback to empty
+            })),
+          };
+          setPageData(transformed);
+        } else {
+          // Use original search endpoint for Category/Collection pages
+          const data = await productService.searchProducts({
+            keyword: searchKeyword || undefined,
+            categorySlug: slug || undefined,
+            collectionSlug: collectionSlug || undefined,
+            colors: filterState.colors.length > 0 ? filterState.colors : undefined,
+            sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
+            minPrice: filterState.minPrice,
+            maxPrice: filterState.maxPrice,
+            sortBy: currentSort,
+            page: currentPage,
+            size: 12,
+          });
+          setPageData(data);
+        }
       } catch (error) {
         console.error('Failed to fetch products', error);
       } finally {
@@ -139,9 +178,11 @@ export default function CategoryProducts() {
     updateParams({
       colors: newFilters.colors.length > 0 ? newFilters.colors : undefined,
       sizes: newFilters.sizes.length > 0 ? newFilters.sizes : undefined,
+      brands: newFilters.brands.length > 0 ? newFilters.brands : undefined,
+      categorySlug: newFilters.categorySlug || undefined,
       minPrice: newFilters.minPrice !== undefined ? String(newFilters.minPrice) : undefined,
       maxPrice: newFilters.maxPrice !== undefined ? String(newFilters.maxPrice) : undefined,
-      sort: currentSort !== 'latest' ? currentSort : undefined,
+      sort: currentSort !== (isSearchPage ? 'relevance' : 'latest') ? currentSort : undefined,
       page: '0', // Reset to first page on filter change
     });
   };
@@ -151,9 +192,11 @@ export default function CategoryProducts() {
     updateParams({
       colors: filterState.colors.length > 0 ? filterState.colors : undefined,
       sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
+      brands: filterState.brands.length > 0 ? filterState.brands : undefined,
+      categorySlug: filterState.categorySlug || undefined,
       minPrice: filterState.minPrice !== undefined ? String(filterState.minPrice) : undefined,
       maxPrice: filterState.maxPrice !== undefined ? String(filterState.maxPrice) : undefined,
-      sort: sortBy !== 'latest' ? sortBy : undefined,
+      sort: sortBy !== (isSearchPage ? 'relevance' : 'latest') ? sortBy : undefined,
       page: '0',
     });
   };
@@ -163,9 +206,11 @@ export default function CategoryProducts() {
       updateParams({
         colors: filterState.colors.length > 0 ? filterState.colors : undefined,
         sizes: filterState.sizes.length > 0 ? filterState.sizes : undefined,
+        brands: filterState.brands.length > 0 ? filterState.brands : undefined,
+        categorySlug: filterState.categorySlug || undefined,
         minPrice: filterState.minPrice !== undefined ? String(filterState.minPrice) : undefined,
         maxPrice: filterState.maxPrice !== undefined ? String(filterState.maxPrice) : undefined,
-        sort: currentSort !== 'latest' ? currentSort : undefined,
+        sort: currentSort !== (isSearchPage ? 'relevance' : 'latest') ? currentSort : undefined,
         page: String(newPage),
       });
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -186,6 +231,19 @@ export default function CategoryProducts() {
       onRemove: () => handleFilterChange({ ...filterState, sizes: filterState.sizes.filter((x) => x !== s) }),
     })
   );
+  filterState.brands.forEach((b) =>
+    activeFilterTags.push({
+      label: `Hiệu: ${b}`,
+      onRemove: () => handleFilterChange({ ...filterState, brands: filterState.brands.filter((x) => x !== b) }),
+    })
+  );
+  if (filterState.categorySlug) {
+    const selectedCatName = findCategoryName(categories, filterState.categorySlug) || filterState.categorySlug;
+    activeFilterTags.push({
+      label: `Mục: ${selectedCatName}`,
+      onRemove: () => handleFilterChange({ ...filterState, categorySlug: undefined }),
+    });
+  }
   if (filterState.minPrice !== undefined || filterState.maxPrice !== undefined) {
     const label =
       filterState.maxPrice !== undefined
@@ -206,7 +264,7 @@ export default function CategoryProducts() {
     await toggleWishlist(productId);
   };
 
-  const currentSortLabel = sortOptions.find((o) => o.value === currentSort)?.label || 'Mới nhất';
+  const currentSortLabel = sortOptions.find((o) => o.value === currentSort)?.label || (isSearchPage ? 'Độ liên quan' : 'Mới nhất');
 
   return (
     <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-lg min-h-[60vh]">
@@ -315,7 +373,7 @@ export default function CategoryProducts() {
 
       <div className="flex flex-col md:flex-row gap-xl">
         {/* Sidebar Filter */}
-        <ProductFilterSidebar filters={filterState} onFilterChange={handleFilterChange} />
+        <ProductFilterSidebar filters={filterState} onFilterChange={handleFilterChange} isSearchPage={isSearchPage} />
 
         {/* Main Product Grid */}
         <div className="flex-1">

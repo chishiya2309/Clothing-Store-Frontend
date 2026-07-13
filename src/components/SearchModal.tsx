@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productService, type ProductGridResponse } from '@/services/product.service';
+import { productService, type ProductSuggestionDto } from '@/services/product.service';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ const popularKeywords = ['Áo Polo', 'Quần Jeans', 'Áo Hoodie', 'Áo Khoác',
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [keyword, setKeyword] = useState('');
-  const [suggestions, setSuggestions] = useState<ProductGridResponse[]>([]);
+  const [suggestions, setSuggestions] = useState<ProductSuggestionDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -39,7 +39,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     debounceRef.current = setTimeout(async () => {
       setIsLoading(true);
       try {
-        const data = await productService.getAutocomplete(keyword.trim(), 5);
+        const data = await productService.getSuggestions(keyword.trim());
         setSuggestions(data);
       } catch {
         setSuggestions([]);
@@ -60,9 +60,44 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     onClose();
   };
 
+  const handleSuggestionClick = (slug: string) => {
+    navigate(`/product/${slug}`);
+    onClose();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') handleSearch();
     if (e.key === 'Escape') onClose();
+  };
+
+  // Helper function to highlight matching search term
+  const highlightKeyword = (text: string, query: string) => {
+    if (!query.trim()) return <span>{text}</span>;
+    
+    // Normalize text and query to remove accents for regex matching
+    const removeAccents = (str: string) => {
+      return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+    };
+
+    const normText = removeAccents(text.toLowerCase());
+    const normQuery = removeAccents(query.toLowerCase().trim());
+    const queryIdx = normText.indexOf(normQuery);
+
+    if (queryIdx === -1) return <span>{text}</span>;
+
+    const originalMatch = text.substring(queryIdx, queryIdx + query.length);
+    const before = text.substring(0, queryIdx);
+    const after = text.substring(queryIdx + query.length);
+
+    return (
+      <span>
+        {before}
+        <mark className="bg-amber-100 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 font-semibold p-0.5 rounded-sm">
+          {originalMatch}
+        </mark>
+        {after}
+      </span>
+    );
   };
 
   if (!isOpen) return null;
@@ -76,7 +111,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       />
 
       {/* Modal Content */}
-      <div className="relative bg-surface w-full max-w-2xl mt-20 mx-4 rounded-lg shadow-lg overflow-hidden animate-fade-in">
+      <div className="relative bg-surface w-full max-w-2xl mt-20 mx-4 rounded-lg shadow-lg overflow-hidden animate-fade-in border border-border-subtle z-50">
         {/* Search Input */}
         <div className="flex items-center border-b border-border-subtle px-md py-sm">
           <span className="material-symbols-outlined text-[24px] text-on-surface-variant mr-sm">search</span>
@@ -113,24 +148,16 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <p className="text-text-muted font-label-caps text-label-caps mb-sm px-sm">GỢI Ý SẢN PHẨM</p>
               {suggestions.map((product) => (
                 <button
-                  key={product.id}
-                  onClick={() => handleSearch(product.name)}
-                  className="flex items-center gap-sm w-full px-sm py-2 hover:bg-surface-alt rounded transition-colors text-left"
+                  key={product.slug}
+                  onClick={() => handleSuggestionClick(product.slug)}
+                  className="flex items-center justify-between w-full px-sm py-2 hover:bg-surface-alt rounded transition-colors text-left"
                 >
-                  {product.thumbnailUrl && (
-                    <img
-                      src={product.thumbnailUrl}
-                      alt={product.name}
-                      className="w-10 h-10 object-cover rounded bg-surface-alt"
-                    />
-                  )}
                   <div className="flex-1 min-w-0">
-                    <p className="font-body-md text-body-md text-primary truncate">{product.name}</p>
-                    <p className="font-price-display text-[14px] text-on-surface-variant">
-                      {(product.salePrice ?? product.basePrice).toLocaleString('vi-VN')}₫
+                    <p className="font-body-md text-body-md text-primary truncate">
+                      {highlightKeyword(product.name, keyword)}
                     </p>
                   </div>
-                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant">north_west</span>
+                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant ml-sm">arrow_forward</span>
                 </button>
               ))}
             </div>
