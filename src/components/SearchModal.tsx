@@ -7,15 +7,49 @@ interface SearchModalProps {
   onClose: () => void;
 }
 
-const popularKeywords = ['Áo Polo', 'Quần Jeans', 'Áo Hoodie', 'Áo Khoác', 'Quần Short'];
+const SEARCH_HISTORY_KEY = 'search_history';
+const MAX_HISTORY_ITEMS = 5;
+
+const normalizeKeyword = (value: string) => value.trim().toLowerCase().replace(/\s+/g, ' ');
+
+const readSearchHistory = (): string[] => {
+  if (typeof window === 'undefined') return [];
+
+  try {
+    const raw = localStorage.getItem(SEARCH_HISTORY_KEY);
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter((item): item is string => typeof item === 'string')
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, MAX_HISTORY_ITEMS);
+  } catch {
+    return [];
+  }
+};
+
+const writeSearchHistory = (items: string[]) => {
+  if (typeof window === 'undefined') return;
+
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(items.slice(0, MAX_HISTORY_ITEMS)));
+};
 
 export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [keyword, setKeyword] = useState('');
   const [suggestions, setSuggestions] = useState<ProductSuggestionDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setSearchHistory(readSearchHistory());
+  }, []);
 
   // Focus input when modal opens
   useEffect(() => {
@@ -56,8 +90,29 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const handleSearch = (searchKeyword?: string) => {
     const q = (searchKeyword || keyword).trim();
     if (!q) return;
+
+    const normalized = normalizeKeyword(q);
+    const nextHistory = [
+      q,
+      ...searchHistory.filter((item) => normalizeKeyword(item) !== normalized),
+    ].slice(0, MAX_HISTORY_ITEMS);
+
+    setSearchHistory(nextHistory);
+    writeSearchHistory(nextHistory);
+
     navigate(`/search?q=${encodeURIComponent(q)}`);
     onClose();
+  };
+
+  const handleRemoveHistoryItem = (historyKeyword: string) => {
+    const nextHistory = searchHistory.filter((item) => normalizeKeyword(item) !== normalizeKeyword(historyKeyword));
+    setSearchHistory(nextHistory);
+    writeSearchHistory(nextHistory);
+  };
+
+  const handleClearHistory = () => {
+    setSearchHistory([]);
+    writeSearchHistory([]);
   };
 
   const handleSuggestionClick = (slug: string) => {
@@ -163,21 +218,47 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             </div>
           )}
 
-          {/* Popular Keywords (shown when input is empty) */}
+          {/* Search History (shown when input is empty) */}
           {!isLoading && !keyword.trim() && (
             <div className="p-sm">
-              <p className="text-text-muted font-label-caps text-label-caps mb-sm px-sm">TỪ KHÓA PHỔ BIẾN</p>
-              <div className="flex flex-wrap gap-2 px-sm">
-                {popularKeywords.map((kw) => (
+              <div className="flex items-center justify-between px-sm mb-sm gap-sm">
+                <p className="text-text-muted font-label-caps text-label-caps">LỊCH SỬ TÌM KIẾM</p>
+                {searchHistory.length > 0 && (
                   <button
-                    key={kw}
-                    onClick={() => handleSearch(kw)}
-                    className="px-sm py-1.5 border border-border-subtle rounded-full font-body-sm text-body-sm text-on-surface-variant hover:border-primary hover:text-primary transition-colors"
+                    onClick={handleClearHistory}
+                    className="text-xs font-medium text-on-surface-variant hover:text-primary transition-colors"
                   >
-                    {kw}
+                    Xóa toàn bộ
                   </button>
-                ))}
+                )}
               </div>
+
+              {searchHistory.length > 0 ? (
+                <div className="space-y-2 px-sm">
+                  {searchHistory.map((historyKeyword) => (
+                    <div
+                      key={historyKeyword}
+                      className="flex items-center justify-between gap-sm rounded-lg border border-border-subtle bg-surface-alt/40 px-sm py-2"
+                    >
+                      <button
+                        onClick={() => handleSearch(historyKeyword)}
+                        className="flex-1 text-left font-body-md text-body-md text-primary truncate hover:text-primary/80 transition-colors"
+                      >
+                        {historyKeyword}
+                      </button>
+                      <button
+                        onClick={() => handleRemoveHistoryItem(historyKeyword)}
+                        className="shrink-0 rounded-full p-1 text-on-surface-variant hover:bg-surface hover:text-primary transition-colors"
+                        aria-label={`Xóa ${historyKeyword}`}
+                      >
+                        <span className="material-symbols-outlined text-[18px]">close</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="px-sm text-sm text-on-surface-variant">Chưa có lịch sử tìm kiếm.</p>
+              )}
             </div>
           )}
 
