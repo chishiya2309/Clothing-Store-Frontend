@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { productService, type ProductSuggestionDto } from '@/services/product.service';
+import { productService, type ProductSuggestionDto, type TrendingSearchDto } from '@/services/product.service';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -43,6 +43,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [suggestions, setSuggestions] = useState<ProductSuggestionDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [trendingSearches, setTrendingSearches] = useState<TrendingSearchDto[]>([]);
+  const [isTrendingLoading, setIsTrendingLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const navigate = useNavigate();
@@ -50,6 +52,36 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   useEffect(() => {
     setSearchHistory(readSearchHistory());
   }, []);
+
+  useEffect(() => {
+    if (!isOpen || keyword.trim()) {
+      return;
+    }
+
+    let active = true;
+    setIsTrendingLoading(true);
+
+    productService.getTrendingSearches(10)
+      .then((data) => {
+        if (active) {
+          setTrendingSearches(data);
+        }
+      })
+      .catch(() => {
+        if (active) {
+          setTrendingSearches([]);
+        }
+      })
+      .finally(() => {
+        if (active) {
+          setIsTrendingLoading(false);
+        }
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [isOpen, keyword]);
 
   // Focus input when modal opens
   useEffect(() => {
@@ -113,6 +145,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const handleClearHistory = () => {
     setSearchHistory([]);
     writeSearchHistory([]);
+  };
+
+  const handleTrendingClick = (trendingKeyword: string) => {
+    handleSearch(trendingKeyword);
   };
 
   const handleSuggestionClick = (slug: string) => {
@@ -258,6 +294,40 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 </div>
               ) : (
                 <p className="px-sm text-sm text-on-surface-variant">Chưa có lịch sử tìm kiếm.</p>
+              )}
+            </div>
+          )}
+
+          {/* Trending Search (shown when input is empty) */}
+          {!keyword.trim() && (
+            <div className="p-sm border-t border-border-subtle">
+              <div className="flex items-center justify-between px-sm mb-sm">
+                <p className="text-text-muted font-label-caps text-label-caps">TRENDING SEARCH</p>
+              </div>
+
+              {isTrendingLoading ? (
+                <div className="flex items-center gap-sm px-sm py-2 text-on-surface-variant">
+                  <span className="material-symbols-outlined animate-spin text-[18px]">sync</span>
+                  <span className="text-sm">Đang tải xu hướng...</span>
+                </div>
+              ) : trendingSearches.length > 0 ? (
+                <div className="space-y-2 px-sm">
+                  {trendingSearches.map((item) => (
+                    <button
+                      key={item.keyword}
+                      onClick={() => handleTrendingClick(item.keyword)}
+                      className="flex w-full items-center justify-between rounded-lg border border-border-subtle bg-surface-alt/30 px-sm py-2 text-left hover:border-primary hover:bg-surface-alt transition-colors"
+                    >
+                      <span className="flex items-center gap-2 font-body-md text-body-md text-primary truncate">
+                        <span className="text-lg">🔥</span>
+                        <span className="truncate">{item.keyword}</span>
+                      </span>
+                      <span className="shrink-0 text-xs text-on-surface-variant">{item.count}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="px-sm text-sm text-on-surface-variant">Chưa có dữ liệu trending search.</p>
               )}
             </div>
           )}

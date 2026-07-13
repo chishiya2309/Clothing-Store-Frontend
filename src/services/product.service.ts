@@ -54,6 +54,11 @@ export interface ProductSuggestionDto {
   slug: string;
 }
 
+export interface TrendingSearchDto {
+        keyword: string;
+        count: number;
+}
+
 export interface ProductGridResponse {
     id: number;
     name: string;
@@ -123,6 +128,13 @@ export const productService = {
             params: { q }
         });
         return response.data.data;
+    },
+
+    getTrendingSearches: async (limit: number = 10): Promise<TrendingSearchDto[]> => {
+        const response = await axios.get(`${API_URL}/trending-search`, {
+            params: { limit }
+        });
+        return response.data;
     },
 
     getProductsByCategory: async (slug: string, page: number = 0, size: number = 12): Promise<PageResponse<ProductGridResponse>> => {
