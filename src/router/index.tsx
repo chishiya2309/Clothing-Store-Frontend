@@ -25,6 +25,7 @@ import InventoryReport from '../pages/admin/InventoryReport'
 import ReviewManagement from '../pages/admin/ReviewManagement'
 import BestsellersReport from '../pages/admin/BestsellersReport'
 import VoucherManagement from '../pages/admin/VoucherManagement'
+import FlashSaleManagement from '../pages/admin/FlashSaleManagement'
 import AccountLayout from '../components/layout/AccountLayout'
 
 import Profile from '../pages/Profile'
@@ -93,6 +94,7 @@ const router = createBrowserRouter([
           { path: 'reviews', element: <ReviewManagement /> },
           { path: 'banners', element: <BannerManagement /> },
           { path: 'vouchers', element: <VoucherManagement /> },
+          { path: 'flash-sales', element: <FlashSaleManagement /> },
           { path: 'users', element: <UserManagement /> },
           { path: 'settings', element: <Settings /> }
         ]
@@ -117,7 +119,8 @@ const router = createBrowserRouter([
           { path: 'reviews', element: <ReviewManagement /> },
           { path: 'banners', element: <BannerManagement /> },
           { path: 'settings', element: <Settings /> },
-          { path: 'vouchers', element: <VoucherManagement /> }
+          { path: 'vouchers', element: <VoucherManagement /> },
+          { path: 'flash-sales', element: <FlashSaleManagement /> }
           // Thêm các trang admin khác ở đây (products, orders, customers...)
         ]
       }
