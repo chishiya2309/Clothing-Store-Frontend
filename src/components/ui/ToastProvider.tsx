@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Toast, type ToastType } from './Toast';
+import { subscribeAppToast } from '../../utils/appToastBus';
 
 interface ToastItem {
   id: string;
@@ -44,6 +45,12 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const info = useCallback((message: string, duration?: number) => {
     showToast(message, 'info', duration);
+  }, [showToast]);
+
+  useEffect(() => {
+    return subscribeAppToast(({ message, type = 'info', duration }) => {
+      showToast(message, type, duration);
+    });
   }, [showToast]);
 
   return (
