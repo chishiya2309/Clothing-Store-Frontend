@@ -1,19 +1,48 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import { useAuthStore } from '../store/authStore'
 import { calculateShippingFee } from '../utils/shipping'
+import { flashSaleService } from '../services/flashSale.service'
+import type { FlashSaleCampaign, FlashSaleProduct } from '../services/flashSale.service'
+import type { CartItemResponse } from '../services/cart.service'
 
 export default function Cart() {
-  const { items, totalAmount, loading, fetchCart, updateQuantity, removeItem } = useCartStore()
+  const { items, loading, fetchCart, updateQuantity, removeItem } = useCartStore()
   const token = useAuthStore((state) => state.token)
   const navigate = useNavigate()
-  const shippingFee = calculateShippingFee(totalAmount)
-  const orderTotal = Number(totalAmount || 0) + shippingFee
+  const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null)
+
+  const flashSaleByProductId = useMemo(() => {
+    if (flashSale?.status !== 'ACTIVE') return new Map<number, FlashSaleProduct>()
+    return new Map(flashSale.items.map((item) => [item.productId, item]))
+  }, [flashSale])
+
+  const getEffectiveUnitPrice = (item: CartItemResponse) => {
+    const flashItem = flashSaleByProductId.get(item.productId)
+    if (!flashItem || flashItem.soldOut || item.quantity > flashItem.availableQuantity) {
+      return Number(item.unitPrice)
+    }
+    const variantAdditionalPrice = Math.max(0, Number(item.unitPrice) - flashItem.originalPrice)
+    return flashItem.flashSalePrice + variantAdditionalPrice
+  }
+
+  const effectiveSubtotal = items.reduce(
+    (sum, item) => sum + getEffectiveUnitPrice(item) * item.quantity,
+    0
+  )
+  const shippingFee = calculateShippingFee(effectiveSubtotal)
+  const orderTotal = effectiveSubtotal + shippingFee
 
   useEffect(() => {
     fetchCart()
   }, [fetchCart])
+
+  useEffect(() => {
+    flashSaleService.getCurrent()
+      .then((campaign) => setFlashSale(campaign?.status === 'ACTIVE' ? campaign : null))
+      .catch((err) => console.error('Error fetching flash sale:', err))
+  }, [])
 
   const formatPrice = (price: number | string) => {
     return Number(price).toLocaleString('vi-VN') + 'đ'
@@ -28,7 +57,7 @@ export default function Cart() {
     }
   }
 
-  const handleQuantityDecrement = async (item: any) => {
+  const handleQuantityDecrement = async (item: CartItemResponse) => {
     if (item.quantity > 1) {
       await updateQuantity(item.id, item.productVariantId, item.quantity - 1)
     } else {
@@ -38,11 +67,11 @@ export default function Cart() {
     }
   }
 
-  const handleQuantityIncrement = async (item: any) => {
+  const handleQuantityIncrement = async (item: CartItemResponse) => {
     await updateQuantity(item.id, item.productVariantId, item.quantity + 1)
   }
 
-  const handleRemoveItem = async (item: any) => {
+  const handleRemoveItem = async (item: CartItemResponse) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) {
       await removeItem(item.id, item.productVariantId)
     }
@@ -92,7 +121,14 @@ export default function Cart() {
           </div>
 
           <div className="flex flex-col gap-md">
-            {items.map((item) => (
+            {items.map((item) => {
+              const flashItem = flashSaleByProductId.get(item.productId)
+              const effectiveUnitPrice = getEffectiveUnitPrice(item)
+              const effectiveItemSubtotal = effectiveUnitPrice * item.quantity
+              const flashUnavailable = Boolean(
+                flashItem && (flashItem.soldOut || item.quantity > flashItem.availableQuantity)
+              )
+              return (
               <div key={item.productVariantId} className="flex gap-md py-md border-b border-border-subtle group">
                 <div className="w-[100px] md:w-[120px] aspect-[3/4] bg-surface-alt rounded overflow-hidden flex-shrink-0 relative">
                   <img
@@ -113,6 +149,11 @@ export default function Cart() {
                       <p className="font-body-sm text-body-sm text-on-surface-variant">
                         {item.color} • Size {item.size}
                       </p>
+                      {flashItem && (
+                        <p className={`mt-1 text-[11px] font-bold ${flashUnavailable ? 'text-error' : 'text-on-error-container'}`}>
+                          {flashUnavailable ? 'HẾT/THIẾU SUẤT · ÁP DỤNG GIÁ THƯỜNG' : `FLASH SALE · ĐÃ BÁN ${flashItem.soldQuantity}/${flashItem.quota}`}
+                        </p>
+                      )}
                     </div>
                     <button
                       onClick={() => handleRemoveItem(item)}
@@ -144,17 +185,23 @@ export default function Cart() {
                       </button>
                     </div>
                     <div className="font-price-display text-price-display text-primary flex flex-col items-end">
-                      <span>{formatPrice(item.subtotal)}</span>
+                      <span className={flashItem && !flashUnavailable ? 'text-on-error-container' : ''}>{formatPrice(effectiveItemSubtotal)}</span>
+                      {flashItem && !flashUnavailable && (
+                        <span className="text-on-surface-variant text-[12px] font-normal line-through">
+                          {formatPrice(item.subtotal)}
+                        </span>
+                      )}
                       {item.quantity > 1 && (
                         <span className="text-on-surface-variant text-[12px] font-normal">
-                          ({formatPrice(item.unitPrice)}/sp)
+                          ({formatPrice(effectiveUnitPrice)}/sp)
                         </span>
                       )}
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           <div className="mt-md text-on-surface-variant font-body-sm text-body-sm flex items-center gap-xs">
@@ -174,7 +221,7 @@ export default function Cart() {
             <div className="flex flex-col gap-sm mt-sm">
               <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                 <span>Tạm tính ({items.reduce((sum, item) => sum + item.quantity, 0)} sản phẩm)</span>
-                <span className="font-price-display text-primary">{formatPrice(totalAmount)}</span>
+                <span className="font-price-display text-primary">{formatPrice(effectiveSubtotal)}</span>
               </div>
               <div className="flex justify-between font-body-sm text-body-sm text-on-surface-variant">
                 <span>Phí vận chuyển</span>
@@ -203,6 +250,7 @@ export default function Cart() {
             >
               TIẾN HÀNH THANH TOÁN
             </button>
+
 
             {/* Trust Signals */}
             <div className="flex justify-between items-center mt-md pt-md border-t border-border-subtle">

@@ -6,6 +6,7 @@ import { collectionService, type CollectionResponse } from '@/services/collectio
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useAuthStore } from '@/store/authStore';
 import { flashSaleService, type FlashSaleCampaign } from '@/services/flashSale.service';
+import FlashSaleCountdown from '@/components/FlashSaleCountdown';
 
 export default function Home() {
   const [banners, setBanners] = useState<BannerResponse[]>([]);
@@ -204,9 +205,7 @@ export default function Home() {
                 {flashSale?.description && <p className="mt-1 text-sm text-white/80">{flashSale.description}</p>}
               </div>
               {flashSale && (
-                <span className="w-fit rounded-full border border-white/25 bg-white/15 px-4 py-2 text-xs font-semibold uppercase tracking-wide backdrop-blur-sm">
-                  {flashSale.status === 'ACTIVE' ? 'Đang diễn ra' : 'Sắp diễn ra'}
-                </span>
+                <FlashSaleCountdown serverTime={flashSale.serverTime} startAt={flashSale.startAt} endAt={flashSale.endAt} />
               )}
             </div>
 
@@ -216,19 +215,33 @@ export default function Home() {
               </div>
             ) : (
               <div className={`flex flex-wrap gap-5 bg-gradient-to-b from-red-50/60 to-white p-5 md:p-8 ${flashSale?.items.length === 1 ? 'justify-center' : 'justify-start'}`}>
-                {flashSale?.items.slice(0, 4).map((product) => (
+                {flashSale?.items.slice(0, 4).map((product) => {
+                  const soldPercent = product.quota > 0
+                    ? Math.min(100, Math.round((product.soldQuantity / product.quota) * 100))
+                    : 0
+                  const useFlashPrice = !product.soldOut && product.availableQuantity > 0
+                  return (
                   <Link key={product.flashSaleItemId} to={`/product/${product.productSlug}`}
                     className="group w-full overflow-hidden rounded-xl border border-red-100 bg-white text-primary shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg sm:w-[280px]">
                     <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
-                      <span className="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">Flash Sale</span>
+                      <span className="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">{useFlashPrice ? 'Flash Sale' : 'Đã hết suất'}</span>
                       <img src={product.thumbnailUrl || 'https://via.placeholder.com/300x400'} alt={product.productName}
                         className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <div className="p-4">
                       <h3 className="line-clamp-2 min-h-12 text-base font-medium leading-6">{product.productName}</h3>
                       <div className="mt-3 flex flex-wrap items-baseline gap-2">
-                        <span className="text-xl font-bold text-red-600">{product.flashSalePrice.toLocaleString('vi-VN')}₫</span>
-                        <span className="text-sm text-on-surface-variant line-through">{product.originalPrice.toLocaleString('vi-VN')}₫</span>
+                        <span className={`text-xl font-bold ${useFlashPrice ? 'text-red-600' : 'text-primary'}`}>{(useFlashPrice ? product.flashSalePrice : product.originalPrice).toLocaleString('vi-VN')}₫</span>
+                        {useFlashPrice && <span className="text-sm text-on-surface-variant line-through">{product.originalPrice.toLocaleString('vi-VN')}₫</span>}
+                      </div>
+                      <div className="mt-3">
+                        <div className="mb-1 flex justify-between text-[11px] font-medium text-on-surface-variant">
+                          <span>Đã bán {product.soldQuantity}/{product.quota}</span>
+                          <span>{soldPercent}%</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-red-100">
+                          <div className="h-full rounded-full bg-gradient-to-r from-red-600 to-orange-500 transition-all" style={{ width: `${soldPercent}%` }} />
+                        </div>
                       </div>
                       <span className="mt-4 flex w-full items-center justify-center rounded-lg bg-red-50 py-2.5 text-sm font-semibold text-red-700 transition-colors group-hover:bg-red-600 group-hover:text-white">
                         Xem sản phẩm
@@ -236,7 +249,8 @@ export default function Home() {
                       </span>
                     </div>
                   </Link>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>

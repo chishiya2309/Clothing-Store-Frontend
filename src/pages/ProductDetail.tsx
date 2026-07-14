@@ -6,6 +6,8 @@ import type { ProductDetailResponse, ProductGridResponse } from '../services/pro
 import { useWishlistStore } from '../store/wishlistStore'
 import { useAuthStore } from '../store/authStore'
 import { reviewService } from '../services/review.service'
+import { flashSaleService } from '../services/flashSale.service'
+import type { FlashSaleCampaign, FlashSaleProduct } from '../services/flashSale.service'
 
 interface ColorOption {
   name: string
@@ -22,6 +24,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [recommendedProducts, setRecommendedProducts] = useState<ProductGridResponse[]>([])
+  const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null)
 
   // UI state
   const [selectedColor, setSelectedColor] = useState<ColorOption | null>(null)
@@ -137,6 +140,18 @@ export default function ProductDetail() {
       isMounted = false
     }
   }, [slug])
+
+  useEffect(() => {
+    let isMounted = true
+    flashSaleService.getCurrent()
+      .then((campaign) => {
+        if (isMounted) setFlashSale(campaign?.status === 'ACTIVE' ? campaign : null)
+      })
+      .catch((err) => console.error('Error fetching flash sale:', err))
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Fetch reviews when product or filter change
   useEffect(() => {
@@ -379,6 +394,19 @@ export default function ProductDetail() {
       v.color.toLowerCase() === selectedColor?.name.toLowerCase() &&
       v.size.toLowerCase() === selectedSize?.toLowerCase()
   )
+  const flashSaleProduct: FlashSaleProduct | undefined = flashSale?.items.find(
+    (item) => item.productId === product.id
+  )
+  const flashSaleSoldOut = Boolean(flashSaleProduct?.soldOut || flashSaleProduct?.availableQuantity === 0)
+  const applicableFlashSaleProduct = flashSaleSoldOut ? undefined : flashSaleProduct
+  const variantAdditionalPrice = currentVariant?.additionalPrice || 0
+  const effectivePrice = applicableFlashSaleProduct
+    ? applicableFlashSaleProduct.flashSalePrice + variantAdditionalPrice
+    : product.price + variantAdditionalPrice
+  const compareAtPrice = applicableFlashSaleProduct
+    ? applicableFlashSaleProduct.originalPrice + variantAdditionalPrice
+    : product.originalPrice
+  const purchaseLimit = currentVariant?.stockQuantity || 0
   const isOutOfStock = !currentVariant || currentVariant.stockQuantity <= 0
 
   return (
@@ -456,14 +484,20 @@ export default function ProductDetail() {
           {/* Prices */}
           <div className="flex items-baseline gap-sm mb-sm">
             <span className="font-price-display text-[24px] font-bold text-on-error-container">
-              {formatPrice(product.price)}
+              {formatPrice(effectivePrice)}
             </span>
-            {product.originalPrice && (
+            {compareAtPrice && compareAtPrice > effectivePrice && (
               <span className="font-price-display text-[16px] text-text-muted line-through">
-                {formatPrice(product.originalPrice)}
+                {formatPrice(compareAtPrice)}
               </span>
             )}
           </div>
+
+          {flashSaleProduct && (
+            <div className={`mb-sm inline-flex w-fit items-center rounded px-2 py-1 text-[11px] font-bold ${flashSaleSoldOut ? 'bg-surface-alt text-text-muted' : 'bg-error text-on-error'}`}>
+              {flashSaleSoldOut ? 'ĐÃ HẾT SUẤT · ĐANG DÙNG GIÁ THƯỜNG' : `FLASH SALE · ĐÃ BÁN ${flashSaleProduct.soldQuantity}/${flashSaleProduct.quota}`}
+            </div>
+          )}
 
           {/* Promotion Tags */}
           <div className="flex flex-wrap gap-xs mb-gutter pb-gutter border-b border-border-subtle">
@@ -561,6 +595,7 @@ export default function ProductDetail() {
               />
               <button
                 onClick={handleQuantityIncrement}
+                disabled={quantity >= purchaseLimit}
                 className="w-10 flex items-center justify-center text-text-muted hover:text-primary transition-colors"
               >
                 <span className="material-symbols-outlined">add</span>

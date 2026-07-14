@@ -28,7 +28,7 @@ export interface FlashSaleCampaign {
 }
 
 export const flashSaleService = {
-  getCurrent: async (): Promise<FlashSaleCampaign> => {
+  getCurrent: async (): Promise<FlashSaleCampaign | null> => {
     const response = await api.get('/guest/flash-sales/current')
     return response.data.data
   },

@@ -13,6 +13,8 @@ import { profileService } from '@/services/profile.service'
 import { voucherService, type AppliedVoucherResponse } from '@/services/voucher.service'
 import { useCartStore } from '@/store/cartStore'
 import { calculateShippingFee } from '@/utils/shipping'
+import axios from 'axios'
+import { flashSaleService, type FlashSaleCampaign, type FlashSaleProduct } from '@/services/flashSale.service'
 
 type AddressMode = 'saved' | 'new'
 
@@ -62,6 +64,21 @@ const PAYMENT_OPTIONS: Array<{ value: PaymentMethod; label: string; description:
 
 const formatMoney = (value: number | string) => `${Number(value || 0).toLocaleString('vi-VN')}đ`
 
+const getCheckoutErrorMessage = (error: unknown): string => {
+  if (!axios.isAxiosError<{ message?: string }>(error)) {
+    return 'Không thể đặt hàng. Vui lòng thử lại.'
+  }
+
+  const message = error.response?.data?.message || ''
+  if (message.includes('Flash sale quota is insufficient')) {
+    return 'Rất tiếc, suất Flash Sale của sản phẩm đã hết. Vui lòng quay lại giỏ hàng để kiểm tra sản phẩm.'
+  }
+  if (message.toLowerCase().includes('does not have enough stock')) {
+    return 'Một sản phẩm trong giỏ hàng không còn đủ số lượng. Vui lòng kiểm tra lại giỏ hàng.'
+  }
+  return message || 'Không thể đặt hàng. Vui lòng kiểm tra lại thông tin.'
+}
+
 export default function Checkout() {
   const navigate = useNavigate()
   const { items, totalAmount, loading: cartLoading, fetchCart } = useCartStore()
@@ -82,14 +99,32 @@ export default function Checkout() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [voucherMessage, setVoucherMessage] = useState<string | null>(null)
+  const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null)
 
-  const shippingFee = calculateShippingFee(totalAmount)
-  const membershipDiscountAmount = totalAmount ? (Number(totalAmount) * membershipDiscountPercent / 100) : 0
+  const flashSaleByProductId = useMemo(
+    () => new Map((flashSale?.items || []).map((item) => [item.productId, item])),
+    [flashSale],
+  )
+  const resolveFlashUnitPrice = (unitPrice: number, sale: FlashSaleProduct) =>
+    Number(sale.flashSalePrice) + Math.max(0, Number(unitPrice) - Number(sale.originalPrice))
+  const canApplyFlashSale = (sale: FlashSaleProduct | undefined, quantity: number) =>
+    Boolean(sale && !sale.soldOut && quantity <= sale.availableQuantity)
+  const checkoutSubtotal = useMemo(
+    () => items.reduce((sum, item) => {
+      const sale = flashSaleByProductId.get(item.productId)
+      return sum + (canApplyFlashSale(sale, item.quantity)
+        ? resolveFlashUnitPrice(item.unitPrice, sale!) * item.quantity
+        : Number(item.subtotal))
+    }, 0),
+    [items, flashSaleByProductId],
+  )
+  const shippingFee = calculateShippingFee(checkoutSubtotal)
+  const membershipDiscountAmount = checkoutSubtotal ? (checkoutSubtotal * membershipDiscountPercent / 100) : 0
   const discountAmount = appliedVoucher ? Number(appliedVoucher.discountAmount || 0) : 0
   const shippingDiscountAmount = appliedVoucher ? Number(appliedVoucher.shippingDiscountAmount || 0) : 0
   const total = appliedVoucher
     ? Math.max(0, Number(appliedVoucher.totalAmount || 0) - membershipDiscountAmount)
-    : Math.max(0, Number(totalAmount || 0) + shippingFee - membershipDiscountAmount)
+    : Math.max(0, checkoutSubtotal + shippingFee - membershipDiscountAmount)
 
   const selectedAddress = useMemo(
     () => addresses.find((address) => address.id === selectedAddressId) || null,
@@ -138,6 +173,7 @@ export default function Checkout() {
 
     loadAddresses()
     loadMembership()
+    flashSaleService.getCurrent().then(setFlashSale).catch(() => setFlashSale(null))
     addressService.getProvinces().then(setProvinces).catch(() => setProvinces([]))
 
     return () => {
@@ -219,7 +255,7 @@ export default function Checkout() {
     try {
       const data = await voucherService.apply({
         code,
-        subtotal: Number(totalAmount || 0),
+        subtotal: checkoutSubtotal,
         shippingFee,
       })
       setAppliedVoucher(data)
@@ -257,7 +293,6 @@ export default function Checkout() {
       navigate('/cart')
       return
     }
-
     setSubmitting(true)
     setError(null)
     try {
@@ -297,8 +332,8 @@ export default function Checkout() {
           message: 'Checkout đã được ghi nhận và đang chờ thanh toán.',
         },
       })
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Không thể đặt hàng. Vui lòng kiểm tra lại thông tin.')
+    } catch (err: unknown) {
+      setError(getCheckoutErrorMessage(err))
     } finally {
       setSubmitting(false)
     }
@@ -582,8 +617,15 @@ export default function Checkout() {
                       {item.color} / {item.size}
                     </span>
                     <span className="font-price-display text-price-display text-primary mt-xs">
-                      {formatMoney(item.subtotal)}
+                      {formatMoney((canApplyFlashSale(flashSaleByProductId.get(item.productId), item.quantity)
+                        ? resolveFlashUnitPrice(item.unitPrice, flashSaleByProductId.get(item.productId)!)
+                        : item.unitPrice) * item.quantity)}
                     </span>
+                    {!canApplyFlashSale(flashSaleByProductId.get(item.productId), item.quantity) && flashSaleByProductId.has(item.productId) ? (
+                      <span className="mt-1 text-xs font-semibold text-text-muted">Hết/thiếu suất Flash Sale · áp dụng giá thường</span>
+                    ) : flashSaleByProductId.has(item.productId) ? (
+                      <span className="mt-1 text-xs font-semibold text-red-600">Đang áp dụng Flash Sale</span>
+                    ) : null}
                   </div>
                 </div>
               ))}
@@ -618,7 +660,7 @@ export default function Checkout() {
             <div className="flex flex-col gap-sm">
               <div className="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
                 <span>Tạm tính</span>
-                <span className="font-price-display">{formatMoney(totalAmount)}</span>
+                <span className="font-price-display">{formatMoney(checkoutSubtotal)}</span>
               </div>
               <div className="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
                 <span>Phí vận chuyển</span>
