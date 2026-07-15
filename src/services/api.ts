@@ -30,7 +30,11 @@ const processQueue = (error: any, token: string | null = null) => {
  */
 const handleSessionExpired = () => {
   useAuthStore.getState().logout()
-  window.location.href = '/login?session=expired'
+  emitAppToast({
+    message: 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.',
+    type: 'warning',
+    duration: 5000,
+  })
 }
 
 const shouldShowToast = (lastShownAt: number, cooldownMs = 4000) => {
