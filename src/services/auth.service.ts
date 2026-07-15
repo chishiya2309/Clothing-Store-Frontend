@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { LoginFormData, RegisterFormData } from '../utils/auth-schemas';
 
-const API_URL = 'http://localhost:8080/api/auth';
+const API_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/auth` : 'http://localhost:8080/api/auth';
 
 export const authService = {
   login: async (data: LoginFormData) => {
