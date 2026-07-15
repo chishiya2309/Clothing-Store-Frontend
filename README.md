@@ -1,73 +1,59 @@
-# React + TypeScript + Vite
+# Clothing Store Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend React + TypeScript + Vite cho đồ án Clothing Store.
 
-Currently, two official plugins are available:
+Repo này hiện đã được bổ sung phần frontend thuộc scope của Quân:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Manifest cho web app.
+- Service worker để hỗ trợ cache cơ bản và offline fallback.
+- Trang `offline.html` khi mất mạng.
+- Xử lý hiển thị lỗi `429 Too Many Requests` và lỗi mất kết nối bằng toast.
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Cài dependencies:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Chạy môi trường dev:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+Frontend mặc định chạy ở `http://localhost:3000` và proxy API sang backend `http://localhost:8080`.
+
+## PWA And Offline
+
+- Manifest nằm tại `public/manifest.webmanifest`
+- Service worker nằm tại `public/sw.js`
+- Offline fallback nằm tại `public/offline.html`
+
+Lưu ý:
+
+- Service worker chỉ được đăng ký ở production build.
+- Các request `/api/*` không bị service worker cache để tránh sai dữ liệu.
+- Khi mất mạng, các trang đã cache trước đó vẫn có thể mở lại; nếu không có cache phù hợp thì sẽ trả về `offline.html`.
+
+## Error Handling
+
+File `src/services/api.ts` đã bổ sung xử lý:
+
+- `429`: đọc `Retry-After` hoặc `X-RateLimit-Reset` để báo người dùng chờ rồi thử lại.
+- Lỗi network/offline: hiển thị toast cảnh báo kết nối.
+- Vẫn giữ nguyên flow refresh token và redirect khi `401` hết phiên.
+
+## Demo Checklist
+
+1. Build production:
+
+```bash
+npm run build
+```
+
+2. Mở site ở production mode hoặc deploy preview.
+3. Vào DevTools -> Application -> Service Workers để kiểm tra service worker đã active.
+4. Bật chế độ offline trong DevTools rồi reload để kiểm tra offline fallback.
+5. Spam login/search/public API để backend trả `429` và kiểm tra toast cảnh báo ở frontend.

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLOTHY | Offline</title>
+    <style>
+      :root {
+        --ink: #102522;
+        --muted: #5d6d67;
+        --paper: #f6efe7;
+        --panel: rgba(255, 255, 255, 0.88);
+        --accent: #1f4d45;
+        --accent-soft: #d6ece7;
+        --warn: #c7762d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Aptos", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(255, 193, 118, 0.3), transparent 28%),
+          radial-gradient(circle at bottom right, rgba(31, 77, 69, 0.25), transparent 30%),
+          linear-gradient(135deg, #f8efe6 0%, #f1f6f4 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .shell {
+        width: min(720px, 100%);
+        background: var(--panel);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(16, 37, 34, 0.08);
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 24px 80px rgba(16, 37, 34, 0.14);
+      }
+
+      .hero {
+        padding: 28px 28px 18px;
+        background:
+          linear-gradient(145deg, rgba(31, 77, 69, 0.95), rgba(21, 40, 37, 0.92)),
+          linear-gradient(145deg, rgba(31, 77, 69, 0.95), rgba(21, 40, 37, 0.92));
+        color: #f9fbfa;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(249, 251, 250, 0.72);
+      }
+
+      .hero h1 {
+        margin: 16px 0 12px;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        line-height: 1;
+      }
+
+      .hero p {
+        margin: 0;
+        max-width: 48ch;
+        font-size: 1rem;
+        line-height: 1.65;
+        color: rgba(249, 251, 250, 0.82);
+      }
+
+      .content {
+        padding: 24px 28px 28px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .tips {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+
+      .tip {
+        padding: 16px 18px;
+        border-radius: 18px;
+        background: white;
+        border: 1px solid rgba(16, 37, 34, 0.08);
+      }
+
+      .tip strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+      }
+
+      .tip span {
+        color: var(--muted);
+        font-size: 0.93rem;
+        line-height: 1.55;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      button,
+      a {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .primary {
+        color: #fff;
+        background: var(--accent);
+        box-shadow: 0 12px 28px rgba(31, 77, 69, 0.24);
+      }
+
+      .ghost {
+        color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .note {
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(199, 118, 45, 0.1);
+        color: var(--warn);
+        font-size: 0.92rem;
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="eyebrow">CLOTHY • Offline Mode</div>
+        <h1>Kết nối đang tạm rời đi.</h1>
+        <p>
+          Ứng dụng vẫn có thể mở lại những trang đã được cache trước đó, nhưng
+          các thao tác cần mạng như đăng nhập, tìm kiếm realtime hoặc đặt hàng
+          sẽ chờ tới khi bạn online lại.
+        </p>
+      </section>
+
+      <section class="content">
+        <div class="tips">
+          <article class="tip">
+            <strong>Xem lại nội dung cũ</strong>
+            <span>Những trang đã mở trước đó vẫn có thể tải lại từ cache của trình duyệt.</span>
+          </article>
+          <article class="tip">
+            <strong>Chờ rồi thử lại</strong>
+            <span>Khi có mạng trở lại, ứng dụng sẽ hoạt động bình thường mà không cần đăng nhập lại ngay.</span>
+          </article>
+          <article class="tip">
+            <strong>Kiểm tra thao tác giới hạn</strong>
+            <span>Nếu vừa gặp lỗi 429, hãy đợi thêm vài giây rồi thử lại để tránh bị chặn tiếp.</span>
+          </article>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="button" onclick="window.location.reload()">Thử tải lại</button>
+          <a class="ghost" href="/">Về trang chủ</a>
+        </div>
+
+        <div class="note">
+          Mẹo demo: build production rồi mở DevTools → Application → Service Workers để kiểm tra offline fallback.
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

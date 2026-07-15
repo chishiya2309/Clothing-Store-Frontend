@@ -1,0 +1,19 @@
+{
+  "name": "CLOTHY - Clothing Store",
+  "short_name": "CLOTHY",
+  "description": "Cửa hàng thời trang trực tuyến với trải nghiệm tìm kiếm, mua sắm và theo dõi đơn hàng trên web app.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f6efe7",
+  "theme_color": "#1f4d45",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
