@@ -5,6 +5,8 @@ import { productService, type ProductGridResponse } from '@/services/product.ser
 import { collectionService, type CollectionResponse } from '@/services/collection.service';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useAuthStore } from '@/store/authStore';
+import { flashSaleService, type FlashSaleCampaign } from '@/services/flashSale.service';
+import FlashSaleCountdown from '@/components/FlashSaleCountdown';
 
 export default function Home() {
   const [banners, setBanners] = useState<BannerResponse[]>([]);
@@ -13,6 +15,8 @@ export default function Home() {
   const [newArrivalsSlide, setNewArrivalsSlide] = useState(0);
   const [bestSellers, setBestSellers] = useState<ProductGridResponse[]>([]);
   const [bestSellerCollection, setBestSellerCollection] = useState<CollectionResponse | null>(null);
+  const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null);
+  const [isFlashSaleLoading, setIsFlashSaleLoading] = useState(true);
   const navigate = useNavigate();
   const { wishlistProductIds, toggleWishlist } = useWishlistStore();
   const { token } = useAuthStore();
@@ -60,10 +64,20 @@ export default function Home() {
         console.error('Failed to fetch best seller collection', error);
       }
     };
+    const fetchFlashSale = async () => {
+      try {
+        setFlashSale(await flashSaleService.getCurrent());
+      } catch (error) {
+        console.error('Failed to fetch flash sale', error);
+      } finally {
+        setIsFlashSaleLoading(false);
+      }
+    };
     fetchBanners();
     fetchNewArrivals();
     fetchBestSellers();
     fetchBestSellerCollection();
+    fetchFlashSale();
   }, []);
 
   useEffect(() => {
@@ -180,6 +194,68 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {(isFlashSaleLoading || (flashSale && flashSale.items.length > 0)) && (
+        <section className="max-w-container-max mx-auto px-margin-mobile py-xl md:px-margin-desktop">
+          <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-red-100 bg-white shadow-lg">
+            <div className="flex flex-col gap-3 bg-gradient-to-r from-red-700 via-red-600 to-orange-500 px-5 py-5 text-white md:flex-row md:items-center md:justify-between md:px-8">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-white/75">Ưu đãi giới hạn</p>
+                <h2 className="mt-1 text-2xl font-bold md:text-3xl">{flashSale?.name ?? 'Flash Sale'}</h2>
+                {flashSale?.description && <p className="mt-1 text-sm text-white/80">{flashSale.description}</p>}
+              </div>
+              {flashSale && (
+                <FlashSaleCountdown serverTime={flashSale.serverTime} startAt={flashSale.startAt} endAt={flashSale.endAt} />
+              )}
+            </div>
+
+            {isFlashSaleLoading ? (
+              <div className="flex flex-wrap justify-center gap-5 bg-red-50/50 p-5 md:p-8">
+                {[0, 1, 2, 3].map((item) => <div key={item} className="h-72 w-full animate-pulse rounded-xl bg-red-100 sm:w-[240px]" />)}
+              </div>
+            ) : (
+              <div className={`flex flex-wrap gap-5 bg-gradient-to-b from-red-50/60 to-white p-5 md:p-8 ${flashSale?.items.length === 1 ? 'justify-center' : 'justify-start'}`}>
+                {flashSale?.items.slice(0, 4).map((product) => {
+                  const soldPercent = product.quota > 0
+                    ? Math.min(100, Math.round((product.soldQuantity / product.quota) * 100))
+                    : 0
+                  const useFlashPrice = !product.soldOut && product.availableQuantity > 0
+                  return (
+                  <Link key={product.flashSaleItemId} to={`/product/${product.productSlug}`}
+                    className="group w-full overflow-hidden rounded-xl border border-red-100 bg-white text-primary shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg sm:w-[280px]">
+                    <div className="relative aspect-[3/4] overflow-hidden bg-surface-container-low">
+                      <span className="absolute left-3 top-3 z-10 rounded-full bg-red-600 px-3 py-1 text-[10px] font-bold uppercase tracking-wide text-white shadow-sm">{useFlashPrice ? 'Flash Sale' : 'Đã hết suất'}</span>
+                      <img src={product.thumbnailUrl || 'https://via.placeholder.com/300x400'} alt={product.productName}
+                        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="line-clamp-2 min-h-12 text-base font-medium leading-6">{product.productName}</h3>
+                      <div className="mt-3 flex flex-wrap items-baseline gap-2">
+                        <span className={`text-xl font-bold ${useFlashPrice ? 'text-red-600' : 'text-primary'}`}>{(useFlashPrice ? product.flashSalePrice : product.originalPrice).toLocaleString('vi-VN')}₫</span>
+                        {useFlashPrice && <span className="text-sm text-on-surface-variant line-through">{product.originalPrice.toLocaleString('vi-VN')}₫</span>}
+                      </div>
+                      <div className="mt-3">
+                        <div className="mb-1 flex justify-between text-[11px] font-medium text-on-surface-variant">
+                          <span>Đã bán {product.soldQuantity}/{product.quota}</span>
+                          <span>{soldPercent}%</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-red-100">
+                          <div className="h-full rounded-full bg-gradient-to-r from-red-600 to-orange-500 transition-all" style={{ width: `${soldPercent}%` }} />
+                        </div>
+                      </div>
+                      <span className="mt-4 flex w-full items-center justify-center rounded-lg bg-red-50 py-2.5 text-sm font-semibold text-red-700 transition-colors group-hover:bg-red-600 group-hover:text-white">
+                        Xem sản phẩm
+                        <span className="ml-1 transition-transform group-hover:translate-x-1">→</span>
+                      </span>
+                    </div>
+                  </Link>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Hàng Mới Về */}
       <section className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-xl">
