@@ -36,6 +36,29 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
+export interface ProductSearchDto {
+  id: number;
+  name: string;
+  slug: string;
+  image: string | null;
+  category: string;
+  basePrice: number;
+  salePrice: number | null;
+  rating: number;
+  soldQuantity: number;
+  brand: string | null;
+}
+
+export interface ProductSuggestionDto {
+  name: string;
+  slug: string;
+}
+
+export interface TrendingSearchDto {
+        keyword: string;
+        count: number;
+}
+
 export interface ProductGridResponse {
     id: number;
     name: string;
@@ -68,6 +91,52 @@ export interface ProductSearchParams {
 }
 
 export const productService = {
+    searchProductsFullText: async (params: {
+        q?: string;
+        page?: number;
+        size?: number;
+        sortBy?: string;
+        categorySlug?: string;
+        minPrice?: number;
+        maxPrice?: number;
+        colors?: string[];
+        sizes?: string[];
+        brands?: string[];
+    }): Promise<PageResponse<ProductSearchDto>> => {
+        const response = await axios.get(`${API_URL}/products/search`, {
+            params: {
+                q: params.q || undefined,
+                page: params.page ?? 0,
+                size: params.size ?? 12,
+                sortBy: params.sortBy || 'relevance',
+                categorySlug: params.categorySlug || undefined,
+                minPrice: params.minPrice ?? undefined,
+                maxPrice: params.maxPrice ?? undefined,
+                colors: params.colors?.length ? params.colors : undefined,
+                sizes: params.sizes?.length ? params.sizes : undefined,
+                brands: params.brands?.length ? params.brands : undefined,
+            },
+            paramsSerializer: {
+                indexes: null,
+            }
+        });
+        return response.data.data;
+    },
+
+    getSuggestions: async (q: string): Promise<ProductSuggestionDto[]> => {
+        const response = await axios.get(`${API_URL}/products/suggestions`, {
+            params: { q }
+        });
+        return response.data.data;
+    },
+
+    getTrendingSearches: async (limit: number = 10): Promise<TrendingSearchDto[]> => {
+        const response = await axios.get(`${API_URL}/trending-search`, {
+            params: { limit }
+        });
+        return response.data;
+    },
+
     getProductsByCategory: async (slug: string, page: number = 0, size: number = 12): Promise<PageResponse<ProductGridResponse>> => {
         const response = await axios.get(`${API_URL}/guest/categories/${slug}/products`, {
             params: { page, size }

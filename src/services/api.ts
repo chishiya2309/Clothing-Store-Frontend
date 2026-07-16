@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { authService } from './auth.service'
 import { useAuthStore } from '../store/authStore'
+import { emitAppToast } from '../utils/appToastBus'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
@@ -9,6 +10,8 @@ const api = axios.create({
 
 let isRefreshing = false
 let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: any) => void }> = []
+let lastRateLimitToastAt = 0
+let lastOfflineToastAt = 0
 
 const processQueue = (error: any, token: string | null = null) => {
   failedQueue.forEach(prom => {
@@ -27,7 +30,53 @@ const processQueue = (error: any, token: string | null = null) => {
  */
 const handleSessionExpired = () => {
   useAuthStore.getState().logout()
-  window.location.href = '/login?session=expired'
+  emitAppToast({
+    message: 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.',
+    type: 'warning',
+    duration: 5000,
+  })
+}
+
+const shouldShowToast = (lastShownAt: number, cooldownMs = 4000) => {
+  return Date.now() - lastShownAt > cooldownMs
+}
+
+const readRetryAfterSeconds = (error: any) => {
+  const retryAfter = error.response?.headers?.['retry-after'] ?? error.response?.headers?.['x-ratelimit-reset']
+  const parsed = Number.parseInt(String(retryAfter ?? ''), 10)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null
+}
+
+const notifyRateLimit = (error: any) => {
+  if (!shouldShowToast(lastRateLimitToastAt)) {
+    return
+  }
+
+  lastRateLimitToastAt = Date.now()
+  const retryAfterSeconds = readRetryAfterSeconds(error)
+  const fallbackMessage = retryAfterSeconds
+    ? `Bạn thao tác hơi nhanh. Vui lòng thử lại sau ${retryAfterSeconds} giây.`
+    : 'Hệ thống đang giới hạn tần suất truy cập. Vui lòng thử lại sau.'
+  const serverMessage = error.response?.data?.message
+
+  emitAppToast({
+    message: retryAfterSeconds ? fallbackMessage : (serverMessage || fallbackMessage),
+    type: 'warning',
+    duration: 5000,
+  })
+}
+
+const notifyOffline = () => {
+  if (!shouldShowToast(lastOfflineToastAt)) {
+    return
+  }
+
+  lastOfflineToastAt = Date.now()
+  emitAppToast({
+    message: 'Bạn đang offline hoặc kết nối không ổn định. Kiểm tra mạng rồi thử lại nhé.',
+    type: 'warning',
+    duration: 5000,
+  })
 }
 
 // Gắn JWT token vào mọi request
@@ -42,6 +91,16 @@ api.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config
+
+    if (error.response?.status === 429) {
+      notifyRateLimit(error)
+      return Promise.reject(error)
+    }
+
+    if (!error.response) {
+      notifyOffline()
+      return Promise.reject(error)
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       // Nếu request đến /auth/refresh hoặc /auth/login đã thất bại → phiên hết hạn hoàn toàn
