@@ -31,7 +31,7 @@
 
 **CLOTHY** là website bán quần áo trực tuyến với đầy đủ tính năng cho cả khách hàng lẫn quản trị viên. Repo này chứa phần **Frontend** — giao tiếp với Backend API (Spring Boot) qua REST.
 
-**Backend repo:** [Clothing-Store](https://github.com/chishiya2309/Clothing-Store)
+**Backend repo:** [Clothing-Store](https://github.com/chishiya2309/Clothing-Store-Backend)
 
 ---
 
