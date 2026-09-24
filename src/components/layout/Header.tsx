@@ -8,10 +8,11 @@ import { useCategoryStore } from '../../store/categoryStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { collectionService } from '../../services/collection.service';
 import type { CollectionResponse } from '../../services/collection.service';
+import MiniCart from '../cart/MiniCart';
 
 export default function Header() {
   const { token, user, logout } = useAuthStore();
-  const { items, fetchCart } = useCartStore();
+  const { items, totalAmount, fetchCart } = useCartStore();
   const { categories, fetchCategories } = useCategoryStore();
   const { wishlistProductIds } = useWishlistStore();
   const navigate = useNavigate();
@@ -120,14 +121,23 @@ export default function Header() {
               </span>
             )}
           </Link>
-          <Link to="/cart" className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all relative">
-            <span className="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
-            {cartItemsCount > 0 && (
-              <span className="absolute -top-1 -right-2 bg-[#C1272D] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
-                {cartItemsCount}
-              </span>
-            )}
-          </Link>
+          <div className="relative group/cart">
+            <Link
+              to="/cart"
+              aria-label={`Giỏ hàng, ${cartItemsCount} sản phẩm`}
+              className="hover:text-primary dark:hover:text-on-primary transition-colors duration-200 opacity-80 hover:opacity-100 hover:scale-95 transition-all relative block"
+            >
+              <span className="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+              {cartItemsCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-[#C1272D] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-bold">
+                  {cartItemsCount}
+                </span>
+              )}
+            </Link>
+            <div className="absolute right-0 top-full z-50 pt-2 opacity-0 invisible pointer-events-none translate-y-1 transition-all duration-200 group-hover/cart:visible group-hover/cart:pointer-events-auto group-hover/cart:translate-y-0 group-hover/cart:opacity-100 group-focus-within/cart:visible group-focus-within/cart:pointer-events-auto group-focus-within/cart:translate-y-0 group-focus-within/cart:opacity-100">
+              <MiniCart items={items} totalAmount={totalAmount} />
+            </div>
+          </div>
         </div>
       </div>
       {/* Mobile Header */}
