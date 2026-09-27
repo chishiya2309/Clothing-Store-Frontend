@@ -114,20 +114,13 @@ export const useCartStore = create<CartState>((set, get) => ({
           throw new Error('Sản phẩm đã hết hàng hoặc không hoạt động.')
         }
 
-        // If returned quantity is less than what we proposed, we know stock was insufficient
+        // Reject the whole operation when the requested total exceeds stock.
+        // The guest cart endpoint caps the returned quantity at the current stock,
+        // so a lower quantity means the proposed cart must not be persisted.
         if (returnedItem.quantity < targetQty) {
-          // If we already had some in cart, check if we can add any more
-          const currentQtyInCart = existingIndex > -1 ? localItems[existingIndex].quantity : 0
-          const maxAddable = returnedItem.quantity - currentQtyInCart
-          
-          if (maxAddable <= 0) {
-            alert(`Sản phẩm không đủ số lượng tồn kho. Bạn đã có ${currentQtyInCart} sản phẩm trong giỏ hàng và không thể thêm nữa.`)
-            set({ loading: false })
-            return
-          } else {
-            alert(`Chỉ có thể thêm ${maxAddable} sản phẩm vào giỏ do giới hạn tồn kho.`)
-            targetQty = returnedItem.quantity
-          }
+          throw new Error(
+            `Tổng số lượng trong giỏ hàng vượt quá tồn kho. Tồn kho hiện tại: ${returnedItem.quantity}`
+          )
         }
 
         // Update local storage
@@ -143,8 +136,8 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch (err: any) {
       console.error('Add to cart error:', err)
       const errMsg = err.response?.data?.message || err.message || 'Lỗi khi thêm sản phẩm vào giỏ hàng'
-      alert(errMsg)
       set({ error: errMsg, loading: false })
+      throw new Error(errMsg, { cause: err })
     }
   },
 

@@ -428,7 +428,10 @@ export default function ProductDetail() {
       alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng!`)
     } catch (err) {
       console.error(err)
-      alert('Có lỗi xảy ra khi thêm vào giỏ hàng.')
+      const errorMessage = err instanceof Error
+        ? err.message
+        : 'Có lỗi xảy ra khi thêm vào giỏ hàng.'
+      alert(errorMessage)
     } finally {
       setAddingToCartLocal(false)
     }
