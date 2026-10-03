@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import { authService } from './auth.service'
 import { useAuthStore } from '../store/authStore'
 import { emitAppToast } from '../utils/appToastBus'
@@ -8,28 +9,20 @@ const api = axios.create({
   timeout: 10000,
 })
 
-let isRefreshing = false
-let failedQueue: Array<{ resolve: (token: string) => void; reject: (error: any) => void }> = []
+type SessionRequest = InternalAxiosRequestConfig & { _retry?: boolean; _sessionEpoch?: number }
+let refreshPromise: Promise<string> | null = null
+let refreshEpoch = -1
 let lastRateLimitToastAt = 0
 let lastOfflineToastAt = 0
-
-const processQueue = (error: any, token: string | null = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error)
-    } else {
-      prom.resolve(token as string)
-    }
-  })
-  failedQueue = []
-}
 
 /**
  * Xử lý khi phiên hoàn toàn hết hạn (refresh token cũng thất bại).
  * Logout → redirect đến /login kèm query param để hiển thị thông báo.
  */
-const handleSessionExpired = () => {
-  useAuthStore.getState().logout()
+const handleSessionExpired = (epoch: number) => {
+  const state = useAuthStore.getState()
+  if (state.sessionEpoch !== epoch || !state.token) return
+  state.expireSession()
   emitAppToast({
     message: 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.',
     type: 'warning',
@@ -41,13 +34,13 @@ const shouldShowToast = (lastShownAt: number, cooldownMs = 4000) => {
   return Date.now() - lastShownAt > cooldownMs
 }
 
-const readRetryAfterSeconds = (error: any) => {
+const readRetryAfterSeconds = (error: AxiosError<{ message?: string }>) => {
   const retryAfter = error.response?.headers?.['retry-after'] ?? error.response?.headers?.['x-ratelimit-reset']
   const parsed = Number.parseInt(String(retryAfter ?? ''), 10)
   return Number.isFinite(parsed) && parsed > 0 ? parsed : null
 }
 
-const notifyRateLimit = (error: any) => {
+const notifyRateLimit = (error: AxiosError<{ message?: string }>) => {
   if (!shouldShowToast(lastRateLimitToastAt)) {
     return
   }
@@ -81,16 +74,55 @@ const notifyOffline = () => {
 
 // Gắn JWT token vào mọi request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const state = useAuthStore.getState()
+  const request = config as SessionRequest
+  if (request._sessionEpoch !== undefined && request._sessionEpoch !== state.sessionEpoch) {
+    throw new axios.CanceledError('Session changed')
+  }
+  request._sessionEpoch = state.sessionEpoch
+  const token = state.token
   if (token) config.headers.Authorization = `Bearer ${token}`
+  else config.headers.delete('Authorization')
   return config
 })
+
+const refreshSession = (epoch: number, refreshToken: string): Promise<string> => {
+  if (refreshPromise && refreshEpoch === epoch) return refreshPromise
+  refreshEpoch = epoch
+  const pending = (async () => {
+    try {
+      const response = await authService.refreshToken(refreshToken)
+      const state = useAuthStore.getState()
+      if (state.sessionEpoch !== epoch || state.refreshToken !== refreshToken || !state.token) {
+        throw new axios.CanceledError('Session changed')
+      }
+      const { accessToken, refreshToken: newRefreshToken } = response.data
+      if (!accessToken || !newRefreshToken) throw new Error('Invalid refresh response')
+      state.replaceTokens(accessToken, newRefreshToken)
+      return accessToken as string
+    } catch (error) {
+      if (axios.isAxiosError(error) && [401, 403].includes(error.response?.status ?? 0)) {
+        handleSessionExpired(epoch)
+      } else if (axios.isAxiosError(error) && !error.response && !axios.isCancel(error)) {
+        notifyOffline()
+      }
+      throw error
+    }
+  })()
+  const promise = pending.finally(() => {
+    if (refreshPromise === promise) refreshPromise = null
+  })
+  refreshPromise = promise
+  return promise
+}
 
 // Xử lý 401 → refresh token tự động hoặc redirect login
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    const originalRequest = error.config
+    const originalRequest = error.config as SessionRequest | undefined
+
+    if (axios.isCancel(error)) return Promise.reject(error)
 
     if (error.response?.status === 429) {
       notifyRateLimit(error)
@@ -102,55 +134,21 @@ api.interceptors.response.use(
       return Promise.reject(error)
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      // Nếu request đến /auth/refresh hoặc /auth/login đã thất bại → phiên hết hạn hoàn toàn
-      if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/login')) {
-        handleSessionExpired()
+    if (error.response?.status === 401 && originalRequest) {
+      const state = useAuthStore.getState()
+      const epoch = originalRequest._sessionEpoch ?? state.sessionEpoch
+      if (state.sessionEpoch !== epoch) return Promise.reject(error)
+      if (originalRequest._retry || !state.refreshToken || !state.token) {
+        handleSessionExpired(epoch)
         return Promise.reject(error)
       }
-
-      // Nếu đang refresh, xếp hàng chờ
-      if (isRefreshing) {
-        return new Promise(function (resolve, reject) {
-          failedQueue.push({ resolve, reject })
-        })
-          .then(token => {
-            originalRequest.headers['Authorization'] = 'Bearer ' + token
-            return api(originalRequest)
-          })
-          .catch(err => {
-            return Promise.reject(err)
-          })
-      }
-
       originalRequest._retry = true
-      isRefreshing = true
-
-      const refreshToken = localStorage.getItem('refreshToken')
-      if (!refreshToken) {
-        handleSessionExpired()
-        return Promise.reject(error)
-      }
-
       try {
-        const response = await authService.refreshToken(refreshToken)
-        const newToken = response.data.accessToken
-        const newRefreshToken = response.data.refreshToken
-        
-        // Cập nhật lại store và local storage
-        const user = useAuthStore.getState().user
-        useAuthStore.getState().setAuth(newToken, newRefreshToken, user)
-        
-        processQueue(null, newToken)
-        
-        originalRequest.headers['Authorization'] = 'Bearer ' + newToken
+        const token = await refreshSession(epoch, state.refreshToken)
+        originalRequest.headers.Authorization = `Bearer ${token}`
         return api(originalRequest)
-      } catch (err) {
-        processQueue(err, null)
-        handleSessionExpired()
-        return Promise.reject(err)
-      } finally {
-        isRefreshing = false
+      } catch (refreshError) {
+        return Promise.reject(refreshError)
       }
     }
 

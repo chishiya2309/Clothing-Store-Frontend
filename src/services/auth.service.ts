@@ -40,7 +40,7 @@ export const authService = {
   },
 
   refreshToken: async (token: string) => {
-    const response = await axios.post(`${API_URL}/refresh`, { refreshToken: token });
+    const response = await axios.post(`${API_URL}/refresh`, { refreshToken: token }, { timeout: 10000 });
     return response.data;
   }
 };
