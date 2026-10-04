@@ -49,7 +49,7 @@ const router = createBrowserRouter([
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
       { path: 'cart', element: <Cart /> },
-      { element: <ProtectedRoute />, children: [{ path: 'checkout', element: <Checkout /> }] },
+      { path: 'checkout', element: <Checkout /> },
       { path: 'checkout/result', element: <CheckoutResult /> },
       { path: 'product/:slug', element: <ProductDetail /> },
       { path: 'verify-email', element: <VerifyEmail /> },
