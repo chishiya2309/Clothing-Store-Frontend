@@ -42,6 +42,7 @@ export interface AppliedVoucherResponse {
   voucherId: number
   code: string
   discountType: DiscountType
+  slot: 'product' | 'shipping'
   subtotal: number
   shippingFee: number
   discountAmount: number
