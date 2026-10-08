@@ -53,6 +53,20 @@ function formatDate(isoString: string): string {
     });
 }
 
+function voucherCodes(detail: OrderDetail, slot: 'product' | 'shipping'): string {
+    return (detail.vouchers || [])
+        .filter((voucher) => voucher.slot === slot)
+        .map((voucher) => voucher.voucherCode)
+        .filter(Boolean)
+        .join(', ');
+}
+
+function remainingDiscount(detail: OrderDetail): number {
+    const productVoucherDiscount = Number(detail.productVoucherDiscountAmount || 0);
+    const shippingVoucherDiscount = Number(detail.shippingVoucherDiscountAmount || 0);
+    return Math.max(Number(detail.discountAmount || 0) - productVoucherDiscount - shippingVoucherDiscount, 0);
+}
+
 export default function OrderDetail() {
     const { orderCode } = useParams<{ orderCode: string }>();
     const [detail, setDetail] = useState<OrderDetail | null>(null);
@@ -461,10 +475,32 @@ export default function OrderDetail() {
                                 {detail.shippingFee === 0 ? 'Miễn phí' : formatPrice(detail.shippingFee)}
                             </span>
                         </div>
-                        {detail.discountAmount > 0 && (
+                        {detail.productVoucherDiscountAmount > 0 && (
                             <div className="flex justify-between text-success">
-                                <span>Giảm giá</span>
-                                <span className="font-price-display">-{formatPrice(detail.discountAmount)}</span>
+                                <span>
+                                    Voucher sản phẩm
+                                    {voucherCodes(detail, 'product') && (
+                                        <span className="block text-[11px] text-success/80">{voucherCodes(detail, 'product')}</span>
+                                    )}
+                                </span>
+                                <span className="font-price-display">-{formatPrice(detail.productVoucherDiscountAmount)}</span>
+                            </div>
+                        )}
+                        {detail.shippingVoucherDiscountAmount > 0 && (
+                            <div className="flex justify-between text-success">
+                                <span>
+                                    Voucher phí vận chuyển
+                                    {voucherCodes(detail, 'shipping') && (
+                                        <span className="block text-[11px] text-success/80">{voucherCodes(detail, 'shipping')}</span>
+                                    )}
+                                </span>
+                                <span className="font-price-display">-{formatPrice(detail.shippingVoucherDiscountAmount)}</span>
+                            </div>
+                        )}
+                        {remainingDiscount(detail) > 0 && (
+                            <div className="flex justify-between text-success">
+                                <span>Ưu đãi khác</span>
+                                <span className="font-price-display">-{formatPrice(remainingDiscount(detail))}</span>
                             </div>
                         )}
                     </div>

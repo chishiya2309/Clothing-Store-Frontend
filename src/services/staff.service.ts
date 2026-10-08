@@ -73,7 +73,7 @@ export interface StaffCategoryNode {
 export interface StaffVoucherResponse {
   id: number;
   code: string;
-  discountType: 'percentage' | 'fixed_amount';
+  discountType: 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free';
   discountValue: number;
   minOrderAmount: number;
   maxDiscountAmount: number | null;
@@ -109,7 +109,16 @@ export interface StaffOrderDetail {
   shippingFee: number;
   subtotal: number;
   discountAmount: number;
+  productVoucherDiscountAmount: number;
+  shippingVoucherDiscountAmount: number;
   totalAmount: number;
+  vouchers: Array<{
+    voucherId: number | null;
+    voucherCode: string;
+    discountType: 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free';
+    slot: 'product' | 'shipping';
+    discountAmount: number;
+  }>;
   payment: {
     id: number;
     method: string;

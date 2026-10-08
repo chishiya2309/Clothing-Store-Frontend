@@ -14,6 +14,7 @@ import axios from 'axios'
 import { flashSaleService, type FlashSaleCampaign, type FlashSaleProduct } from '@/services/flashSale.service'
 
 type AddressMode = 'saved' | 'new'
+type VoucherInputSlot = 'product' | 'shipping'
 
 interface AddressFormState {
   recipientName: string
@@ -61,6 +62,8 @@ const PAYMENT_OPTIONS: Array<{ value: PaymentMethod; label: string; description:
 
 const formatMoney = (value: number | string) => `${Number(value || 0).toLocaleString('vi-VN')}đ`
 
+const normalizeVoucherInput = (value: string) => value.toUpperCase().replace(/[^A-Z0-9]/g, '')
+
 const getCheckoutErrorMessage = (error: unknown): string => {
   if (!axios.isAxiosError<{ message?: string }>(error)) {
     return 'Không thể đặt hàng. Vui lòng thử lại.'
@@ -97,14 +100,17 @@ export default function Checkout() {
   const [districts, setDistricts] = useState<District[]>([])
   const [wards, setWards] = useState<Ward[]>([])
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod')
-  const [voucherCode, setVoucherCode] = useState('')
-  const [activeVoucherCode, setActiveVoucherCode] = useState<string | null>(null)
-  const [voucherLoading, setVoucherLoading] = useState(false)
+  const [productVoucherCode, setProductVoucherCode] = useState('')
+  const [shippingVoucherCode, setShippingVoucherCode] = useState('')
+  const [activeProductVoucherCode, setActiveProductVoucherCode] = useState<string | null>(null)
+  const [activeShippingVoucherCode, setActiveShippingVoucherCode] = useState<string | null>(null)
+  const [voucherLoadingSlot, setVoucherLoadingSlot] = useState<VoucherInputSlot | null>(null)
   const [previewLoading, setPreviewLoading] = useState(false)
   const [savingAddress, setSavingAddress] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [voucherMessage, setVoucherMessage] = useState<string | null>(null)
+  const [productVoucherMessage, setProductVoucherMessage] = useState<string | null>(null)
+  const [shippingVoucherMessage, setShippingVoucherMessage] = useState<string | null>(null)
   const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null)
   const [checkoutPreview, setCheckoutPreview] = useState<CheckoutPreviewResponse | null>(null)
 
@@ -131,6 +137,18 @@ export default function Checkout() {
   const discountAmount = Number(checkoutPreview?.voucherDiscountAmount ?? 0)
   const shippingDiscountAmount = Number(checkoutPreview?.shippingDiscountAmount ?? 0)
   const total = Number(checkoutPreview?.totalAmount ?? Math.max(0, checkoutSubtotal))
+  const productVoucherApplied = Boolean(activeProductVoucherCode && checkoutPreview?.productVoucherApplied)
+  const shippingVoucherApplied = Boolean(activeShippingVoucherCode && checkoutPreview?.shippingVoucherApplied)
+  const productVoucherButtonDisabled = Boolean(voucherLoadingSlot)
+    || previewLoading
+    || addressMode !== 'saved'
+    || !selectedAddressId
+    || !productVoucherCode.trim()
+  const shippingVoucherButtonDisabled = Boolean(voucherLoadingSlot)
+    || previewLoading
+    || addressMode !== 'saved'
+    || !selectedAddressId
+    || !shippingVoucherCode.trim()
   const membershipDiscountPercent = pricingSubtotal > 0
     ? Math.round((membershipDiscountAmount / pricingSubtotal) * 100)
     : 0
@@ -208,18 +226,24 @@ export default function Checkout() {
   }, [addressForm.districtCode])
 
   const refreshCheckoutPreview = useCallback(
-    async (addressId: number, code: string | null, options?: { voucherAction?: boolean }) => {
+    async (
+      addressId: number,
+      productCode: string | null,
+      shippingCode: string | null,
+      options?: { voucherActionSlot?: VoucherInputSlot },
+    ) => {
       const requestId = previewRequestId.current + 1
       previewRequestId.current = requestId
       setPreviewLoading(true)
-      if (options?.voucherAction) {
-        setVoucherLoading(true)
+      if (options?.voucherActionSlot) {
+        setVoucherLoadingSlot(options.voucherActionSlot)
       }
 
       try {
         const preview = await checkoutService.preview({
           addressId,
-          voucherCode: code || null,
+          productVoucherCode: productCode || null,
+          shippingVoucherCode: shippingCode || null,
         })
 
         if (previewRequestId.current !== requestId) return null
@@ -227,33 +251,50 @@ export default function Checkout() {
         setCheckoutPreview(preview)
         setError(null)
 
-        if (preview.voucherApplied) {
-          const normalizedCode = preview.voucherCode || code || ''
-          setActiveVoucherCode(normalizedCode)
-          setVoucherCode(normalizedCode)
-          setVoucherMessage(preview.voucherMessage || 'Áp dụng mã giảm giá thành công.')
-        } else if (options?.voucherAction) {
-          setActiveVoucherCode(null)
-          setVoucherMessage(preview.voucherMessage || 'Mã giảm giá không thể áp dụng.')
+        if (preview.productVoucherApplied) {
+          const normalizedCode = preview.productVoucherCode || productCode || ''
+          setActiveProductVoucherCode(normalizedCode)
+          setProductVoucherCode(normalizedCode)
+          setProductVoucherMessage(preview.productVoucherMessage || 'Áp dụng mã giảm giá sản phẩm thành công.')
+        } else if (options?.voucherActionSlot === 'product') {
+          setActiveProductVoucherCode(null)
+          setProductVoucherMessage(preview.productVoucherMessage || 'Mã giảm giá sản phẩm không thể áp dụng.')
+        } else if (!productCode) {
+          setActiveProductVoucherCode(null)
+        }
+
+        if (preview.shippingVoucherApplied) {
+          const normalizedCode = preview.shippingVoucherCode || shippingCode || ''
+          setActiveShippingVoucherCode(normalizedCode)
+          setShippingVoucherCode(normalizedCode)
+          setShippingVoucherMessage(preview.shippingVoucherMessage || 'Áp dụng mã giảm phí vận chuyển thành công.')
+        } else if (options?.voucherActionSlot === 'shipping') {
+          setActiveShippingVoucherCode(null)
+          setShippingVoucherMessage(preview.shippingVoucherMessage || 'Mã giảm phí vận chuyển không thể áp dụng.')
+        } else if (!shippingCode) {
+          setActiveShippingVoucherCode(null)
         }
 
         return preview
       } catch (err) {
         if (previewRequestId.current !== requestId) return null
 
-        if (options?.voucherAction || code) {
-          setActiveVoucherCode(null)
-          setVoucherMessage(getApiMessage(err, 'Mã giảm giá không thể áp dụng.'))
+        if (options?.voucherActionSlot === 'product') {
+          setActiveProductVoucherCode(null)
+          setProductVoucherMessage(getApiMessage(err, 'Mã giảm giá sản phẩm không thể áp dụng.'))
+        } else if (options?.voucherActionSlot === 'shipping') {
+          setActiveShippingVoucherCode(null)
+          setShippingVoucherMessage(getApiMessage(err, 'Mã giảm phí vận chuyển không thể áp dụng.'))
         } else {
           setError(getApiMessage(err, 'Không thể tính lại phí vận chuyển và tổng tiền.'))
+          setCheckoutPreview(null)
         }
-        setCheckoutPreview(null)
         return null
       } finally {
         if (previewRequestId.current === requestId) {
           setPreviewLoading(false)
-          if (options?.voucherAction) {
-            setVoucherLoading(false)
+          if (options?.voucherActionSlot) {
+            setVoucherLoadingSlot(null)
           }
         }
       }
@@ -267,8 +308,16 @@ export default function Checkout() {
       return
     }
 
-    void refreshCheckoutPreview(selectedAddressId, activeVoucherCode)
-  }, [activeVoucherCode, addressMode, checkoutSubtotal, items.length, refreshCheckoutPreview, selectedAddressId])
+    void refreshCheckoutPreview(selectedAddressId, activeProductVoucherCode, activeShippingVoucherCode)
+  }, [
+    activeProductVoucherCode,
+    activeShippingVoucherCode,
+    addressMode,
+    checkoutSubtotal,
+    items.length,
+    refreshCheckoutPreview,
+    selectedAddressId,
+  ])
 
   const updateAddressForm = <K extends keyof AddressFormState>(field: K, value: AddressFormState[K]) => {
     setAddressForm((current) => ({ ...current, [field]: value }))
@@ -302,20 +351,52 @@ export default function Checkout() {
     }
   }
 
-  const handleApplyVoucher = async () => {
-    const code = voucherCode.trim()
-    if (!code) {
-      setVoucherMessage('Vui lòng nhập mã giảm giá.')
-      return
-    }
-    if (addressMode !== 'saved' || !selectedAddressId) {
-      setVoucherMessage('Vui lòng chọn hoặc lưu địa chỉ giao hàng trước khi áp dụng mã giảm giá.')
+  const handleVoucherInputChange = (slot: VoucherInputSlot, value: string) => {
+    const normalizedCode = normalizeVoucherInput(value)
+    if (slot === 'product') {
+      setProductVoucherCode(normalizedCode)
+      setActiveProductVoucherCode(null)
+      setProductVoucherMessage(null)
       return
     }
 
-    setVoucherMessage(null)
+    setShippingVoucherCode(normalizedCode)
+    setActiveShippingVoucherCode(null)
+    setShippingVoucherMessage(null)
+  }
+
+  const handleApplyVoucher = async (slot: VoucherInputSlot) => {
+    const code = (slot === 'product' ? productVoucherCode : shippingVoucherCode).trim()
+    if (!code) {
+      if (slot === 'product') {
+        setProductVoucherMessage('Vui lòng nhập mã giảm giá sản phẩm.')
+      } else {
+        setShippingVoucherMessage('Vui lòng nhập mã giảm phí vận chuyển.')
+      }
+      return
+    }
+    if (addressMode !== 'saved' || !selectedAddressId) {
+      const message = 'Vui lòng chọn hoặc lưu địa chỉ giao hàng trước khi áp dụng mã giảm giá.'
+      if (slot === 'product') {
+        setProductVoucherMessage(message)
+      } else {
+        setShippingVoucherMessage(message)
+      }
+      return
+    }
+
+    if (slot === 'product') {
+      setProductVoucherMessage(null)
+    } else {
+      setShippingVoucherMessage(null)
+    }
     setError(null)
-    await refreshCheckoutPreview(selectedAddressId, code, { voucherAction: true })
+    await refreshCheckoutPreview(
+      selectedAddressId,
+      slot === 'product' ? code : activeProductVoucherCode,
+      slot === 'shipping' ? code : activeShippingVoucherCode,
+      { voucherActionSlot: slot },
+    )
   }
 
   const handleSaveNewAddress = async () => {
@@ -370,12 +451,17 @@ export default function Checkout() {
         setError('Vui lòng chờ hệ thống tính lại phí vận chuyển và tổng tiền.')
         return
       }
-      const preview = checkoutPreview || await refreshCheckoutPreview(addressId, activeVoucherCode)
+      const preview = checkoutPreview || await refreshCheckoutPreview(
+        addressId,
+        activeProductVoucherCode,
+        activeShippingVoucherCode,
+      )
       if (!preview) return
 
       const response = await checkoutService.confirm({
         addressId,
-        voucherCode: preview.voucherApplied ? preview.voucherCode || activeVoucherCode : null,
+        productVoucherCode: preview.productVoucherApplied ? preview.productVoucherCode || activeProductVoucherCode : null,
+        shippingVoucherCode: preview.shippingVoucherApplied ? preview.shippingVoucherCode || activeShippingVoucherCode : null,
         paymentMethod,
       })
 
@@ -498,9 +584,9 @@ export default function Checkout() {
             </div>
 
             {addressMode === 'saved' && addresses.length > 0 ? (
-              <div className="grid grid-cols-1 gap-sm">
+              <div className="border border-border-subtle rounded-lg overflow-hidden bg-surface-container-lowest">
                 {addresses.map((address) => (
-                  <label key={address.id} className="cursor-pointer">
+                  <label key={address.id} className="cursor-pointer block border-b border-border-subtle last:border-b-0">
                     <input
                       type="radio"
                       name="address"
@@ -509,31 +595,35 @@ export default function Checkout() {
                       onChange={() => setSelectedAddressId(address.id)}
                     />
                     <div
-                      className={`border rounded-lg p-md transition-colors ${
+                      className={`relative p-md flex items-start gap-md border transition-colors ${
                         selectedAddressId === address.id
                           ? 'border-primary bg-surface-alt'
-                          : 'border-border-subtle bg-surface-container-lowest hover:border-outline'
+                          : 'border-transparent hover:bg-surface-alt/50'
+                      } ${
+                        address.isDefault ? 'pb-lg' : ''
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-md">
-                        <div>
-                          <div className="font-body-md text-body-md text-primary font-medium">
+                      <span className="material-symbols-outlined text-primary mt-[2px] shrink-0">
+                        {selectedAddressId === address.id ? 'radio_button_checked' : 'radio_button_unchecked'}
+                      </span>
+                      <div className="flex-grow min-w-0">
+                        <div className="flex items-start justify-between gap-md">
+                          <div className="font-body-md text-body-md text-primary font-medium min-w-0">
                             {address.recipientName}
-                            {address.isDefault && (
-                              <span className="ml-sm text-[10px] font-label-caps text-success border border-success/30 px-xs py-[2px] rounded">
-                                Mặc định
-                              </span>
-                            )}
                           </div>
-                          <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">{address.phone}</p>
-                          <p className="font-body-sm text-body-sm text-on-surface-variant">
-                            {address.streetAddress}, {address.ward}, {address.district}, {address.province}
-                          </p>
+                          <span className="font-body-sm text-body-sm text-on-surface-variant whitespace-nowrap">
+                            {address.phone}
+                          </span>
                         </div>
-                        <span className="material-symbols-outlined text-primary">
-                          {selectedAddressId === address.id ? 'radio_button_checked' : 'radio_button_unchecked'}
-                        </span>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant mt-xs">
+                          {address.streetAddress}, {address.ward}, {address.district}, {address.province}
+                        </p>
                       </div>
+                      {address.isDefault && (
+                        <span className="absolute right-md bottom-xs text-[10px] font-label-caps text-success border border-success/30 px-xs py-[2px] rounded">
+                          Mặc định
+                        </span>
+                      )}
                     </div>
                   </label>
                 ))}
@@ -618,12 +708,6 @@ export default function Checkout() {
             )}
 
             {addressesLoading && <p className="text-on-surface-variant text-body-sm">Đang tải sổ địa chỉ...</p>}
-            {selectedAddress && addressMode === 'saved' && (
-              <p className="text-body-sm text-on-surface-variant">
-                Giao đến: {selectedAddress.streetAddress}, {selectedAddress.ward}, {selectedAddress.district},{' '}
-                {selectedAddress.province}
-              </p>
-            )}
             {addressMode === 'new' && (
               <p className="text-body-sm text-on-surface-variant">
                 Lưu địa chỉ mới để hệ thống tính phí vận chuyển theo khoảng cách.
@@ -633,6 +717,12 @@ export default function Checkout() {
 
           <section className="flex flex-col gap-md">
             <h3 className="font-headline-md text-headline-md text-primary">Phương thức vận chuyển</h3>
+            {selectedAddress && addressMode === 'saved' && (
+              <p className="text-body-sm text-on-surface-variant">
+                Giao đến: {selectedAddress.streetAddress}, {selectedAddress.ward}, {selectedAddress.district},{' '}
+                {selectedAddress.province}
+              </p>
+            )}
             <div className="flex flex-col gap-sm">
               <div className="border border-primary bg-surface-alt rounded-lg p-md flex items-center justify-between">
                 <div className="flex items-center gap-md">
@@ -662,8 +752,10 @@ export default function Checkout() {
                     onChange={() => setPaymentMethod(option.value)}
                   />
                   <div
-                    className={`p-md flex items-center gap-md transition-colors ${
-                      paymentMethod === option.value ? 'bg-surface-alt' : 'hover:bg-surface-alt/50'
+                    className={`p-md flex items-center gap-md border transition-colors ${
+                      paymentMethod === option.value
+                        ? 'border-primary bg-surface-alt'
+                        : 'border-transparent hover:bg-surface-alt/50'
                     }`}
                   >
                     <span className="material-symbols-outlined text-primary">
@@ -718,30 +810,92 @@ export default function Checkout() {
               ))}
             </div>
 
-            <div className="flex flex-col gap-xs border-y border-border-subtle py-md">
-              <div className="flex gap-sm">
-                <input
-                  className="flex-grow min-w-0 border border-border-subtle rounded px-md py-sm bg-surface-container-lowest focus:outline-none focus:border-primary font-body-md text-body-md uppercase placeholder-text-muted"
-                  placeholder="Mã giảm giá"
-                  value={voucherCode}
-                  onChange={(event) => {
-                    setVoucherCode(event.target.value.toUpperCase())
-                    setActiveVoucherCode(null)
-                    setVoucherMessage(null)
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyVoucher}
-                  disabled={voucherLoading || previewLoading || addressMode !== 'saved' || !selectedAddressId}
-                  className="bg-surface-container-high text-primary px-md py-sm rounded font-label-caps text-label-caps hover:bg-outline-variant transition-colors border border-border-subtle disabled:opacity-50"
-                >
-                  {voucherLoading ? 'ĐANG ÁP DỤNG' : 'ÁP DỤNG'}
-                </button>
+            <div className="flex flex-col gap-sm border-y border-border-subtle py-md">
+              <div className="flex flex-col gap-xs">
+                <div className="flex gap-sm">
+                  <div className="relative flex-grow min-w-0">
+                    <input
+                      id="product-voucher-code"
+                      className="peer w-full border border-border-subtle rounded px-md py-sm bg-surface-container-lowest text-primary focus:outline-none focus:ring-0 focus:border-primary focus:shadow-none font-body-md text-[17px] leading-6 uppercase placeholder-transparent"
+                      placeholder=" "
+                      value={productVoucherCode}
+                      onChange={(event) => handleVoucherInputChange('product', event.target.value)}
+                    />
+                    <label
+                      htmlFor="product-voucher-code"
+                      className={`pointer-events-none absolute left-3 top-[2px] -translate-y-1/2 px-1.5 text-[10px] leading-none transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-[11px] peer-focus:top-[2px] peer-focus:bg-[linear-gradient(to_bottom,#F0EDE8_0_45%,#ffffff_45%_100%)] peer-focus:text-[10px] peer-focus:text-primary ${
+                        productVoucherCode
+                          ? 'bg-[linear-gradient(to_bottom,#F0EDE8_0_45%,#ffffff_45%_100%)] text-text-muted'
+                          : 'bg-transparent text-text-muted'
+                      }`}
+                    >
+                      Mã giảm giá sản phẩm
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyVoucher('product')}
+                    disabled={productVoucherButtonDisabled}
+                    className={`min-w-[104px] whitespace-nowrap px-sm py-sm rounded font-label-caps text-[10px] leading-none transition-colors border disabled:opacity-50 ${
+                      productVoucherApplied
+                        ? 'bg-success text-white border-success hover:bg-success'
+                        : productVoucherCode.trim()
+                          ? 'bg-primary text-white border-primary hover:bg-primary'
+                          : 'bg-surface-container-high text-text-muted border-border-subtle hover:bg-outline-variant'
+                    }`}
+                  >
+                    {voucherLoadingSlot === 'product' ? 'ĐANG ÁP DỤNG' : productVoucherApplied ? 'ĐÃ ÁP DỤNG' : 'ÁP DỤNG'}
+                  </button>
+                </div>
+                {productVoucherMessage && (
+                  <p className={`text-body-sm ${productVoucherApplied ? 'text-success' : 'text-error'}`}>
+                    {productVoucherMessage}
+                  </p>
+                )}
               </div>
-              {voucherMessage && (
-                <p className={`text-body-sm ${checkoutPreview?.voucherApplied ? 'text-success' : 'text-error'}`}>{voucherMessage}</p>
-              )}
+
+              <div className="flex flex-col gap-xs">
+                <div className="flex gap-sm">
+                  <div className="relative flex-grow min-w-0">
+                    <input
+                      id="shipping-voucher-code"
+                      className="peer w-full border border-border-subtle rounded px-md py-sm bg-surface-container-lowest text-primary focus:outline-none focus:ring-0 focus:border-primary focus:shadow-none font-body-md text-[17px] leading-6 uppercase placeholder-transparent"
+                      placeholder=" "
+                      value={shippingVoucherCode}
+                      onChange={(event) => handleVoucherInputChange('shipping', event.target.value)}
+                    />
+                    <label
+                      htmlFor="shipping-voucher-code"
+                      className={`pointer-events-none absolute left-3 top-[2px] -translate-y-1/2 px-1.5 text-[10px] leading-none transition-all peer-placeholder-shown:top-1/2 peer-placeholder-shown:text-[11px] peer-focus:top-[2px] peer-focus:bg-[linear-gradient(to_bottom,#F0EDE8_0_45%,#ffffff_45%_100%)] peer-focus:text-[10px] peer-focus:text-primary ${
+                        shippingVoucherCode
+                          ? 'bg-[linear-gradient(to_bottom,#F0EDE8_0_45%,#ffffff_45%_100%)] text-text-muted'
+                          : 'bg-transparent text-text-muted'
+                      }`}
+                    >
+                      Mã giảm phí vận chuyển
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleApplyVoucher('shipping')}
+                    disabled={shippingVoucherButtonDisabled}
+                    className={`min-w-[104px] whitespace-nowrap px-sm py-sm rounded font-label-caps text-[10px] leading-none transition-colors border disabled:opacity-50 ${
+                      shippingVoucherApplied
+                        ? 'bg-success text-white border-success hover:bg-success'
+                        : shippingVoucherCode.trim()
+                          ? 'bg-primary text-white border-primary hover:bg-primary'
+                          : 'bg-surface-container-high text-text-muted border-border-subtle hover:bg-outline-variant'
+                    }`}
+                  >
+                    {voucherLoadingSlot === 'shipping' ? 'ĐANG ÁP DỤNG' : shippingVoucherApplied ? 'ĐÃ ÁP DỤNG' : 'ÁP DỤNG'}
+                  </button>
+                </div>
+                {shippingVoucherMessage && (
+                  <p className={`text-body-sm ${shippingVoucherApplied ? 'text-success' : 'text-error'}`}>
+                    {shippingVoucherMessage}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col gap-sm">
@@ -763,7 +917,7 @@ export default function Checkout() {
               )}
               {discountAmount > 0 && (
                 <div className="flex justify-between items-center font-body-md text-body-md text-success">
-                  <span>Giảm giá voucher</span>
+                  <span>Giảm giá sản phẩm</span>
                   <span className="font-price-display">-{formatMoney(discountAmount)}</span>
                 </div>
               )}
