@@ -1,6 +1,6 @@
 import api from './api'
 
-export type DiscountType = 'percentage' | 'fixed_amount'
+export type DiscountType = 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free'
 
 
 export interface VoucherResponse {
@@ -33,6 +33,7 @@ export interface StaffVoucherRequest {
 
 export interface ApplyVoucherRequest {
   code: string
+  slot?: 'product' | 'shipping'
   subtotal: number
   shippingFee: number
 }
@@ -41,6 +42,7 @@ export interface AppliedVoucherResponse {
   voucherId: number
   code: string
   discountType: DiscountType
+  slot: 'product' | 'shipping'
   subtotal: number
   shippingFee: number
   discountAmount: number

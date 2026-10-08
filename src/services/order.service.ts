@@ -30,12 +30,25 @@ export interface OrderDetailItem {
     productSlug: string;
 }
 
+export type OrderVoucherSlot = 'product' | 'shipping';
+export type OrderVoucherDiscountType = 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free';
+
+export interface OrderVoucher {
+    voucherId: number | null;
+    voucherCode: string;
+    discountType: OrderVoucherDiscountType;
+    slot: OrderVoucherSlot;
+    discountAmount: number;
+}
+
 export interface OrderDetail {
     id: number;
     orderCode: string;
     subtotal: number;
     shippingFee: number;
     discountAmount: number;
+    productVoucherDiscountAmount: number;
+    shippingVoucherDiscountAmount: number;
     totalAmount: number;
     status: OrderStatus;
     createdAt: string;
@@ -49,6 +62,7 @@ export interface OrderDetail {
     paymentMethod?: string;
     paymentStatus?: string;
     items: OrderDetailItem[];
+    vouchers: OrderVoucher[];
 }
 
 export const orderService = {
