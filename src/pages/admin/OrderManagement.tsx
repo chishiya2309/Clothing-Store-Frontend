@@ -261,6 +261,20 @@ export default function OrderManagement() {
     return `${parsedDate.toLocaleDateString('vi-VN')} · ${parsedDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
   };
 
+  const voucherCodes = (detail: StaffOrderDetail, slot: 'product' | 'shipping') => {
+    return (detail.vouchers || [])
+      .filter((voucher) => voucher.slot === slot)
+      .map((voucher) => voucher.voucherCode)
+      .filter(Boolean)
+      .join(', ');
+  };
+
+  const remainingDiscount = (detail: StaffOrderDetail) => {
+    const productVoucherDiscount = Number(detail.productVoucherDiscountAmount || 0);
+    const shippingVoucherDiscount = Number(detail.shippingVoucherDiscountAmount || 0);
+    return Math.max(Number(detail.discountAmount || 0) - productVoucherDiscount - shippingVoucherDiscount, 0);
+  };
+
   return (
     <div className="bg-[#FAFAF8] min-h-full font-body-sm text-body-sm">
       {/* Header */}
@@ -542,10 +556,32 @@ export default function OrderManagement() {
                     <span className="text-text-muted">Phí giao hàng:</span>
                     <span className="font-mono">+{orderDetail.shippingFee?.toLocaleString('vi-VN') ?? 0}đ</span>
                   </div>
-                  {orderDetail.discountAmount > 0 && (
+                  {orderDetail.productVoucherDiscountAmount > 0 && (
                     <div className="flex justify-between text-xs text-success">
-                      <span>Giảm giá (Voucher):</span>
-                      <span className="font-mono">-{orderDetail.discountAmount?.toLocaleString('vi-VN') ?? 0}đ</span>
+                      <span>
+                        Voucher sản phẩm:
+                        {voucherCodes(orderDetail, 'product') && (
+                          <span className="block text-[10px] text-success/80">{voucherCodes(orderDetail, 'product')}</span>
+                        )}
+                      </span>
+                      <span className="font-mono">-{orderDetail.productVoucherDiscountAmount?.toLocaleString('vi-VN') ?? 0}đ</span>
+                    </div>
+                  )}
+                  {orderDetail.shippingVoucherDiscountAmount > 0 && (
+                    <div className="flex justify-between text-xs text-success">
+                      <span>
+                        Voucher phí vận chuyển:
+                        {voucherCodes(orderDetail, 'shipping') && (
+                          <span className="block text-[10px] text-success/80">{voucherCodes(orderDetail, 'shipping')}</span>
+                        )}
+                      </span>
+                      <span className="font-mono">-{orderDetail.shippingVoucherDiscountAmount?.toLocaleString('vi-VN') ?? 0}đ</span>
+                    </div>
+                  )}
+                  {remainingDiscount(orderDetail) > 0 && (
+                    <div className="flex justify-between text-xs text-success">
+                      <span>Ưu đãi khác:</span>
+                      <span className="font-mono">-{remainingDiscount(orderDetail).toLocaleString('vi-VN')}đ</span>
                     </div>
                   )}
                   <div className="flex justify-between border-t border-border-subtle pt-2 text-sm font-bold text-primary">

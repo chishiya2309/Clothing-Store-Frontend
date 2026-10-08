@@ -460,7 +460,6 @@ export default function Checkout() {
 
       const response = await checkoutService.confirm({
         addressId,
-        voucherCode: preview.productVoucherApplied ? preview.productVoucherCode || activeProductVoucherCode : null,
         productVoucherCode: preview.productVoucherApplied ? preview.productVoucherCode || activeProductVoucherCode : null,
         shippingVoucherCode: preview.shippingVoucherApplied ? preview.shippingVoucherCode || activeShippingVoucherCode : null,
         paymentMethod,

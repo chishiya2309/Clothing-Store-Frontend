@@ -4,7 +4,6 @@ export type PaymentMethod = 'cod' | 'vnpay' | 'momo'
 
 export interface ConfirmCheckoutRequest {
   addressId: number
-  voucherCode?: string | null
   productVoucherCode?: string | null
   shippingVoucherCode?: string | null
   paymentMethod: PaymentMethod
@@ -14,7 +13,6 @@ export type CheckoutVoucherDiscountType = 'percentage' | 'fixed_amount' | 'shipp
 
 export interface PreviewCheckoutRequest {
   addressId: number
-  voucherCode?: string | null
   productVoucherCode?: string | null
   shippingVoucherCode?: string | null
 }
@@ -27,11 +25,6 @@ export interface CheckoutPreviewResponse {
   shippingDiscountAmount: number
   discountAmount: number
   totalAmount: number
-  voucherApplied: boolean
-  voucherId: number | null
-  voucherCode: string | null
-  voucherDiscountType: CheckoutVoucherDiscountType | null
-  voucherMessage: string | null
   productVoucherApplied: boolean
   productVoucherId: number | null
   productVoucherCode: string | null
