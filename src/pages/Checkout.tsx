@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   addressService,
@@ -8,11 +8,8 @@ import {
   type Province,
   type Ward,
 } from '@/services/address.service'
-import { checkoutService, type PaymentMethod } from '@/services/checkout.service'
-import { profileService } from '@/services/profile.service'
-import { voucherService, type AppliedVoucherResponse } from '@/services/voucher.service'
+import { checkoutService, type CheckoutPreviewResponse, type PaymentMethod } from '@/services/checkout.service'
 import { useCartStore } from '@/store/cartStore'
-import { calculateShippingFee } from '@/utils/shipping'
 import axios from 'axios'
 import { flashSaleService, type FlashSaleCampaign, type FlashSaleProduct } from '@/services/flashSale.service'
 
@@ -79,9 +76,17 @@ const getCheckoutErrorMessage = (error: unknown): string => {
   return message || 'Không thể đặt hàng. Vui lòng kiểm tra lại thông tin.'
 }
 
+const getApiMessage = (err: unknown, fallback: string) => {
+  if (axios.isAxiosError<{ message?: string }>(err)) {
+    return err.response?.data?.message || fallback
+  }
+  return fallback
+}
+
 export default function Checkout() {
   const navigate = useNavigate()
-  const { items, totalAmount, loading: cartLoading, fetchCart } = useCartStore()
+  const { items, loading: cartLoading, fetchCart } = useCartStore()
+  const previewRequestId = useRef(0)
 
   const [addresses, setAddresses] = useState<AddressResponse[]>([])
   const [addressesLoading, setAddressesLoading] = useState(true)
@@ -92,14 +97,16 @@ export default function Checkout() {
   const [districts, setDistricts] = useState<District[]>([])
   const [wards, setWards] = useState<Ward[]>([])
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('cod')
-  const [membershipDiscountPercent, setMembershipDiscountPercent] = useState<number>(0)
   const [voucherCode, setVoucherCode] = useState('')
-  const [appliedVoucher, setAppliedVoucher] = useState<AppliedVoucherResponse | null>(null)
+  const [activeVoucherCode, setActiveVoucherCode] = useState<string | null>(null)
   const [voucherLoading, setVoucherLoading] = useState(false)
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const [savingAddress, setSavingAddress] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [voucherMessage, setVoucherMessage] = useState<string | null>(null)
   const [flashSale, setFlashSale] = useState<FlashSaleCampaign | null>(null)
+  const [checkoutPreview, setCheckoutPreview] = useState<CheckoutPreviewResponse | null>(null)
 
   const flashSaleByProductId = useMemo(
     () => new Map((flashSale?.items || []).map((item) => [item.productId, item])),
@@ -118,13 +125,20 @@ export default function Checkout() {
     }, 0),
     [items, flashSaleByProductId],
   )
-  const shippingFee = calculateShippingFee(checkoutSubtotal)
-  const membershipDiscountAmount = checkoutSubtotal ? (checkoutSubtotal * membershipDiscountPercent / 100) : 0
-  const discountAmount = appliedVoucher ? Number(appliedVoucher.discountAmount || 0) : 0
-  const shippingDiscountAmount = appliedVoucher ? Number(appliedVoucher.shippingDiscountAmount || 0) : 0
-  const total = appliedVoucher
-    ? Math.max(0, Number(appliedVoucher.totalAmount || 0) - membershipDiscountAmount)
-    : Math.max(0, checkoutSubtotal + shippingFee - membershipDiscountAmount)
+  const pricingSubtotal = Number(checkoutPreview?.subtotal ?? checkoutSubtotal)
+  const shippingFee = Number(checkoutPreview?.shippingFee ?? 0)
+  const membershipDiscountAmount = Number(checkoutPreview?.membershipDiscountAmount ?? 0)
+  const discountAmount = Number(checkoutPreview?.voucherDiscountAmount ?? 0)
+  const shippingDiscountAmount = Number(checkoutPreview?.shippingDiscountAmount ?? 0)
+  const total = Number(checkoutPreview?.totalAmount ?? Math.max(0, checkoutSubtotal))
+  const membershipDiscountPercent = pricingSubtotal > 0
+    ? Math.round((membershipDiscountAmount / pricingSubtotal) * 100)
+    : 0
+  const shippingFeeText = previewLoading
+    ? 'Đang tính...'
+    : checkoutPreview
+      ? shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)
+      : 'Chọn địa chỉ'
 
   const selectedAddress = useMemo(
     () => addresses.find((address) => address.id === selectedAddressId) || null,
@@ -160,19 +174,7 @@ export default function Checkout() {
       }
     }
 
-    const loadMembership = async () => {
-      try {
-        const info = await profileService.getMembershipInfo()
-        if (mounted && info) {
-          setMembershipDiscountPercent(info.currentTierDiscount || 0)
-        }
-      } catch (err) {
-        console.error('Failed to load membership info', err)
-      }
-    }
-
     loadAddresses()
-    loadMembership()
     flashSaleService.getCurrent().then(setFlashSale).catch(() => setFlashSale(null))
     addressService.getProvinces().then(setProvinces).catch(() => setProvinces([]))
 
@@ -205,10 +207,68 @@ export default function Checkout() {
     setAddressForm((current) => ({ ...current, wardCode: '' }))
   }, [addressForm.districtCode])
 
+  const refreshCheckoutPreview = useCallback(
+    async (addressId: number, code: string | null, options?: { voucherAction?: boolean }) => {
+      const requestId = previewRequestId.current + 1
+      previewRequestId.current = requestId
+      setPreviewLoading(true)
+      if (options?.voucherAction) {
+        setVoucherLoading(true)
+      }
+
+      try {
+        const preview = await checkoutService.preview({
+          addressId,
+          voucherCode: code || null,
+        })
+
+        if (previewRequestId.current !== requestId) return null
+
+        setCheckoutPreview(preview)
+        setError(null)
+
+        if (preview.voucherApplied) {
+          const normalizedCode = preview.voucherCode || code || ''
+          setActiveVoucherCode(normalizedCode)
+          setVoucherCode(normalizedCode)
+          setVoucherMessage(preview.voucherMessage || 'Áp dụng mã giảm giá thành công.')
+        } else if (options?.voucherAction) {
+          setActiveVoucherCode(null)
+          setVoucherMessage(preview.voucherMessage || 'Mã giảm giá không thể áp dụng.')
+        }
+
+        return preview
+      } catch (err) {
+        if (previewRequestId.current !== requestId) return null
+
+        if (options?.voucherAction || code) {
+          setActiveVoucherCode(null)
+          setVoucherMessage(getApiMessage(err, 'Mã giảm giá không thể áp dụng.'))
+        } else {
+          setError(getApiMessage(err, 'Không thể tính lại phí vận chuyển và tổng tiền.'))
+        }
+        setCheckoutPreview(null)
+        return null
+      } finally {
+        if (previewRequestId.current === requestId) {
+          setPreviewLoading(false)
+          if (options?.voucherAction) {
+            setVoucherLoading(false)
+          }
+        }
+      }
+    },
+    [],
+  )
+
   useEffect(() => {
-    setAppliedVoucher(null)
-    setVoucherMessage(null)
-  }, [totalAmount])
+    if (addressMode !== 'saved' || !selectedAddressId || items.length === 0) {
+      setCheckoutPreview(null)
+      return
+    }
+
+    void refreshCheckoutPreview(selectedAddressId, activeVoucherCode)
+  }, [activeVoucherCode, addressMode, checkoutSubtotal, items.length, refreshCheckoutPreview, selectedAddressId])
 
   const updateAddressForm = <K extends keyof AddressFormState>(field: K, value: AddressFormState[K]) => {
     setAddressForm((current) => ({ ...current, [field]: value }))
@@ -248,24 +308,32 @@ export default function Checkout() {
       setVoucherMessage('Vui lòng nhập mã giảm giá.')
       return
     }
+    if (addressMode !== 'saved' || !selectedAddressId) {
+      setVoucherMessage('Vui lòng chọn hoặc lưu địa chỉ giao hàng trước khi áp dụng mã giảm giá.')
+      return
+    }
 
-    setVoucherLoading(true)
     setVoucherMessage(null)
     setError(null)
+    await refreshCheckoutPreview(selectedAddressId, code, { voucherAction: true })
+  }
+
+  const handleSaveNewAddress = async () => {
+    const request = buildAddressRequest()
+    if (!request) return
+
+    setSavingAddress(true)
+    setError(null)
     try {
-      const data = await voucherService.apply({
-        code,
-        subtotal: checkoutSubtotal,
-        shippingFee,
-      })
-      setAppliedVoucher(data)
-      setVoucherCode(data.code)
-      setVoucherMessage(data.message || 'Áp dụng mã giảm giá thành công.')
-    } catch (err: any) {
-      setAppliedVoucher(null)
-      setVoucherMessage(err.response?.data?.message || 'Mã giảm giá không thể áp dụng.')
+      const created = await addressService.createAddress(request)
+      setAddresses((current) => [created, ...current])
+      setSelectedAddressId(created.id)
+      setAddressMode('saved')
+      setCheckoutPreview(null)
+    } catch (err) {
+      setError(getApiMessage(err, 'Không thể lưu địa chỉ giao hàng. Vui lòng thử lại.'))
     } finally {
-      setVoucherLoading(false)
+      setSavingAddress(false)
     }
   }
 
@@ -298,10 +366,16 @@ export default function Checkout() {
     try {
       const addressId = await resolveAddressId()
       if (!addressId) return
+      if (previewLoading) {
+        setError('Vui lòng chờ hệ thống tính lại phí vận chuyển và tổng tiền.')
+        return
+      }
+      const preview = checkoutPreview || await refreshCheckoutPreview(addressId, activeVoucherCode)
+      if (!preview) return
 
       const response = await checkoutService.confirm({
         addressId,
-        voucherCode: appliedVoucher?.code || null,
+        voucherCode: preview.voucherApplied ? preview.voucherCode || activeVoucherCode : null,
         paymentMethod,
       })
 
@@ -532,6 +606,14 @@ export default function Checkout() {
                   />
                   <span className="font-body-sm text-body-sm text-on-surface-variant">Lưu làm địa chỉ mặc định</span>
                 </label>
+                <button
+                  type="button"
+                  onClick={handleSaveNewAddress}
+                  disabled={savingAddress}
+                  className="md:col-span-2 justify-self-start bg-primary text-on-primary px-md py-sm rounded font-label-caps text-label-caps disabled:opacity-50"
+                >
+                  {savingAddress ? 'ĐANG LƯU' : 'LƯU VÀ TÍNH PHÍ GIAO HÀNG'}
+                </button>
               </div>
             )}
 
@@ -540,6 +622,11 @@ export default function Checkout() {
               <p className="text-body-sm text-on-surface-variant">
                 Giao đến: {selectedAddress.streetAddress}, {selectedAddress.ward}, {selectedAddress.district},{' '}
                 {selectedAddress.province}
+              </p>
+            )}
+            {addressMode === 'new' && (
+              <p className="text-body-sm text-on-surface-variant">
+                Lưu địa chỉ mới để hệ thống tính phí vận chuyển theo khoảng cách.
               </p>
             )}
           </section>
@@ -555,8 +642,8 @@ export default function Checkout() {
                     <div className="font-body-sm text-body-sm text-text-muted">2-3 ngày làm việc</div>
                   </div>
                 </div>
-                <div className={`font-price-display text-price-display ${shippingFee === 0 ? 'text-success' : 'text-primary'}`}>
-                  {shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)}
+                <div className={`font-price-display text-price-display ${checkoutPreview && shippingFee === 0 ? 'text-success' : 'text-primary'}`}>
+                  {shippingFeeText}
                 </div>
               </div>
             </div>
@@ -639,33 +726,33 @@ export default function Checkout() {
                   value={voucherCode}
                   onChange={(event) => {
                     setVoucherCode(event.target.value.toUpperCase())
-                    setAppliedVoucher(null)
+                    setActiveVoucherCode(null)
                     setVoucherMessage(null)
                   }}
                 />
                 <button
                   type="button"
                   onClick={handleApplyVoucher}
-                  disabled={voucherLoading}
+                  disabled={voucherLoading || previewLoading || addressMode !== 'saved' || !selectedAddressId}
                   className="bg-surface-container-high text-primary px-md py-sm rounded font-label-caps text-label-caps hover:bg-outline-variant transition-colors border border-border-subtle disabled:opacity-50"
                 >
                   {voucherLoading ? 'ĐANG ÁP DỤNG' : 'ÁP DỤNG'}
                 </button>
               </div>
               {voucherMessage && (
-                <p className={`text-body-sm ${appliedVoucher ? 'text-success' : 'text-error'}`}>{voucherMessage}</p>
+                <p className={`text-body-sm ${checkoutPreview?.voucherApplied ? 'text-success' : 'text-error'}`}>{voucherMessage}</p>
               )}
             </div>
 
             <div className="flex flex-col gap-sm">
               <div className="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
                 <span>Tạm tính</span>
-                <span className="font-price-display">{formatMoney(checkoutSubtotal)}</span>
+                <span className="font-price-display">{formatMoney(pricingSubtotal)}</span>
               </div>
               <div className="flex justify-between items-center font-body-md text-body-md text-on-surface-variant">
                 <span>Phí vận chuyển</span>
-                <span className={`font-price-display ${shippingFee === 0 ? 'text-success' : ''}`}>
-                  {shippingFee === 0 ? 'Miễn phí' : formatMoney(shippingFee)}
+                <span className={`font-price-display ${checkoutPreview && shippingFee === 0 ? 'text-success' : ''}`}>
+                  {shippingFeeText}
                 </span>
               </div>
               {membershipDiscountAmount > 0 && (
@@ -699,7 +786,7 @@ export default function Checkout() {
             <button
               type="button"
               onClick={handlePlaceOrder}
-              disabled={submitting || addressesLoading}
+              disabled={submitting || addressesLoading || previewLoading || (addressMode === 'saved' && !checkoutPreview)}
               className="w-full bg-[#C1272D] text-on-error py-md rounded font-label-caps text-label-caps font-bold hover:opacity-90 hover:scale-[1.02] transition-all shadow-[0_4px_14px_0_rgba(193,39,45,0.39)] disabled:opacity-50 disabled:scale-100"
             >
               {submitting ? 'ĐANG XỬ LÝ' : paymentMethod === 'cod' ? 'ĐẶT HÀNG' : 'THANH TOÁN'}
