@@ -41,6 +41,15 @@ const formatMoney = (value: number | null | undefined) => {
   return moneyFormatter.format(value)
 }
 
+const discountTypeOptions: Array<{ value: DiscountType; label: string }> = [
+  { value: 'percentage', label: 'Giảm theo phần trăm' },
+  { value: 'fixed_amount', label: 'Giảm số tiền sản phẩm' },
+  { value: 'shipping_fixed_amount', label: 'Giảm phí vận chuyển' },
+  { value: 'cheapest_item_free', label: 'Miễn phí sản phẩm rẻ nhất' },
+]
+
+const isCheapestItemFree = (type: DiscountType) => type === 'cheapest_item_free'
+
 const toDateTimeLocal = (value?: string | null) => {
   if (!value) return ''
   const date = new Date(value)
@@ -98,13 +107,14 @@ const getVoucherStatusTextClass = (status: VoucherStatus) => {
 }
 
 const getDiscountLabel = (type: DiscountType) => {
-  return type === 'percentage' ? 'Giảm theo %' : 'Giảm tiền'
+  const option = discountTypeOptions.find((item) => item.value === type)
+  return option?.label || 'Giảm giá'
 }
 
 const getDiscountValueLabel = (voucher: VoucherResponse) => {
-  return voucher.discountType === 'percentage'
-    ? `${voucher.discountValue}%`
-    : formatMoney(voucher.discountValue)
+  if (voucher.discountType === 'percentage') return `${voucher.discountValue}%`
+  if (voucher.discountType === 'cheapest_item_free') return 'Sản phẩm rẻ nhất'
+  return formatMoney(voucher.discountValue)
 }
 
 const getUsagePercent = (voucher: VoucherResponse) => {
@@ -240,8 +250,10 @@ export default function VoucherManagement() {
     const endDate = new Date(form.endDate)
 
     if (!form.code.trim()) return 'Vui lòng nhập mã voucher.'
-    if (discountValue <= 0) return 'Giá trị giảm phải lớn hơn 0.'
-    if (form.discountType === 'percentage' && discountValue > 100) return 'Phần trăm giảm không được vượt quá 100%.'
+    if (!isCheapestItemFree(form.discountType)) {
+      if (Number.isNaN(discountValue) || discountValue <= 0) return 'Giá trị giảm phải lớn hơn 0.'
+      if (form.discountType === 'percentage' && discountValue > 100) return 'Phần trăm giảm không được vượt quá 100%.'
+    }
     if (maxDiscountAmount !== null && maxDiscountAmount < 0) return 'Mức giảm tối đa không hợp lệ.'
     if (minOrderAmount < 0) return 'Giá trị đơn tối thiểu không hợp lệ.'
     if (!form.startDate || !form.endDate) return 'Vui lòng chọn thời gian hiệu lực.'
@@ -259,7 +271,7 @@ export default function VoucherManagement() {
   const buildRequestFromForm = (): StaffVoucherRequest => ({
     code: form.code.trim().toUpperCase(),
     discountType: form.discountType,
-    discountValue: Number(form.discountValue),
+    discountValue: isCheapestItemFree(form.discountType) ? 0 : Number(form.discountValue),
     maxDiscountAmount: form.maxDiscountAmount ? Number(form.maxDiscountAmount) : null,
     minOrderAmount: Number(form.minOrderAmount),
     startDate: toIsoString(form.startDate),
@@ -387,8 +399,11 @@ export default function VoucherManagement() {
             onChange={(event) => setDiscountTypeFilter(event.target.value as DiscountType | '')}
           >
             <option value="">Tất cả loại giảm</option>
-            <option value="percentage">Giảm theo phần trăm</option>
-            <option value="fixed_amount">Giảm số tiền</option>
+            {discountTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
           <select
             className="h-10 min-w-[165px] px-3 border border-border-subtle rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors bg-surface text-sm text-text-primary"
@@ -683,30 +698,53 @@ export default function VoucherManagement() {
                   </label>
                   <select
                     value={form.discountType}
-                    onChange={(event) => setForm({ ...form, discountType: event.target.value as DiscountType })}
+                    onChange={(event) => {
+                      const discountType = event.target.value as DiscountType
+                      setForm({
+                        ...form,
+                        discountType,
+                        discountValue: isCheapestItemFree(discountType) ? '' : form.discountValue,
+                      })
+                    }}
                     className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
                   >
-                    <option value="percentage">Giảm theo phần trăm</option>
-                    <option value="fixed_amount">Giảm số tiền cố định</option>
+                    {discountTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
+                  {form.discountType === 'shipping_fixed_amount' && (
+                    <p className="text-xs text-text-muted mt-1">Loại này chỉ dùng cho ô mã giảm phí vận chuyển ở checkout.</p>
+                  )}
+                  {form.discountType === 'cheapest_item_free' && (
+                    <p className="text-xs text-text-muted mt-1">Backend sẽ tự tính theo sản phẩm rẻ nhất trong checkout.</p>
+                  )}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block font-label-caps text-label-caps text-text-muted mb-2">
-                    {form.discountType === 'percentage' ? 'Phần trăm giảm' : 'Số tiền giảm'} <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    step={form.discountType === 'percentage' ? '1' : '1000'}
-                    value={form.discountValue}
-                    onChange={(event) => setForm({ ...form, discountValue: event.target.value })}
-                    className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
-                    placeholder={form.discountType === 'percentage' ? '10' : '30000'}
-                  />
-                </div>
+                {!isCheapestItemFree(form.discountType) && (
+                  <div>
+                    <label className="block font-label-caps text-label-caps text-text-muted mb-2">
+                      {form.discountType === 'percentage'
+                        ? 'Phần trăm giảm'
+                        : form.discountType === 'shipping_fixed_amount'
+                          ? 'Số tiền giảm phí vận chuyển'
+                          : 'Số tiền giảm sản phẩm'}{' '}
+                      <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      step={form.discountType === 'percentage' ? '1' : '1000'}
+                      value={form.discountValue}
+                      onChange={(event) => setForm({ ...form, discountValue: event.target.value })}
+                      className="w-full h-11 px-4 rounded-lg border border-border-subtle bg-transparent text-text-primary focus:border-[#1A1A2E] focus:ring-1 focus:ring-[#1A1A2E] outline-none transition-all"
+                      placeholder={form.discountType === 'percentage' ? '10' : '30000'}
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label className="block font-label-caps text-label-caps text-text-muted mb-2">Giảm tối đa</label>

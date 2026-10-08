@@ -73,7 +73,7 @@ export interface StaffCategoryNode {
 export interface StaffVoucherResponse {
   id: number;
   code: string;
-  discountType: 'percentage' | 'fixed_amount';
+  discountType: 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free';
   discountValue: number;
   minOrderAmount: number;
   maxDiscountAmount: number | null;

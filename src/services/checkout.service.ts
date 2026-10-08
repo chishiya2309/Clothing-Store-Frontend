@@ -8,7 +8,7 @@ export interface ConfirmCheckoutRequest {
   paymentMethod: PaymentMethod
 }
 
-export type CheckoutVoucherDiscountType = 'percentage' | 'fixed_amount'
+export type CheckoutVoucherDiscountType = 'percentage' | 'fixed_amount' | 'shipping_fixed_amount' | 'cheapest_item_free'
 
 export interface PreviewCheckoutRequest {
   addressId: number
