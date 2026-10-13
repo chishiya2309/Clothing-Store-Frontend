@@ -67,12 +67,20 @@ export default function VerifyEmail() {
             </div>
             <h1 className="font-headline-md text-headline-md text-error">Xác thực thất bại</h1>
             <p className="font-body-md text-body-md text-on-surface-variant mb-6">{message}</p>
-            <Link 
-              to="/login"
-              className="w-full h-12 bg-surface text-primary font-label-caps text-label-caps rounded border border-primary hover:bg-surface-alt transition-colors mt-4 flex items-center justify-center"
-            >
-              QUAY LẠI ĐĂNG NHẬP
-            </Link>
+            <div className="w-full space-y-3">
+              <Link 
+                to="/register"
+                className="w-full h-12 bg-primary-container text-on-primary font-label-caps text-label-caps rounded hover:scale-[1.02] hover:shadow-md transition-all duration-200 flex items-center justify-center"
+              >
+                ĐĂNG KÝ LẠI
+              </Link>
+              <Link 
+                to="/login"
+                className="w-full h-12 bg-surface text-primary font-label-caps text-label-caps rounded border border-primary hover:bg-surface-alt transition-colors flex items-center justify-center"
+              >
+                QUAY LẠI ĐĂNG NHẬP
+              </Link>
+            </div>
           </div>
         )}
       </div>
