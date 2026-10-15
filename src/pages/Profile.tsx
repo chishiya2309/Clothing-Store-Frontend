@@ -9,7 +9,7 @@ const changePasswordSchema = z.object({
   oldPassword: z.string().min(1, 'Mật khẩu hiện tại không được để trống'),
   newPassword: z.string()
     .min(8, 'Mật khẩu mới phải có ít nhất 8 ký tự')
-    .regex(/^(?=.*[A-Z])(?=.*\d).{8,}$/, 'Mật khẩu mới phải có ít nhất 1 chữ hoa và 1 chữ số'),
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/, 'Mật khẩu mới phải có ít nhất 1 chữ hoa, 1 chữ thường và 1 chữ số'),
   confirmNewPassword: z.string().min(1, 'Xác nhận mật khẩu không được để trống')
 }).refine((data) => data.newPassword === data.confirmNewPassword, {
   message: 'Xác nhận mật khẩu không khớp',
